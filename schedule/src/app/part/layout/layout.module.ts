@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {LayoutComponent} from './layout.component';
 import {HeaderModule} from '../header/header.module';
+import {MenuModule} from '../menu/menu.module';
+import {NavModule} from '../nav/nav.module';
 
 
 
@@ -9,7 +11,9 @@ import {HeaderModule} from '../header/header.module';
   declarations: [LayoutComponent],
   imports: [
     CommonModule,
-    HeaderModule
+    HeaderModule,
+    MenuModule,
+    NavModule
   ],
   exports: [LayoutComponent]
 })
