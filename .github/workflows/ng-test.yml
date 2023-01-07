@@ -23,7 +23,7 @@ jobs:
       with: 
         node-version: ${{ env.NODE_VERSION }}
         cache: npm
-        cache-dependency-path: ${{ env.NODE_VERSION }}/package.json
+        cache-dependency-path: schedule/package.json
     
     - name: set PR_NUMBER
       run: |
