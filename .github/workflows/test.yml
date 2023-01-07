@@ -95,31 +95,34 @@ jobs:
     runs-on: ubuntu-latest
     needs: [angular, springBoot]
     steps:
-    - name: set PR_NUMBER
-      run: |
-        echo PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }') >> $GITHUB_ENV
-        echo PR_TITLE=$(jq --raw-output .pull_request.title "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
-        echo PR_URL=$(jq --raw-output .pull_request._links.html.href "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
-        echo PR_USER=$(jq --raw-output .pull_request.user.login "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
-        echo YZ_DESCRIPTION=$(jq --raw-output .repository.description "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
-        echo YZ_HTML_URL=$(jq --raw-output .repository.html_url "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
-    - name: angular build success 
-      if: ${{ success() }}
-      uses: fifsky/dingtalk-action@master
-      with:
-        url: https://oapi.dingtalk.com/robot/send?access_token=39f9e04938c553ab8609fd6eeac65ef11a28d2631fe27d1525edffbd3b5d9013
-        type: markdown
-        content: |
-          # 💯👨‍💻  Success 🎈🎈🎈
-          > Angular Build [#${{ env.PR_NUMBER }} ${{ env.PR_TITLE }}](${{ env.PR_URL }}) of [${{ env.YZ_DESCRIPTION }}](${{ env.YZ_HTML_URL }}) by ${{ env.PR_USER }} success
+    - name: test 
+      run: printenv
+      
+#     - name: set PR_NUMBER
+#       run: |
+#         echo PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }') >> $GITHUB_ENV
+#         echo PR_TITLE=$(jq --raw-output .pull_request.title "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
+#         echo PR_URL=$(jq --raw-output .pull_request._links.html.href "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
+#         echo PR_USER=$(jq --raw-output .pull_request.user.login "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
+#         echo YZ_DESCRIPTION=$(jq --raw-output .repository.description "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
+#         echo YZ_HTML_URL=$(jq --raw-output .repository.html_url "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
+#     - name: angular build success 
+#       if: ${{ success() }}
+#       uses: fifsky/dingtalk-action@master
+#       with:
+#         url: https://oapi.dingtalk.com/robot/send?access_token=39f9e04938c553ab8609fd6eeac65ef11a28d2631fe27d1525edffbd3b5d9013
+#         type: markdown
+#         content: |
+#           # 💯👨‍💻  Success 🎈🎈🎈
+#           > Angular Build [#${{ env.PR_NUMBER }} ${{ env.PR_TITLE }}](${{ env.PR_URL }}) of [${{ env.YZ_DESCRIPTION }}](${{ env.YZ_HTML_URL }}) by ${{ env.PR_USER }} success
 
-    - name: angular build failure
-      if: ${{ failure() }}
-      uses: fifsky/dingtalk-action@master
-      with:
-        url: https://oapi.dingtalk.com/robot/send?access_token=39f9e04938c553ab8609fd6eeac65ef11a28d2631fe27d1525edffbd3b5d9013
-        type: markdown
-        content: |
-          # 💤🤷‍♀️  Failure 💣💣💣
-          > Angular Build of [#${{ env.PR_NUMBER }} ${{ env.PR_TITLE }}](${{ env.PR_URL }}) of [${{ env.YZ_DESCRIPTION }}](${{ env.YZ_HTML_URL }}) by ${{ env.PR_USER }} failure
+#     - name: angular build failure
+#       if: ${{ failure() }}
+#       uses: fifsky/dingtalk-action@master
+#       with:
+#         url: https://oapi.dingtalk.com/robot/send?access_token=39f9e04938c553ab8609fd6eeac65ef11a28d2631fe27d1525edffbd3b5d9013
+#         type: markdown
+#         content: |
+#           # 💤🤷‍♀️  Failure 💣💣💣
+#           > Angular Build of [#${{ env.PR_NUMBER }} ${{ env.PR_TITLE }}](${{ env.PR_URL }}) of [${{ env.YZ_DESCRIPTION }}](${{ env.YZ_HTML_URL }}) by ${{ env.PR_USER }} failure
 
