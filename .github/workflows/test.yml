@@ -51,7 +51,6 @@ jobs:
       
   springBoot:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
 #     - name: Cancel Previous Runs
 #       uses: styfle/cancel-workflow-action@0.7.0
@@ -97,6 +96,7 @@ jobs:
     steps:
     
     - name: set PR_NUMBER
+      if: ${{ always() }}
       run: |
         echo PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }') >> $GITHUB_ENV
         echo PR_TITLE=$(jq --raw-output .pull_request.title "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
