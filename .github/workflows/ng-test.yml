@@ -54,7 +54,7 @@ jobs:
     - name: ng build
       run: cd ${{ env.PROJECT_NAME }} && node_modules/@angular/cli/bin/ng build --prod
       
-#     - name: angular build success
+#     - name: angular build success 
 #       if: ${{ success() }}
 #       uses: fifsky/dingtalk-action@master
 #       with:
