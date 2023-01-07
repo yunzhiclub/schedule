@@ -20,34 +20,33 @@ jobs:
     - name: checkout
       uses: actions/checkout@v3
     
-#     - name: Setup Node.js environment
-#       uses: actions/setup-node@v3.5.1
-#       with: 
-#         node-version: ${{ env.NODE_VERSION }}
-#         cache: npm
-#         cache-dependency-path: schedule/package.json
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v3.5.1
+      with: 
+        node-version: ${{ env.NODE_VERSION }}
+        cache: npm
+        cache-dependency-path: schedule/package.json
     
     
         
-#     - name: print env 
-#       run: printenv
+    - name: print env 
+      run: printenv
       
-#     - name: npm install
-#       run: |
-#         cd ${{ env.PROJECT_NAME }}
-#         npm install --no-optional  --no-package-lock
-#         node_modules/@angular/cli/bin/ng --version
+    - name: npm install
+      run: |
+        cd ${{ env.PROJECT_NAME }}
+        npm install --no-optional  --no-package-lock
+        node_modules/@angular/cli/bin/ng --version
         
-#     - name: ng lint
-#       run: |
-#         cd ${{ env.PROJECT_NAME }}
-#         node_modules/@angular/cli/bin/ng lint
+    - name: ng lint
+      run: |
+        node_modules/@angular/cli/bin/ng lint
       
-#     - name: ng test
-#       run: cd ${{ env.PROJECT_NAME }} && node_modules/@angular/cli/bin/ng test --watch=false --browsers=ChromeHeadless --sourceMap=false    
+    - name: ng test
+      run: cd ${{ env.PROJECT_NAME }} && node_modules/@angular/cli/bin/ng test --watch=false --browsers=ChromeHeadless --sourceMap=false    
       
-#     - name: ng build
-#       run: cd ${{ env.PROJECT_NAME }} && node_modules/@angular/cli/bin/ng build --prod
+    - name: ng build
+      run: cd ${{ env.PROJECT_NAME }} && node_modules/@angular/cli/bin/ng build --prod
       
   springBoot:
     runs-on: ubuntu-latest
@@ -60,12 +59,12 @@ jobs:
     - name: checkout
       uses: actions/checkout@v3
       
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v3.0.0
-      with:
-        java-version: ${{ env.JAVA_VERSION }}
-        distribution: ${{ env.DISTRIBUTION }}
-        cache: 'gradle'
+#     - name: Set up JDK 1.8
+#       uses: actions/setup-java@v3.0.0
+#       with:
+#         java-version: ${{ env.JAVA_VERSION }}
+#         distribution: ${{ env.DISTRIBUTION }}
+#         cache: 'gradle'
       
 #     - name: Setup MySQL
 #       uses: mirromutth/mysql-action@v1.1
