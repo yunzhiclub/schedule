@@ -4,6 +4,7 @@ import { TermComponent } from './term.component';
 import {TermRoutingModule} from './term-routing.module';
 import {PageModule} from '../../common/page/page.module';
 import {SizeModule} from '../../common/size/size.module';
+import {PipeModule} from '../pipe/pipe.module';
 
 @NgModule({
   declarations: [TermComponent],
@@ -11,7 +12,8 @@ import {SizeModule} from '../../common/size/size.module';
     CommonModule,
     TermRoutingModule,
     PageModule,
-    SizeModule
+    SizeModule,
+    PipeModule
   ]
 })
 export class TermModule { }

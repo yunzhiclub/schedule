@@ -1,4 +1,44 @@
-<p>term works!</p>
+<!--查询和添加-->
+<div class="row">
+  <div class="col-md-10">
+    <form class="form-inline">
+      <input type="text" class="form-control" style="margin-right: 10px" placeholder="名称" formControlName="name">
+      <button type="submit" class="btn btn-info"><i class="fas fa-search"></i>查询</button>
+    </form>
+  </div>
+  <div class="col-md-2">
+    <a class="btn btn-primary mr-2" style="float: right" routerLink="/admin/term/add"><i class="fas fa-plus"></i>新增</a>
+  </div>
+</div>
 <app-size></app-size><br>
--------
-<app-page></app-page>
+<table class="table table-striped mt-3">
+  <thead class="table-primary">
+  <tr class="info">
+    <th>序号</th>
+    <th>名称</th>
+    <th>开始日期</th>
+    <th>结束日期</th>
+    <th>状态</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let term of pageData.content, index as index">
+    <td>{{ index + 1 }}</td>
+    <td>{{ term.name }}</td>
+    <td>{{ (+term.start_time) * 1000 | date: 'yyyy-MM-dd'}}</td>
+    <td>{{ (+term.end_time) * 1000 | date: 'yyyy-MM-dd'}}</td>
+    <td><span class="badge" [ngClass]="{ 'badge-primary': term.state, 'badge-secondary': !term.state }">{{ term.state }}</span></td>
+    <td>
+      <a class="btn btn-sm btn-primary">编辑</a>
+      &nbsp;
+      <a class="btn btn-sm btn-danger">删除</a>
+      &nbsp;
+      <a class="btn btn-sm btn-success col-md-2">激活</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<app-page [page]="pageData.number"
+          [size]="pageData.size"
+          [totalElements]="pageData.totalElements"></app-page>
