@@ -46,7 +46,7 @@ export class MenuComponent implements OnInit {
       } as T,
       {
         name: '课程表',
-        url: 'timeTable'
+        url: 'timetable'
       } as T,
       {
         name: '个人中心',
