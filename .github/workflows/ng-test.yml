@@ -34,7 +34,7 @@ jobs:
         echo YZ_DESCRIPTION=$(jq --raw-output .repository.description "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
         echo YZ_HTML_URL=$(jq --raw-output .repository.html_url "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
         
-    - name: print env
+    - name: print env 
       run: printenv
       
     - name: npm install
