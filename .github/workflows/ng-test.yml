@@ -54,22 +54,22 @@ jobs:
     - name: ng build
       run: cd ${{ env.PROJECT_NAME }} && node_modules/@angular/cli/bin/ng build --prod
       
-#     - name: angular build success 
-#       if: ${{ success() }}
-#       uses: fifsky/dingtalk-action@master
-#       with:
-#         url: https://oapi.dingtalk.com/robot/send?access_token=dbea3917f87c122d45295dfb22f85d6377226e8e00a5482153b2439375fdd778
-#         type: markdown
-#         content: |
-#           # 💯👨‍💻 Success 🎈🎈🎈
-#           > Angular Build [#${{ env.PR_NUMBER }} ${{ env.PR_TITLE }}](${{ env.PR_URL }}) of [${{ env.YZ_DESCRIPTION }}](${{ env.YZ_HTML_URL }}) by ${{ env.PR_USER }} success
+    - name: angular build success 
+      if: ${{ success() }}
+      uses: fifsky/dingtalk-action@master
+      with:
+        url: https://oapi.dingtalk.com/robot/send?access_token=SEC802babe2597588a2c096d97b98f050556ca1c2afd93d67f7e1d484d63132188a
+        type: markdown
+        content: |
+          # 💯👨‍💻  Success 🎈🎈🎈
+          > Angular Build [#${{ env.PR_NUMBER }} ${{ env.PR_TITLE }}](${{ env.PR_URL }}) of [${{ env.YZ_DESCRIPTION }}](${{ env.YZ_HTML_URL }}) by ${{ env.PR_USER }} success
    
-#     - name: angular build failure
-#       if: ${{ failure() }}
-#       uses: fifsky/dingtalk-action@master
-#       with:
-#         url: https://oapi.dingtalk.com/robot/send?access_token=dbea3917f87c122d45295dfb22f85d6377226e8e00a5482153b2439375fdd778
-#         type: markdown
-#         content: |
-#           # 💤🤷‍♀️  failure 💣💣
-#           > Angular Build of [#${{ env.PR_NUMBER }} ${{ env.PR_TITLE }}](${{ env.PR_URL }}) of [${{ env.YZ_DESCRIPTION }}](${{ env.YZ_HTML_URL }}) by ${{ env.PR_USER }} failure
+    - name: angular build failure
+      if: ${{ failure() }}
+      uses: fifsky/dingtalk-action@master
+      with:
+        url: https://oapi.dingtalk.com/robot/send?access_token=SEC802babe2597588a2c096d97b98f050556ca1c2afd93d67f7e1d484d63132188a
+        type: markdown
+        content: |
+          # 💤🤷‍♀️  failure 💣💣💣
+          > Angular Build of [#${{ env.PR_NUMBER }} ${{ env.PR_TITLE }}](${{ env.PR_URL }}) of [${{ env.YZ_DESCRIPTION }}](${{ env.YZ_HTML_URL }}) by ${{ env.PR_USER }} failure
