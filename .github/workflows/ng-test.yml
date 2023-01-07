@@ -71,5 +71,5 @@ jobs:
         url: https://oapi.dingtalk.com/robot/send?access_token=39f9e04938c553ab8609fd6eeac65ef11a28d2631fe27d1525edffbd3b5d9013
         type: markdown
         content: |
-          # 💤🤷‍♀️  failure 💣💣💣
+          # 💤🤷‍♀️  Failure 💣💣💣
           > Angular Build of [#${{ env.PR_NUMBER }} ${{ env.PR_TITLE }}](${{ env.PR_URL }}) of [${{ env.YZ_DESCRIPTION }}](${{ env.YZ_HTML_URL }}) by ${{ env.PR_USER }} failure
