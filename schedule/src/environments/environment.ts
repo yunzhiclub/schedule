@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   title: '排课系统',
+  apiUrl: 'http://localhost:8015/api',
 };
 
 

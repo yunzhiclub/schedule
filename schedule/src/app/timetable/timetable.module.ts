@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {ClazzScheduleRoutingModule} from './clazz-schedule-routing.module';
+import {TimetableRoutingModule} from './timetable-routing.module';
+
+
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
-    ClazzScheduleRoutingModule
+    TimetableRoutingModule
   ]
 })
-export class ClazzScheduleModule { }
+export class TimetableModule { }

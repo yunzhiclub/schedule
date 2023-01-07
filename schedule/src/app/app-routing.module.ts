@@ -65,7 +65,7 @@ const routes: Routes = [
       },
       {
         path: 'timetable',
-        loadChildren: () => import('./clazz-schedule/clazz-schedule.module').then(m => m.ClazzScheduleModule),
+        loadChildren: () => import('./timetable/timetable.module').then(m => m.TimetableModule),
         data: {
           title: '课程表'
         }

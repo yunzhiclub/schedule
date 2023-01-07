@@ -5,18 +5,24 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {LayoutModule} from './part/layout/layout.module';
 import { ScheduleComponent } from './schedule/schedule.component';
-import { ClazzScheduleComponent } from './clazz-schedule/clazz-schedule.component';
+import { TimetableComponent } from './timetable/timetable.component';
+import {PipeModule} from './pipe/pipe.module';
+import {ApiProModule} from '../api/api.pro.module';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
     AppComponent,
     ScheduleComponent,
-    ClazzScheduleComponent,
+    TimetableComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    LayoutModule
+    LayoutModule,
+    PipeModule,
+    ApiProModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

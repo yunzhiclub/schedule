@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {isNotNullOrUndefined} from 'codelyzer/util/isNotNullOrUndefined';
+import {isNotNullOrUndefined} from '../utils';
 
 @Component({
   selector: 'app-page',

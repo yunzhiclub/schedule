@@ -13,7 +13,7 @@ import {PipeModule} from '../pipe/pipe.module';
     TermRoutingModule,
     PageModule,
     SizeModule,
-    PipeModule
+    PipeModule,
   ]
 })
 export class TermModule { }

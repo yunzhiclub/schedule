@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ClazzScheduleComponent } from './clazz-schedule.component';
+import { TimetableComponent } from './timetable.component';
 
-describe('ClazzScheduleComponent', () => {
-  let component: ClazzScheduleComponent;
-  let fixture: ComponentFixture<ClazzScheduleComponent>;
+describe('TimetableComponent', () => {
+  let component: TimetableComponent;
+  let fixture: ComponentFixture<TimetableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ClazzScheduleComponent ]
+      declarations: [ TimetableComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ClazzScheduleComponent);
+    fixture = TestBed.createComponent(TimetableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
