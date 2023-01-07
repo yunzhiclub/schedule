@@ -56,7 +56,7 @@
       true,
       "ignore-params"
     ],
-    "no-non-null-assertion": true,
+    "no-non-null-assertion": false,
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
     "no-var-requires": false,
@@ -70,7 +70,7 @@
     ],
     "semicolon": {
       "options": [
-        "always"
+        "ignore-bound-class-methods"
       ]
     },
     "space-before-function-paren": {
@@ -108,7 +108,9 @@
       "options": [
         "ban-keywords",
         "check-format",
-        "allow-pascal-case"
+        "allow-pascal-case",
+        // 允许下划线打头
+        "allow-leading-underscore"
       ]
     },
     "whitespace": {

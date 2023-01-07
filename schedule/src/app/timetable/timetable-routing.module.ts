@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {RouterModule, Routes} from '@angular/router';
-import {ClazzScheduleComponent} from './clazz-schedule.component';
+import {ClazzComponent} from '../clazz/clazz.component';
+
 
 const routes: Routes = [
   {
     path: '',
-    component: ClazzScheduleComponent
+    component: ClazzComponent
   },
 ];
 
@@ -14,4 +14,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ClazzScheduleRoutingModule { }
+export class TimetableRoutingModule { }
+
