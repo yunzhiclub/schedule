@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {LayoutComponent} from './part/layout/layout.component';
-import {ClazzScheduleModule} from './clazz-schedule/clazz-schedule.module';
 
 const routes: Routes = [
   {
@@ -65,7 +64,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'clazzSchedule',
+        path: 'timetable',
         loadChildren: () => import('./clazz-schedule/clazz-schedule.module').then(m => m.ClazzScheduleModule),
         data: {
           title: '课程表'
