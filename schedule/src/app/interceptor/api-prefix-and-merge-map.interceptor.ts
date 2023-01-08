@@ -39,10 +39,8 @@ export class ApiPrefixAndMergeMapInterceptor implements HttpInterceptor {
     if ('true' !== request.headers.get(ApiPrefixAndMergeMapInterceptor.DONT_INTERCEPT_HEADER_KEY)) {
       url = ApiPrefixAndMergeMapInterceptor.getApiUrl(request.url);
     }
-
     // 由于request是个不可变对象，所以需要克隆一个req出来
     const req = request.clone({url});
-    console.log(url);
     // 转发到下一个
     return next.handle(req).pipe(
       // return next.handle(request).pipe(
