@@ -4,6 +4,8 @@ import {Page} from '../common/page';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {map} from 'rxjs/operators';
+import {TermState} from '../entity/enum/termState';
+import {Assert} from '../common/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -31,4 +33,51 @@ export class TermService {
     return this.httpClient.get<Page<Term>>(`${this.url}/page`, {params: httpParams})
       .pipe(map(data => new Page<Term>(data).toObject(d => new Term(d))));
   }
+
+  /**
+   * 新建班级
+   * @param term 将要保存的学期对象
+   */
+  save(term: Term): Observable<Term> {
+    return this.httpClient.post<Term>(`${this.url}`, term)
+      .pipe(map(data => new Term(data)));
+  }
+  /**
+   * 学期名是否存在
+   * @param name 学期名称
+   * @param termId 排除此学期
+   */
+  public termNameUnique(name: string, termId = 0): Observable<boolean> {
+    console.log(termId);
+    const httpParams = new HttpParams()
+      .append('name', name)
+      .append('termId', termId.toString());
+    return this.httpClient.get<boolean>(this.url + '/termNameUnique', {params: httpParams});
+  }
+
+  /**
+   * 删除
+   * @param termId id
+   */
+  delete(termId: number): Observable<void> {
+    return this.httpClient.delete<void>(`${this.url}/${termId}`);
+  }
+
+  /**
+   * 激活学期
+   * @param termId 学期ID
+   */
+  active(termId: number): Observable<{state: TermState}> {
+    return this.httpClient.get<{state: TermState}>(`${this.url}/active/${termId}`);
+  }
+
+  /**
+   * 根据ID获取实体.
+   * @param termId termId
+   */
+  getById(termId: number): Observable<Term> {
+    Assert.isNumber(termId, 'termId类型必须为number');
+    return this.httpClient.get<Term>(`${this.url}/${termId}`).pipe(map(data => new Term(data)));
+  }
+
 }

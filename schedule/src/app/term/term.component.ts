@@ -7,6 +7,7 @@ import {CommonService} from '../../service/common.service';
 import {TermService} from '../../service/term.service';
 import {Assert, stringToIntegerNumber, Utils} from '../../common/utils';
 import {config} from '../../conf/app.config';
+import {TermState} from '../../entity/enum/termState';
 
 
 @Component({
@@ -30,7 +31,6 @@ export class TermComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('123123');
     this.queryForm.addControl(this.keys.name, new FormControl());
     // 订阅参数变化
     this.route.params.subscribe(params => {
@@ -104,5 +104,43 @@ export class TermComponent implements OnInit {
    */
   onSizeChange(size: number): void {
     this.reload({...this.params, ...{size}});
+  }
+
+  onSubmit(queryForm: FormGroup): void {
+    this.reload({...this.params, ...queryForm.value});
+  }
+
+  /**
+   * 删除
+   * @param term 学期
+   */
+  onDelete(term: Term): void {
+    Assert.isNotNullOrUndefined(term.id, 'id未定义');
+    this.commonService.confirm((confirm = false) => {
+      if (confirm) {
+        const index = this.pageData.content.indexOf(term);
+        this.termService.delete(term.id as number)
+          .subscribe(() => {
+            this.commonService.success(() => this.pageData.content.splice(index, 1));
+          });
+      }
+    }, '');
+  }
+
+  active(term: Term): void {
+    this.termService.active(term.id as number)
+      .subscribe((data: {state: TermState}) => {
+        if (data.state) {
+          this.deactivate();
+          term.state = data.state;
+        }
+        this.commonService.success();
+      });
+  }
+
+  private deactivate(): void {
+    this.pageData.content.forEach(term => {
+      term.state = Term.NOT_ACTIVATE;
+    });
   }
 }
