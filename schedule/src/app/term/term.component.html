@@ -1,13 +1,17 @@
-<!--查询和添加-->
-<div class="row">
-  <div class="col-md-10">
-    <form class="form-inline">
-      <input type="text" class="form-control" style="margin-right: 10px" placeholder="名称" formControlName="name">
-      <button type="submit" class="btn btn-info"><i class="fas fa-search"></i>查询</button>
-    </form>
+<form (submit)="onSubmit(queryForm)" [formGroup]="queryForm">
+  <div class="form-row justify-content-between">
+    <div class="form-group col-md-3">
+      <input type="text" class="form-control" formControlName="name" placeholder="学期名称">
+    </div>
+    <div class="form-group col-md-9 text-left align-self-end">
+      <button type="submit" class="btn btn-info"><i class="fas fa-search"></i> 查询</button>
+    </div>
   </div>
-  <div class="col-md-2">
-    <a class="btn btn-primary mr-2" style="float: right" routerLink="/admin/term/add"><i class="fas fa-plus"></i>新增</a>
+</form>
+<hr>
+<div class="row mb-2">
+  <div class="col-12 text-right">
+    <a class="btn btn-primary" routerLink="add"><i class="fas fa-plus"></i>新增</a>
   </div>
 </div>
 <app-size [size]="pageData.size" (changeSize)="onSizeChange($event)"></app-size><br>
@@ -30,9 +34,9 @@
     <td>{{ +term.endTime * 1000 | date: 'yyyy-MM-dd'}}</td>
     <td><span class="badge" [ngClass]="{ 'badge-primary': term.state, 'badge-secondary': !term.state }">{{ term.state | termState }}</span></td>
     <td>
-      <a class="btn btn-sm btn-primary">编辑</a>
-      <a class="btn btn-sm btn-danger">删除</a>
-      <a class="btn btn-sm btn-success col-md-2">激活</a>
+      <a class="btn btn-sm btn-primary" [routerLink]="'edit/' + term.id">编辑</a>
+      <a class="btn btn-sm btn-danger" (click)="onDelete(term)">删除</a>
+      <a class="btn btn-sm btn-success col-md-2" (click)="active(term)">激活</a>
     </td>
   </tr>
   </tbody>

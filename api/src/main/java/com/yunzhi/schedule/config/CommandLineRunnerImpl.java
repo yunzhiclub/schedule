@@ -29,15 +29,14 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // 添加两百条学期数据
-        for (int i = 0; i < 100; i++) {
-            this.addTerm("2023春季学期" + i * 2 + 1, true, 1672502400L, 1688140800L);
-            this.addTerm("2023春季学期" + i * 2 + 2, true, 1672502400L, 1688140800L);
+        for (int i = 0; i < 200; i+=2) {
+            this.addTerm("学期" + i, false, 1672502400L, 1688140800L);
+            this.addTerm("学期" + (i + 1), false, 1672502400L, 1688140800L);
         }
         // 添加200条教师数据
-        for (int i = 0; i < 100; i++) {
-            this.addTeacher("教师" + i * 2 + 1, true, "13100000000");
-            this.addTeacher("教师" + i * 2 + 2, false, "13100000011");
+        for (int i = 0; i < 200; i+=2) {
+            this.addTeacher("教师" + i, true, "13100000000");
+            this.addTeacher("教师" + i + 1, false, "13100000011");
         }
     }
 

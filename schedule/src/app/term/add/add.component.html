@@ -1,0 +1,46 @@
+<form class="container-sm"  [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
+  <div class="mb-3 row">
+    <label for="name" class="col-3 text-right col-form-label">姓名<code>*</code></label>
+    <div class="col-7">
+      <input type="text" class="form-control" id="name" formControlName="name">
+      <small class="text-danger" *ngIf="formGroup.get('name')!.touched && formGroup.get('name')!.invalid ">
+        <span *ngIf="!formGroup.get('name')?.errors?.termNameUnique">格式不正确</span>
+        <span *ngIf="formGroup.get('name')?.errors?.termNameUnique">学期名已存在</span>
+      </small>
+    </div>
+  </div>
+  <div class="mb-3 row">
+    <label for="startTime" class="col-3 text-right col-form-label">开始时间<code>*</code></label>
+    <div class="col-7">
+      <app-date formControlName="startTime" id="startTime"></app-date>
+    </div>
+  </div>
+
+  <div class="mb-3 row">
+    <label for="endTime" class="col-3 text-right col-form-label">结束时间<code>*</code></label>
+    <div class="col-7">
+      <app-date formControlName="endTime" id="endTime"></app-date>
+      <small class="text-danger" *ngIf="formGroup.get('startTime')!.valid && formGroup.get('endTime')!.valid &&
+      !isTimeRight">
+        结束时间必须晚于开始时间
+      </small>
+    </div>
+  </div>
+
+  <div class="mb-3 row">
+    <label class="col-3 text-right col-form-label">是否激活<code>*</code></label>
+    <div class="col-7">
+      <input [value]="true" type="radio" name="state" id="1" formControlName="state">
+      <label for="1">是</label> &nbsp;
+      <input [value]="false" type="radio" name="state" id="0" formControlName="state">
+      <label for="0">否</label>
+    </div>
+  </div>
+  <div class="mb-3 row">
+    <div class="col-sm-10 offset-5">
+      <button class="btn btn-primary" [disabled]="formGroup.invalid || !isTimeRight">
+        <i class="fas fa-save"></i>保存
+      </button>
+    </div>
+  </div>
+</form>

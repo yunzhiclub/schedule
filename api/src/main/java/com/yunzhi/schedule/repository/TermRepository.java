@@ -1,6 +1,7 @@
 package com.yunzhi.schedule.repository;
 
 import com.yunzhi.schedule.entity.Term;
+import com.yunzhi.schedule.repository.specs.TermSpecs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -11,22 +12,23 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.List;
+import java.util.Optional;
 
 public interface TermRepository extends PagingAndSortingRepository<Term, Long>, JpaSpecificationExecutor<Term> {
 
     /**
-     * 根据user中name查询学期信息(模糊查询)
-     * @param name          学期名称
+     * 根据term中name查询学期信息(模糊查询)
+     * @param name          学期姓名
      * @param pageable      分页信息
      * @return              学期数据
      */
     default Page<Term> findAllByName(String name, Pageable pageable) {
-        Specification<Term> specification = new Specification<Term>() {
-            @Override
-            public Predicate toPredicate(Root<Term> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.like(root.get("name"), "%" + name + "%");
-            }
-        };
+        Specification<Term> specification = TermSpecs.containingName(name);
         return this.findAll(specification, pageable);
     }
+
+    List<Term> findTermsByStateIsTrue();
+
+    Optional<Term> findByName(String name);
 }
