@@ -1,7 +1,7 @@
 /**
  * 学期
  */
-export class Term{
+export class Term {
   id: number | undefined;
   name: string | undefined;
   state: boolean | undefined;
