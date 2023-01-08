@@ -33,7 +33,9 @@ public class TermController {
             @RequestParam(required = false, defaultValue = "") String name,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        return this.termService.page(name, pageable);
+        Page<Term> page = this.termService.page(name, pageable);
+        System.out.println(page.getContent().get(0).getId());
+        return page;
     }
 
 }

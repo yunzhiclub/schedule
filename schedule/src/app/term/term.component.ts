@@ -5,7 +5,7 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {FormControl, FormGroup} from '@angular/forms';
 import {CommonService} from '../../service/common.service';
 import {TermService} from '../../service/term.service';
-import {stringToIntegerNumber} from '../../common/utils';
+import {Assert, stringToIntegerNumber, Utils} from '../../common/utils';
 import {config} from '../../conf/app.config';
 
 
@@ -36,13 +36,13 @@ export class TermComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.params = params;
       this.queryForm.get(this.keys.name)!.setValue(params[this.keys.name]);
-
       this.termService.page({
         page: stringToIntegerNumber(params[this.keys.page], 0) as number,
         size: stringToIntegerNumber(params[this.keys.size], config.size) as number,
         name: params[this.keys.name]})
       .subscribe(data => {
         console.log(data);
+        this.setData(data);
       });
     });
   }
@@ -63,4 +63,46 @@ export class TermComponent implements OnInit {
     this.commonService.reloadByParam(params).then();
   }
 
+  /**
+   * 设置数据
+   * @param data 分页数据
+   */
+  private setData(data: Page<Term>): void {
+    this.validateData(data);
+    this.pageData = data;
+  }
+
+  /**
+   * 校验数据是否满足前台列表的条件
+   * @param data 分页数据
+   */
+  validateData(data: Page<Term>): void {
+    Assert.isNotNullOrUndefined(data.number, data.size, data.totalElements, '未满足page组件的初始化条件');
+    data.content.forEach(v => this.validateTerm(v));
+    this.pageData = data;
+  }
+
+  /**
+   * 校验字段是否符合V层表现
+   * @param clazz 班级
+   */
+  validateTerm(term: Term): void {
+    // 必有条件
+    Assert.isNotNullOrUndefined(
+      term.id,
+      term.name,
+      term.state,
+      term.startTime,
+      term.endTime,
+      '未满足table列表的初始化条件'
+    );
+  }
+
+  /**
+   * 点击改变每页大小
+   * @param size 每页大小
+   */
+  onSizeChange(size: number): void {
+    this.reload({...this.params, ...{size}});
+  }
 }

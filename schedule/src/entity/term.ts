@@ -1,17 +1,23 @@
-import {BaseEntity} from './base-entity';
-
-export class Term extends BaseEntity {
-  name: string;
-  state: number;
-  startTime: string;
-  endTime: string;
+/**
+ * 学期
+ */
+export class Term{
+  id: number | undefined;
+  name: string | undefined;
+  state: boolean | undefined;
+  startTime = '';
+  endTime = '';
   constructor(data = {} as {
-    name: string, state: number, startTime: string, endTime: string
+    id?: number
+    name?: string,
+    state?: boolean,
+    startTime?: string,
+    endTime?: string,
   }) {
-    super();
+    this.id = data.id;
     this.name = data.name;
     this.state = data.state;
-    this.startTime = data.startTime;
-    this.endTime = data.endTime;
+    this.startTime = data.startTime ? data.startTime : '';
+    this.endTime = data.endTime ? data.endTime : '';
   }
 }

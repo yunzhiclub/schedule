@@ -10,7 +10,7 @@
     <a class="btn btn-primary mr-2" style="float: right" routerLink="/admin/term/add"><i class="fas fa-plus"></i>新增</a>
   </div>
 </div>
-<app-size></app-size><br>
+<app-size [size]="pageData.size" (changeSize)="onSizeChange($event)"></app-size><br>
 <table class="table table-striped mt-3">
   <thead class="table-primary">
   <tr class="info">
@@ -26,8 +26,8 @@
   <tr *ngFor="let term of pageData.content, index as index">
     <td>{{ index + 1 }}</td>
     <td>{{ term.name }}</td>
-    <td>{{ (+term.startTime) * 1000 | date: 'yyyy-MM-dd'}}</td>
-    <td>{{ (+term.endTime) * 1000 | date: 'yyyy-MM-dd'}}</td>
+    <td>{{ +term.startTime * 1000 | date: 'yyyy-MM-dd'}}</td>
+    <td>{{ +term.endTime * 1000 | date: 'yyyy-MM-dd'}}</td>
     <td><span class="badge" [ngClass]="{ 'badge-primary': term.state, 'badge-secondary': !term.state }">{{ term.state | termState }}</span></td>
     <td>
       <a class="btn btn-sm btn-primary">编辑</a>

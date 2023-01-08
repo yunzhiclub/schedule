@@ -21,11 +21,22 @@ public class Term {
     @ApiModelProperty("学期状态")
     private Boolean state;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @ApiModelProperty("学期名称")
+    private String name;
+
     @ApiModelProperty("开学时间")
-    private Timestamp startTime;
+    private Long startTime;
 
     @ApiModelProperty("结束时间")
-    private Timestamp endTime;
+    private Long endTime;
 
     public Long getId() {
         return id;
@@ -43,19 +54,19 @@ public class Term {
         this.state = state;
     }
 
-    public Timestamp getStartTime() {
+    public Long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Timestamp startTime) {
+    public void setStartTime(Long startTime) {
         this.startTime = startTime;
     }
 
-    public Timestamp getEndTime() {
+    public Long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Timestamp endTime) {
+    public void setEndTime(Long endTime) {
         this.endTime = endTime;
     }
 }
