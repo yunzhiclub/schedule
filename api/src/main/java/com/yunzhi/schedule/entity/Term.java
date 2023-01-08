@@ -13,6 +13,9 @@ import java.sql.Timestamp;
  */
 @Entity
 public class Term {
+
+    public static Boolean ACTIVATE = true;
+    public static Boolean NOT_ACTIVATE = false;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty("id")

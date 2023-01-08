@@ -26,9 +26,9 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        for (int i = 0; i < 100; i++) {
-            this.addTerm("2023春季学期" + i * 2 + 1, true, 1672502400L, 1688140800L);
-            this.addTerm("2023春季学期" + i * 2 + 2, true, 1672502400L, 1688140800L);
+        for (int i = 0; i < 200; i+=2) {
+            this.addTerm("学期" + i, false, 1672502400L, 1688140800L);
+            this.addTerm("学期" + (i + 1), false, 1672502400L, 1688140800L);
         }
     }
 

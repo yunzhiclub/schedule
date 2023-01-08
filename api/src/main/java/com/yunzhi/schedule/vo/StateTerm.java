@@ -1,16 +1,16 @@
-package club.yunzhi.api.workReview.vo;
+package com.yunzhi.schedule.vo;
 
 /**
  * 用户状态改变输出
  */
-public class StatusUser {
-  private Integer status;
+public class StateTerm {
+  private Boolean state;
 
-  public Integer getStatus() {
-    return status;
+  public Boolean getState() {
+    return state;
   }
 
-  public void setStatus(Integer status) {
-    this.status = status;
+  public void setState(Boolean state) {
+    this.state = state;
   }
 }
