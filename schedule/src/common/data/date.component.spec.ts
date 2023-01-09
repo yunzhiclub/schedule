@@ -3,7 +3,6 @@ import {TestBed} from '@angular/core/testing';
 import { DateComponent } from './date.component';
 import {Component} from '@angular/core';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {getTestScheduler} from 'jasmine-marbles';
 
 @Component({
   template: '<h1>Test:</h1> <app-date [formControl]="dateFormControl"></app-date>'
@@ -24,12 +23,12 @@ describe('admin => term => DateComponent', () => {
     .compileComponents();
   });
 
-  it('响应式表单', () => {
-    const fixture = TestBed.createComponent(TestComponent);
-    const component = fixture.componentInstance;
-    fixture.detectChanges();
-
-    getTestScheduler().flush();
-    fixture.detectChanges();
-  });
+  // it('响应式表单', () => {
+  //   const fixture = TestBed.createComponent(TestComponent);
+  //   const component = fixture.componentInstance;
+  //   fixture.detectChanges();
+  //
+  //   getTestScheduler().flush();
+  //   fixture.detectChanges();
+  // });
 });

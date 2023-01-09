@@ -7,17 +7,19 @@ import {PageModule} from "../../common/page/page.module";
 import { AddComponent } from './add/add.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import { EditComponent } from './edit/edit.component';
+import {PipeModule} from '../pipe/pipe.module';
 
 
 
 @NgModule({
   declarations: [TeacherComponent, AddComponent, EditComponent],
-  imports: [
-    CommonModule,
-    TeacherRoutingModule,
-    SizeModule,
-    PageModule,
-    ReactiveFormsModule
-  ]
+    imports: [
+        CommonModule,
+        TeacherRoutingModule,
+        SizeModule,
+        PageModule,
+        ReactiveFormsModule,
+        PipeModule
+    ]
 })
 export class TeacherModule { }
