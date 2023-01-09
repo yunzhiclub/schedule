@@ -7,7 +7,7 @@ import {TermService} from '../../service/term.service';
 import {Assert, stringToIntegerNumber} from '../../common/utils';
 import {config} from '../../conf/app.config';
 import {Teacher} from '../../entity/teacher';
-import {TeacherService} from "../../service/teacher.service";
+import {TeacherService} from '../../service/teacher.service';
 
 @Component({
   selector: 'app-teacher',
@@ -21,7 +21,8 @@ export class TeacherComponent implements OnInit {
   keys = {
     page: 'page',
     size: 'size',
-    name: 'name'
+    searchName: 'searchName',
+    searchPhone: 'searchPhone'
   };
   constructor(private route: ActivatedRoute,
               private commonService: CommonService,
@@ -30,15 +31,18 @@ export class TeacherComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.queryForm.addControl(this.keys.name, new FormControl());
+    this.queryForm.addControl(this.keys.searchName, new FormControl());
+    this.queryForm.addControl(this.keys.searchPhone, new FormControl());
     // 订阅参数变化
     this.route.params.subscribe(params => {
       this.params = params;
-      this.queryForm.get(this.keys.name)!.setValue(params[this.keys.name]);
+      this.queryForm.get(this.keys.searchName)!.setValue(params[this.keys.searchName]);
+      this.queryForm.get(this.keys.searchPhone)!.setValue(params[this.keys.searchPhone]);
       this.teacherService.page({
         page: stringToIntegerNumber(params[this.keys.page], 0) as number,
         size: stringToIntegerNumber(params[this.keys.size], config.size) as number,
-        name: params[this.keys.name]})
+        searchName: params[this.keys.searchName],
+        searchPhone: params[this.keys.searchPhone]})
         .subscribe(data => {
           console.log(data);
           this.setData(data);
@@ -102,5 +106,30 @@ export class TeacherComponent implements OnInit {
    */
   onSizeChange(size: number): void {
     this.reload({...this.params, ...{size}});
+  }
+
+  onDelete(id: any): void {
+    Assert.isNotNullOrUndefined(id, 'id未定义');
+    this.commonService.confirm(confirm => {
+        if (confirm) {
+          this.teacherService.delete(id)
+            .subscribe(success => {
+              console.log('删除成功', success);
+              this.commonService.success();
+              this.ngOnInit();
+            }, error => {
+              console.log('删除失败', error);
+              this.commonService.success();
+            });
+        }
+      },
+    );
+  }
+
+  /**
+   * 查询按钮被按下
+   */
+  onSubmit(queryForm: FormGroup): void {
+    this.reload({...this.params, ...queryForm.value});
   }
 }

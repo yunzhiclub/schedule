@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {Observable} from "rxjs";
-import {Page} from "../common/page";
-import {Term} from "../entity/term";
-import {map} from "rxjs/operators";
-import {Teacher} from "../entity/teacher";
+import {Observable} from 'rxjs';
+import {Page} from '../common/page';
+import {map} from 'rxjs/operators';
+import {Teacher} from '../entity/teacher';
 
 @Injectable({
   providedIn: 'root'
@@ -21,14 +20,19 @@ export class TeacherService {
   page(param: {
     page: number,
     size: number,
-    name?: string
+    searchName?: string
+    searchPhone?: string
   }): Observable<Page<Teacher>> {
     let httpParams = new HttpParams()
       .append('page', param.page.toString())
       .append('size', param.size.toString());
-    if (param.name) {
-      httpParams = httpParams.append('name', param.name);
+    if (param.searchName) {
+      httpParams = httpParams.append('name', param.searchName);
     }
+    if (param.searchPhone) {
+      httpParams = httpParams.append('phone', param.searchPhone);
+    }
+
 
     return this.httpClient.get<Page<Teacher>>(`${this.url}/page`, {params: httpParams})
       .pipe(map(data => new Page<Teacher>(data).toObject(d => new Teacher(d))));
@@ -60,4 +64,11 @@ export class TeacherService {
     return this.httpClient.post<any>(`${this.url}/update/` + id.toString(), data);
   }
 
+  /**
+   * 删除教师
+   * @param id 教师id
+   */
+  delete(id: number): Observable<any> {
+    return this.httpClient.delete<any>(`${this.url}/` + id.toString());
+  }
 }

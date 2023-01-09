@@ -16,8 +16,8 @@ public class TeacherServiceImpl implements TeacherService{
     }
 
     @Override
-    public Page<Teacher> page(String name, Pageable pageable) {
-        return this.teacherRepository.findAllByName(name, pageable);
+    public Page<Teacher> page(String name, String phone, Pageable pageable) {
+        return this.teacherRepository.findAll(name, phone, pageable);
     }
 
     @Override
@@ -43,5 +43,10 @@ public class TeacherServiceImpl implements TeacherService{
         OidTeacher.setSex(teacher.getSex());
         OidTeacher.setPhone(teacher.getPhone());
         return this.teacherRepository.save(OidTeacher);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        this.teacherRepository.deleteById(id);
     }
 }
