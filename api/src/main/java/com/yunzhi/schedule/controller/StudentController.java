@@ -27,23 +27,34 @@ public class StudentController {
      * @param pageable 分页数据.
      * @return 分页教师
      */
-    @GetMapping("/members")
+    @GetMapping("/page")
     public Page<Student> page(
-            @RequestParam(required = true) Long clazzId,
+            @RequestParam(required = false, defaultValue = "") Long clazzId,
             @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(required = false, defaultValue = "") String sno,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
+
         Page<Student> page = this.studentService.page(name, sno, clazzId, pageable);
-        System.out.println(name);
         return page;
     }
 
     @GetMapping("studentNameUnique")
     public Boolean studentNameUnique(@RequestParam String name,
-                                  @RequestParam Long studentId) {
+                                     @RequestParam Long studentId) {
         try {
             return this.studentService.studentNameUnique(name, studentId);
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
+    }
+    @GetMapping("snoUnique")
+    public Boolean snoUnique(@RequestParam String sno,
+                             @RequestParam Long studentId) {
+
+        try {
+
+            return this.studentService.snoUnique(sno, studentId);
         } catch (EntityNotFoundException e) {
             return false;
         }

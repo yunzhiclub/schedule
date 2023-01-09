@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -64,5 +66,12 @@ public class ClazzServiceImpl implements ClazzService {
     public Clazz getById(Long clazzId) {
         return this.clazzRepository.findById(clazzId).orElseThrow(()
                 -> new EntityNotFoundException("未找到对应实体"));
+    }
+
+    @Override
+    public List<Clazz> getAll() {
+        List<Clazz> clazzes = new ArrayList<>();
+        this.clazzRepository.findAll().forEach(clazzes::add);
+        return clazzes;
     }
 }

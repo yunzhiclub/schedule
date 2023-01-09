@@ -3,6 +3,7 @@ import {AbstractControl, ValidationErrors} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {TermService} from '../../service/term.service';
 import {ClazzService} from '../../service/clazz.service';
+import {StudentService} from '../../service/student.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import {ClazzService} from '../../service/clazz.service';
 export class YzAsyncValidators {
 
   constructor(private termService: TermService,
+              private studentService: StudentService,
               private clazzService: ClazzService) {
   }
 
@@ -35,6 +37,30 @@ export class YzAsyncValidators {
         this.clazzService.clazzNameUnique(control.value, clazzId)
           .subscribe(result => {
             result ? subscriber.next({clazzNameUnique: '班级名已存在'}) : subscriber.next(null);
+            subscriber.complete();
+          });
+      });
+    };
+  }
+
+  studentNameUnique(studentId?: number): (control: AbstractControl) => Observable<ValidationErrors | null>  {
+    return (control) => {
+      return new Observable<ValidationErrors | null>(subscriber => {
+        this.studentService.studentNameUnique(control.value, studentId)
+          .subscribe(result => {
+            result ? subscriber.next({studentNameUnique: '学生名已存在'}) : subscriber.next(null);
+            subscriber.complete();
+          });
+      });
+    };
+  }
+
+  snoUnique(studentId?: number): (control: AbstractControl) => Observable<ValidationErrors | null>   {
+    return (control) => {
+      return new Observable<ValidationErrors | null>(subscriber => {
+        this.studentService.snoUnique(control.value, studentId)
+          .subscribe(result => {
+            result ? subscriber.next({snoUnique: '学号已存在'}) : subscriber.next(null);
             subscriber.complete();
           });
       });

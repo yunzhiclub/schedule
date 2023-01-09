@@ -9,6 +9,8 @@ import { TimetableComponent } from './timetable/timetable.component';
 import {PipeModule} from './pipe/pipe.module';
 import {ApiProModule} from '../api/api.pro.module';
 import {HttpClientModule} from '@angular/common/http';
+import { ClazzSelectComponent } from '../common/clazz-select/clazz-select.component';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,7 @@ import {HttpClientModule} from '@angular/common/http';
     LayoutModule,
     PipeModule,
     ApiProModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

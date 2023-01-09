@@ -29,7 +29,7 @@
     <td>
       <a class="btn btn-sm btn-primary" [routerLink]="'/room/edit/' + room.id">编辑</a>
       &nbsp;
-      <a class="btn btn-sm btn-danger" (click)="onDelete(room.id)">删除</a>
+      <a class="btn btn-sm btn-danger" (click)="onDelete(room.id!)">删除</a>
     </td>
   </tr>
   </tbody>

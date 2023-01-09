@@ -1,6 +1,6 @@
 <form class="container-sm"  [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
   <div class="mb-3 row">
-    <label for="name" class="col-3 text-right col-form-label">名称<code>*</code></label>
+    <label for="name" class="col-3 text-right col-form-label"><code>*</code>名称</label>
     <div class="col-7">
       <input type="text" class="form-control" id="name" formControlName="name">
       <small class="text-danger" *ngIf="formGroup.get('name')!.touched && formGroup.get('name')!.invalid ">
@@ -10,7 +10,7 @@
     </div>
   </div>
   <div class="mb-3 row">
-    <label for="entranceDate" class="col-3 text-right col-form-label">开学日期<code>*</code></label>
+    <label for="entranceDate" class="col-3 text-right col-form-label"><code>*</code>开学日期</label>
     <div class="col-7">
       <app-date formControlName="entranceDate" id="entranceDate"></app-date>
     </div>

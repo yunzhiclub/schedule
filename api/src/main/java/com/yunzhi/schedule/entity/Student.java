@@ -29,13 +29,7 @@ public class Student {
     @ApiModelProperty("班级")
     private Clazz clazz;
 
-    public boolean isSex() {
-        return sex;
-    }
 
-    public void setSex(boolean sex) {
-        this.sex = sex;
-    }
 
     public String getSno() {
         return sno;
@@ -67,5 +61,13 @@ public class Student {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean getSex() {
+        return sex;
+    }
+
+    public void setSex(boolean sex) {
+        this.sex = sex;
     }
 }

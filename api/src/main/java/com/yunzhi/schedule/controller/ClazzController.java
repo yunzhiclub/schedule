@@ -10,6 +10,7 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @RestController
 @RequestMapping("clazz")
@@ -65,6 +66,11 @@ public class ClazzController {
     @GetMapping("{clazzId}")
     public Clazz getById(@PathVariable Long clazzId) {
         return this.clazzService.getById(clazzId);
+    }
+
+    @GetMapping("getAll")
+    public List<Clazz> getAll() {
+        return this.clazzService.getAll();
     }
 
 }

@@ -1,6 +1,6 @@
 <form class="container-sm"  [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
   <div class="mb-3 row">
-    <label for="name" class="col-3 text-right col-form-label">名称<code>*</code></label>
+    <label for="name" class="col-3 text-right col-form-label"><code>*</code>名称</label>
     <div class="col-7">
       <input type="text" class="form-control" id="name" formControlName="name">
       <small class="text-danger" *ngIf="formGroup.get('name')!.touched && formGroup.get('name')!.invalid ">
@@ -10,14 +10,14 @@
     </div>
   </div>
   <div class="mb-3 row">
-    <label for="startTime" class="col-3 text-right col-form-label">开始时间<code>*</code></label>
+    <label for="startTime" class="col-3 text-right col-form-label"><code>*</code>开始时间</label>
     <div class="col-7">
       <app-date formControlName="startTime" id="startTime"></app-date>
     </div>
   </div>
 
   <div class="mb-3 row">
-    <label for="endTime" class="col-3 text-right col-form-label">结束时间<code>*</code></label>
+    <label for="endTime" class="col-3 text-right col-form-label"><code>*</code>结束时间</label>
     <div class="col-7">
       <app-date formControlName="endTime" id="endTime"></app-date>
       <small class="text-danger" *ngIf="formGroup.get('startTime')!.valid && formGroup.get('endTime')!.valid &&
@@ -28,7 +28,7 @@
   </div>
 
   <div class="mb-3 row">
-    <label class="col-3 text-right col-form-label">是否激活<code>*</code></label>
+    <label class="col-3 text-right col-form-label"><code>*</code>是否激活</label>
     <div class="col-7">
       <input [value]="true" type="radio" name="state" id="1" formControlName="state">
       <label for="1">是</label> &nbsp;
