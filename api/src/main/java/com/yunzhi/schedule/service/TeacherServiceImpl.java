@@ -38,11 +38,11 @@ public class TeacherServiceImpl implements TeacherService{
         Assert.notNull(teacher.getName(), "name不能为null");
         Assert.notNull(teacher.getSex(), "sex不能为null");
         Assert.notNull(teacher.getPhone(), "phone不能为null");
-        Teacher OidTeacher = this.getById(id);
-        OidTeacher.setName(teacher.getName());
-        OidTeacher.setSex(teacher.getSex());
-        OidTeacher.setPhone(teacher.getPhone());
-        return this.teacherRepository.save(OidTeacher);
+        Teacher OldTeacher = this.getById(id);
+        OldTeacher.setName(teacher.getName());
+        OldTeacher.setSex(teacher.getSex());
+        OldTeacher.setPhone(teacher.getPhone());
+        return this.teacherRepository.save(OldTeacher);
     }
 
     @Override

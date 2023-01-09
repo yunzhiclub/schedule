@@ -81,7 +81,7 @@ export class TeacherComponent implements OnInit {
    */
   validateData(data: Page<Teacher>): void {
     Assert.isNotNullOrUndefined(data.number, data.size, data.totalElements, '未满足page组件的初始化条件');
-    data.content.forEach(v => this.validateTerm(v));
+    data.content.forEach(v => this.validateTeacher(v));
     this.pageData = data;
   }
 
@@ -89,7 +89,7 @@ export class TeacherComponent implements OnInit {
    * 校验字段是否符合V层表现
    * @param teacher 班级
    */
-  validateTerm(teacher: Teacher): void {
+  validateTeacher(teacher: Teacher): void {
     // 必有条件
     Assert.isNotNullOrUndefined(
       teacher.id,
@@ -108,6 +108,9 @@ export class TeacherComponent implements OnInit {
     this.reload({...this.params, ...{size}});
   }
 
+  /**
+   * 删除教师
+   */
   onDelete(id: any): void {
     Assert.isNotNullOrUndefined(id, 'id未定义');
     this.commonService.confirm(confirm => {
