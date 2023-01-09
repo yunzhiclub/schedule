@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {RoomService} from "../../../service/room.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {CommonService} from "../../../service/common.service";
-import {HttpClient} from "@angular/common/http";
-import {CourseService} from "../../../service/course.service";
-import {Assert} from "@yunzhi/ng-mock-api";
+import {ActivatedRoute, Router} from '@angular/router';
+import {CommonService} from '../../../service/common.service';
+import {HttpClient} from '@angular/common/http';
+import {CourseService} from '../../../service/course.service';
+import {Assert} from '@yunzhi/ng-mock-api';
 
 @Component({
   selector: 'app-edit',
@@ -13,7 +12,7 @@ import {Assert} from "@yunzhi/ng-mock-api";
   styleUrls: ['./edit.component.scss']
 })
 export class EditComponent implements OnInit {
-  formGroup: FormGroup | undefined;
+  formGroup: FormGroup;
   id: number | undefined;
 
   constructor(private courseService: CourseService,

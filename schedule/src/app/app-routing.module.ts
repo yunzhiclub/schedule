@@ -15,6 +15,13 @@ const routes: Routes = [
         }
       },
       {
+        path: 'dashboard',
+        loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule),
+        data: {
+          title: '首页'
+        }
+      },
+      {
         path: 'term',
         loadChildren: () => import('./term/term.module').then(m => m.TermModule),
         data: {

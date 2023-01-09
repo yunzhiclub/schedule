@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {BaseMenu} from '../../../common/base-menu';
+import {environment} from '../../../environments/environment';
+import {CommonService} from '../../../service/common.service';
 
 @Component({
   selector: 'app-menu',
@@ -9,50 +11,23 @@ import {BaseMenu} from '../../../common/base-menu';
 export class MenuComponent implements OnInit {
   menus = [] as BaseMenu[];
 
-  constructor() { }
+  constructor(private commonService: CommonService) { }
 
   ngOnInit(): void {
-    this.menus = [
-      {
-        name: '首页',
-        url: '',
-      } as BaseMenu,
-      {
-        name: '学期管理',
-        url: 'term'
-      } as BaseMenu,
-      {
-        name: '教师管理',
-        url: 'teacher'
-      } as BaseMenu,
-      {
-        name: '班级管理',
-        url: 'clazz'
-      } as BaseMenu,
-      {
-        name: '学生管理',
-        url: 'student'
-      } as BaseMenu,
-      {
-        name: '教室管理',
-        url: 'room'
-      } as BaseMenu,
-      {
-        name: '课程管理',
-        url: 'course'
-      } as BaseMenu,
-      {
-        name: '排课管理',
-        url: 'schedule'
-      } as BaseMenu,
-      {
-        name: '课程表',
-        url: 'timetable'
-      } as BaseMenu,
-      {
-        name: '个人中心',
-        url: 'personal'
-      } as BaseMenu,
-    ];
+    this.menus = this.commonService.getMenus();
+  }
+
+  getBackgroundColor(menu: BaseMenu): string | undefined {
+    if (this.commonService.active(menu)) {
+      return environment.color;
+    }
+    return undefined;
+  }
+
+  getTextColor(menu: BaseMenu): string | undefined {
+    if (this.commonService.active(menu)) {
+      return 'white';
+    }
+    return undefined;
   }
 }

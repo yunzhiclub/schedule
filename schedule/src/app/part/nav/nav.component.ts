@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {CommonService} from '../../../service/common.service';
 
 @Component({
   selector: 'app-nav',
@@ -6,11 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./nav.component.scss']
 })
 export class NavComponent implements OnInit {
-  title = '';
+  title: string | undefined = '';
 
-  constructor() { }
+  constructor(private commonService: CommonService) { }
 
   ngOnInit(): void {
   }
 
+  Back(): void {
+  }
 }
