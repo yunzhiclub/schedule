@@ -6,11 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface TeacherService {
-    Page<Teacher> page(String name, Pageable pageable);
+    Page<Teacher> page(String name, String phone, Pageable pageable);
 
     Teacher save(Teacher teacher);
 
     Teacher getById(Long id);
 
     Teacher update(Long id, Teacher teacher);
+
+    void deleteById(Long id);
 }
