@@ -1,16 +1,16 @@
 import {Injectable} from '@angular/core';
 import {AbstractControl, ValidationErrors} from '@angular/forms';
 import {Observable} from 'rxjs';
-import {HttpParams} from '@angular/common/http';
-import {Term} from '../../entity/term';
 import {TermService} from '../../service/term.service';
+import {ClazzService} from '../../service/clazz.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class YzAsyncValidators {
 
-  constructor(private termService: TermService) {
+  constructor(private termService: TermService,
+              private clazzService: ClazzService) {
   }
 
   /**
@@ -20,10 +20,21 @@ export class YzAsyncValidators {
   termNameUnique(termId?: number): (control: AbstractControl) => Observable<ValidationErrors | null> {
     return (control) => {
       return new Observable<ValidationErrors | null>(subscriber => {
-        console.log(termId);
         this.termService.termNameUnique(control.value, termId)
           .subscribe(result => {
             result ? subscriber.next({termNameUnique: '学期名已存在'}) : subscriber.next(null);
+            subscriber.complete();
+          });
+      });
+    };
+  }
+
+  clazzNameUnique(clazzId?: number): (control: AbstractControl) => Observable<ValidationErrors | null> {
+    return (control) => {
+      return new Observable<ValidationErrors | null>(subscriber => {
+        this.clazzService.clazzNameUnique(control.value, clazzId)
+          .subscribe(result => {
+            result ? subscriber.next({clazzNameUnique: '班级名已存在'}) : subscriber.next(null);
             subscriber.complete();
           });
       });
