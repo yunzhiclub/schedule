@@ -24,7 +24,8 @@ public class TeacherController {
 
     /**
      * 分页接口.
-     * @param name     名称
+     * @param name     姓名
+     * @param phone    手机号
      * @param pageable 分页数据.
      * @return 分页教师
      */
@@ -55,7 +56,7 @@ public class TeacherController {
      * @return 教师
      */
     @GetMapping("getById/{id}")
-    public Teacher getByUserId(@PathVariable Long id) {
+    public Teacher getById(@PathVariable Long id) {
         return this.teacherService.getById(id);
     }
 
