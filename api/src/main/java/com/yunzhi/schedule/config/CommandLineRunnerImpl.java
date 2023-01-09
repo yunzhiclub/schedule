@@ -6,6 +6,8 @@ import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.repository.ClazzRepository;
 import com.yunzhi.schedule.repository.StudentRepository;
+import com.yunzhi.schedule.entity.Room;
+import com.yunzhi.schedule.repository.RoomRepository;
 import com.yunzhi.schedule.repository.TeacherRepository;
 import com.yunzhi.schedule.repository.TermRepository;
 import net.bytebuddy.utility.RandomString;
@@ -30,15 +32,18 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
     private final TeacherRepository teacherRepository;
     private final ClazzRepository clazzRepository;
     private final StudentRepository studentRepository;
+    private final RoomRepository roomRepository;
     @Autowired
     public CommandLineRunnerImpl(TermRepository termRepository,
                                  TeacherRepository teacherRepository,
                                  StudentRepository studentRepository,
+                                 RoomRepository roomRepository,
                                  ClazzRepository clazzRepository) {
         this.termRepository = termRepository;
         this.teacherRepository = teacherRepository;
         this.clazzRepository = clazzRepository;
         this.studentRepository = studentRepository;
+        this.roomRepository = roomRepository;
     }
 
     @Override
@@ -50,6 +55,10 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         // 添加100条教师数据
         for (int i = 0; i < 50; i++) {
             this.addTeacher("教师" + i, true, "13100000000");
+        }
+        // 添加200条教室数据
+        for (int i = 0; i < 50; i++) {
+            this.addRoom("教室" + i,  "25");
         }
         // 添加100条班级数据
         for (int i = 0; i < 50; i++) {
@@ -91,5 +100,12 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         clazz.setName(name);
         clazz.setEntranceDate(entranceDate);
         return this.clazzRepository.save(clazz);
+    }
+
+    private Room addRoom(String name, String capacity) {
+        Room room = new Room();
+        room.setName(name);
+        room.setCapacity(capacity);
+        return this.roomRepository.save(room);
     }
 }

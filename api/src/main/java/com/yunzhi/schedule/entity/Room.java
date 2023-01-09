@@ -7,11 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-/**
- * 教师实体
- */
 @Entity
-public class Teacher {
+public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty("id")
@@ -20,13 +17,8 @@ public class Teacher {
     @ApiModelProperty("名称")
     private String name;
 
-    @ApiModelProperty("手机号")
-    private String phone;
-
-    @ApiModelProperty("性别")
-    private Boolean sex;
-
-
+    @ApiModelProperty("容量")
+    private String capacity;
 
     public Long getId() {
         return id;
@@ -34,14 +26,6 @@ public class Teacher {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Boolean getSex() {
-        return sex;
-    }
-
-    public void setSex(Boolean sex) {
-        this.sex = sex;
     }
 
     public String getName() {
@@ -52,11 +36,11 @@ public class Teacher {
         this.name = name;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getCapacity() {
+        return capacity;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setCapacity(String capacity) {
+        this.capacity = capacity;
     }
 }

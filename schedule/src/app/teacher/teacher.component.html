@@ -1,9 +1,9 @@
 <!--查询和添加-->
 <div class="row">
   <div class="col-md-10">
-    <form class="form-inline">
-      <input type="text" class="form-control" style="margin-right: 10px" placeholder="名称" formControlName="name">
-      <input type="text" class="form-control" style="margin-right: 10px" placeholder="手机号" formControlName="name">
+    <form class="form-inline" (submit)="onSubmit(queryForm)" [formGroup]="queryForm">
+      <input type="text" class="form-control" style="margin-right: 10px" placeholder="名称" formControlName="searchName">
+      <input type="text" class="form-control" style="margin-right: 10px" placeholder="手机号" formControlName="searchPhone">
       <button type="submit" class="btn btn-info"><i class="fas fa-search"></i>查询</button>
     </form>
   </div>
@@ -31,7 +31,7 @@
     <td>
       <a class="btn btn-sm btn-primary" [routerLink]="'/teacher/edit/' + teacher.id">编辑</a>
       &nbsp;
-      <a class="btn btn-sm btn-danger">删除</a>
+      <a class="btn btn-sm btn-danger" (click)="onDelete(teacher.id)">删除</a>
     </td>
   </tr>
   </tbody>

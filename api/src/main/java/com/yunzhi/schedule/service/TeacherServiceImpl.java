@@ -16,8 +16,8 @@ public class TeacherServiceImpl implements TeacherService{
     }
 
     @Override
-    public Page<Teacher> page(String name, Pageable pageable) {
-        return this.teacherRepository.findAllByName(name, pageable);
+    public Page<Teacher> page(String name, String phone, Pageable pageable) {
+        return this.teacherRepository.findAll(name, phone, pageable);
     }
 
     @Override
@@ -38,10 +38,15 @@ public class TeacherServiceImpl implements TeacherService{
         Assert.notNull(teacher.getName(), "name不能为null");
         Assert.notNull(teacher.getSex(), "sex不能为null");
         Assert.notNull(teacher.getPhone(), "phone不能为null");
-        Teacher OidTeacher = this.getById(id);
-        OidTeacher.setName(teacher.getName());
-        OidTeacher.setSex(teacher.getSex());
-        OidTeacher.setPhone(teacher.getPhone());
-        return this.teacherRepository.save(OidTeacher);
+        Teacher OldTeacher = this.getById(id);
+        OldTeacher.setName(teacher.getName());
+        OldTeacher.setSex(teacher.getSex());
+        OldTeacher.setPhone(teacher.getPhone());
+        return this.teacherRepository.save(OldTeacher);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        this.teacherRepository.deleteById(id);
     }
 }

@@ -24,16 +24,18 @@ public class TeacherController {
 
     /**
      * 分页接口.
-     * @param name     名称
+     * @param name     姓名
+     * @param phone    手机号
      * @param pageable 分页数据.
      * @return 分页教师
      */
     @GetMapping("/page")
     public Page<Teacher> page(
             @RequestParam(required = false, defaultValue = "") String name,
+            @RequestParam(required = false, defaultValue = "") String phone,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        Page<Teacher> page = this.teacherService.page(name, pageable);
+        Page<Teacher> page = this.teacherService.page(name, phone, pageable);
         return page;
     }
 
@@ -54,7 +56,7 @@ public class TeacherController {
      * @return 教师
      */
     @GetMapping("getById/{id}")
-    public Teacher getByUserId(@PathVariable Long id) {
+    public Teacher getById(@PathVariable Long id) {
         return this.teacherService.getById(id);
     }
 
@@ -67,5 +69,16 @@ public class TeacherController {
     public Teacher update(@PathVariable Long id,
                           @RequestBody Teacher teacher) {
         return this.teacherService.update(id, teacher);
+    }
+
+    /**
+     * 删除教师
+     * @param id   删除教师的id
+     * @return 教师
+     */
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id) {
+        this.teacherService.deleteById(id);
     }
 }

@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Page} from '../common/page';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {map} from 'rxjs/operators';
-import {Teacher} from '../entity/teacher';
+import {Room} from '../entity/room';
+import {Teacher} from "../entity/teacher";
 
 @Injectable({
   providedIn: 'root'
 })
-export class TeacherService {
-  url = 'teacher';
+export class RoomService {
+  url = 'room';
   constructor(private httpClient: HttpClient) { }
-
 
   /**
    * 分页
@@ -21,28 +21,28 @@ export class TeacherService {
     page: number,
     size: number,
     searchName?: string
-    searchPhone?: string
-  }): Observable<Page<Teacher>> {
+    searchCapacity?: string
+  }): Observable<Page<Room>> {
     let httpParams = new HttpParams()
       .append('page', param.page.toString())
       .append('size', param.size.toString());
     if (param.searchName) {
       httpParams = httpParams.append('name', param.searchName);
     }
-    if (param.searchPhone) {
-      httpParams = httpParams.append('phone', param.searchPhone);
+    if (param.searchCapacity) {
+      httpParams = httpParams.append('capacity', param.searchCapacity);
     }
 
 
-    return this.httpClient.get<Page<Teacher>>(`${this.url}/page`, {params: httpParams})
-      .pipe(map(data => new Page<Teacher>(data).toObject(d => new Teacher(d))));
+    return this.httpClient.get<Page<Room>>(`${this.url}/page`, {params: httpParams})
+      .pipe(map(data => new Page<Room>(data).toObject(d => new Room(d))));
   }
 
   /**
    * 新增
-   * @param data 新增教师数据
+   * @param data 新增教室数据
    */
-  add(data: {name: string, sex: boolean, phone: string}): Observable<any> {
+  add(data: { capacity: any; name: any }): Observable<any>  {
     return this.httpClient.post<any>(`${this.url}/add`, data);
   }
 
@@ -50,23 +50,24 @@ export class TeacherService {
    * 通过id获取教师
    * @param id 教师id
    */
-  getById(id: number): Observable<Teacher> {
-    return this.httpClient.get<Teacher>(`${this.url}/getById/` + id.toString());
+  getById(id: number): Observable<Room>  {
+    return this.httpClient.get<Room>(`${this.url}/getById/` + id.toString());
   }
 
   /**
-   * 更新教师
-   * @param id 教师id
-   * @param data 更新后的教师数据
+   * 更新教室
+   * @param id 教室id
+   * @param data 更新后的教室数据
    */
-  update(id: number, data: {name: string, sex: number, phone: string}): Observable<any> {
+
+  update(id: number, data: {capacity: any; name: any}): Observable<any> {
     console.log('update', data);
     return this.httpClient.post<any>(`${this.url}/update/` + id.toString(), data);
   }
 
   /**
-   * 删除教师
-   * @param id 教师id
+   * 删除教室
+   * @param id 教室id
    */
   delete(id: number): Observable<any> {
     return this.httpClient.delete<any>(`${this.url}/` + id.toString());
