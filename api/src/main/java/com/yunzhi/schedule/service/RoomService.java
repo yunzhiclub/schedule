@@ -1,7 +1,6 @@
 package com.yunzhi.schedule.service;
 
 import com.yunzhi.schedule.entity.Room;
-import com.yunzhi.schedule.entity.Teacher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

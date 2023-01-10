@@ -114,7 +114,7 @@ export class RoomComponent implements OnInit {
   /**
    * 删除教室
    */
-  onDelete(id: number): void  {
+  onDelete(id: any): void  {
     Assert.isNotNullOrUndefined(id, 'id未定义');
     this.commonService.confirm(confirm => {
         if (confirm) {
