@@ -25,7 +25,7 @@ public class StudentController {
      * 分页接口.
      * @param name     名称
      * @param pageable 分页数据.
-     * @return 分页教师
+     * @return 分页学生
      */
     @GetMapping("/page")
     public Page<Student> page(
@@ -61,9 +61,8 @@ public class StudentController {
     }
 
     /**
-     * 新增班级接口.
-     * @param student 班级
-     * @return 班级
+     * @param student 学生
+     * @return 学生
      */
     @PostMapping
     public Student add(@RequestBody Student student) {

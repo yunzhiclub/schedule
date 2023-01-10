@@ -34,6 +34,7 @@ export class MembersComponent implements OnInit {
 
   ngOnInit(): void {
     this.queryForm.addControl(this.keys.name, new FormControl());
+    this.queryForm.addControl(this.keys.sno, new FormControl());
     // 订阅参数变化
     this.route.params.subscribe(params => {
       this.params = params;

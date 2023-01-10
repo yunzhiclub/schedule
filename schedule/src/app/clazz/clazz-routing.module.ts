@@ -16,13 +16,22 @@ const routes: Routes = [
     component: AddComponent
   },
   {
-    path: 'edit/:id',
+    path: 'edit/:clazzId',
     component: EditComponent
   },
   {
     path: 'members/:clazzId',
     component: MembersComponent
   },
+  {
+    path: 'members/:clazzId/add',
+    component: AddComponent
+  },
+  {
+    path: 'members/:clazzId/edit/:studentId',
+    component: EditComponent
+  },
+
 ];
 
 @NgModule({

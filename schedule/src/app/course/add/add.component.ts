@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonService} from '../../../service/common.service';
 import {HttpClient} from '@angular/common/http';
 import {CourseService} from '../../../service/course.service';
+import {YzValidator} from '../../validator/yz-validator';
 
 @Component({
   selector: 'app-add',
@@ -16,11 +17,10 @@ export class AddComponent implements OnInit {
   constructor(private courseService: CourseService,
               private router: Router,
               private route: ActivatedRoute,
-              private commonService: CommonService,
-              private httpClient: HttpClient) {
+              private commonService: CommonService) {
     this.formGroup = new FormGroup({
-      name: new FormControl(''),
-      hours: new FormControl('')
+      name: new FormControl('', [Validators.required, YzValidator.notEmpty]),
+      hours: new FormControl('', [Validators.required, YzValidator.notEmpty])
     });
   }
 

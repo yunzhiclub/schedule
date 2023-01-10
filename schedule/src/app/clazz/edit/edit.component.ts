@@ -34,10 +34,10 @@ export class EditComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(param => {
-      const id = +param.id;
-      Assert.isNotNullOrUndefined(id, 'ID类型不正确');
-      this.formGroup.get(this.keys.name)!.setAsyncValidators(this.yzAsyncValidators.clazzNameUnique(id));
-      this.loadById(id);
+      const clazzId = +param.clazzId;
+      Assert.isNotNullOrUndefined(clazzId, 'ID类型不正确');
+      this.formGroup.get(this.keys.name)!.setAsyncValidators(this.yzAsyncValidators.clazzNameUnique(clazzId));
+      this.loadById(clazzId);
     });
   }
 
