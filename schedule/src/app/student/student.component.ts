@@ -23,6 +23,7 @@ export class StudentComponent implements OnInit {
     name: 'name',
     sno: 'sno'
   };
+  clazzId: number | undefined;
   constructor(private route: ActivatedRoute,
               private commonService: CommonService,
               private studentService: StudentService
@@ -35,11 +36,14 @@ export class StudentComponent implements OnInit {
     // 订阅参数变化
     this.route.params.subscribe(params => {
       this.params = params;
+      this.clazzId = params.clazzId;
+      console.log(params);
       this.queryForm.get(this.keys.name)!.setValue(params[this.keys.name]);
       this.queryForm.get(this.keys.sno)!.setValue(params[this.keys.sno]);
       this.studentService.page({
         page: stringToIntegerNumber(params[this.keys.page], 0) as number,
         size: stringToIntegerNumber(params[this.keys.size], config.size) as number,
+        clazzId: this.clazzId,
         name: params[this.keys.name],
         sno: params[this.keys.sno],
       })
