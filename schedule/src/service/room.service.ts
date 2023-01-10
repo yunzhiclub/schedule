@@ -4,7 +4,6 @@ import {Page} from '../common/page';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {Room} from '../entity/room';
-import {Teacher} from "../entity/teacher";
 
 @Injectable({
   providedIn: 'root'
@@ -59,7 +58,6 @@ export class RoomService {
    * @param id 教室id
    * @param data 更新后的教室数据
    */
-
   update(id: number, data: {capacity: any; name: any}): Observable<any> {
     console.log('update', data);
     return this.httpClient.post<any>(`${this.url}/update/` + id.toString(), data);

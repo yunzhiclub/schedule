@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {CommonService} from '../../../service/common.service';
-import {HttpClient} from '@angular/common/http';
-import {RoomService} from '../../../service/room.service';
-import {Assert} from '@yunzhi/ng-mock-api';
+import {RoomService} from "../../../service/room.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {CommonService} from "../../../service/common.service";
+import {HttpClient} from "@angular/common/http";
+import {CourseService} from "../../../service/course.service";
+import {Assert} from "@yunzhi/ng-mock-api";
 
 @Component({
   selector: 'app-edit',
@@ -12,9 +13,10 @@ import {Assert} from '@yunzhi/ng-mock-api';
   styleUrls: ['./edit.component.scss']
 })
 export class EditComponent implements OnInit {
-  formGroup: FormGroup;
+  formGroup: FormGroup | undefined;
   id: number | undefined;
-  constructor(private roomService: RoomService,
+
+  constructor(private courseService: CourseService,
               private router: Router,
               private route: ActivatedRoute,
               private commonService: CommonService,
@@ -22,28 +24,28 @@ export class EditComponent implements OnInit {
     this.id = +this.route.snapshot.params.id;
     this.formGroup = new FormGroup({
       name: new FormControl(''),
-      capacity: new FormControl(''),
+      hours: new FormControl(''),
     });
   }
 
   ngOnInit(): void {
     Assert.isNumber(this.id, 'id类型错误');
-    this.roomService.getById(this.id as number)
-      .subscribe(room => {
-        console.log('api教室获取成功', room);
-        this.formGroup?.get('name')?.setValue(room.name);
-        this.formGroup?.get('capacity')?.setValue(room.capacity);
+    this.courseService.getById(this.id as number)
+      .subscribe(course => {
+        console.log('api课程获取成功', course);
+        this.formGroup?.get('name')?.setValue(course.name);
+        this.formGroup?.get('hours')?.setValue(course.hours);
       }, error => {
-        console.log('api教室获取失败', error);
+        console.log('api课程获取失败', error);
       });
   }
 
   onSubmit(): void  {
     console.log('onsubmit is called', this.formGroup?.value);
     Assert.isNumber(this.id, 'id类型不是number');
-    this.roomService.update(this.id as number, {
+    this.courseService.update(this.id as number, {
       name: this.formGroup?.get('name')?.value,
-      capacity: this.formGroup?.get('capacity')?.value,
+      hours: this.formGroup?.get('hours')?.value,
     })
       .subscribe(success => {
         console.log('教师更新成功', success);
@@ -53,4 +55,5 @@ export class EditComponent implements OnInit {
         this.commonService.error();
       });
   }
+
 }

@@ -1,15 +1,7 @@
 package com.yunzhi.schedule.config;
 
-import com.yunzhi.schedule.entity.Clazz;
-import com.yunzhi.schedule.entity.Student;
-import com.yunzhi.schedule.entity.Teacher;
-import com.yunzhi.schedule.entity.Term;
-import com.yunzhi.schedule.repository.ClazzRepository;
-import com.yunzhi.schedule.repository.StudentRepository;
-import com.yunzhi.schedule.entity.Room;
-import com.yunzhi.schedule.repository.RoomRepository;
-import com.yunzhi.schedule.repository.TeacherRepository;
-import com.yunzhi.schedule.repository.TermRepository;
+import com.yunzhi.schedule.entity.*;
+import com.yunzhi.schedule.repository.*;
 import net.bytebuddy.utility.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,30 +25,32 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
     private final ClazzRepository clazzRepository;
     private final StudentRepository studentRepository;
     private final RoomRepository roomRepository;
+    private final CourseRepository courseRepository;
     @Autowired
     public CommandLineRunnerImpl(TermRepository termRepository,
                                  TeacherRepository teacherRepository,
                                  StudentRepository studentRepository,
                                  RoomRepository roomRepository,
-                                 ClazzRepository clazzRepository) {
+                                 ClazzRepository clazzRepository, CourseRepository courseRepository) {
         this.termRepository = termRepository;
         this.teacherRepository = teacherRepository;
         this.clazzRepository = clazzRepository;
         this.studentRepository = studentRepository;
         this.roomRepository = roomRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Override
     public void run(String... args) {
-        // 添加100条学期数据
+        // 添加50条学期数据
         for (int i = 0; i < 50; i++) {
             this.addTerm("学期" + i, false, 1672502400L, 1688140800L);
         }
-        // 添加100条教师数据
+        // 添加50条教师数据
         for (int i = 0; i < 50; i++) {
             this.addTeacher("教师" + i, true, "13100000000");
         }
-        // 添加200条教室数据
+        // 添加50条教室数据
         for (int i = 0; i < 50; i++) {
             this.addRoom("教室" + i,  "25");
         }
@@ -66,6 +60,10 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
             for (int j = 0; j < 20; j++) {
                 this.addStudent("学生" + i + '|' + j, new Random().nextBoolean(), RandomString.make(6), clazz);
             }
+        }
+//         添加50条课程数据
+        for (int i = 0; i < 50; i++) {
+            this.addCourse("课程" + i,  "25");
         }
     }
 
@@ -107,5 +105,12 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         room.setName(name);
         room.setCapacity(capacity);
         return this.roomRepository.save(room);
+    }
+
+    private Course addCourse(String name, String hours) {
+        Course course = new Course();
+        course.setName(name);
+        course.setHours(hours);
+        return this.courseRepository.save(course);
     }
 }

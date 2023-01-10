@@ -1,9 +1,7 @@
 package com.yunzhi.schedule.controller;
 
 import com.yunzhi.schedule.entity.Room;
-import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.service.RoomService;
-import com.yunzhi.schedule.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +24,7 @@ public class RoomController {
      * 分页接口.
      * @param name     名称
      * @param capacity 容量.
-     * @return 分页教师
+     * @return 分页教室
      */
     @GetMapping("/page")
     public Page<Room> page(
@@ -39,7 +37,7 @@ public class RoomController {
     }
 
     /**
-     * 新教室
+     * 新增教室
      * @param room   新增教室数据
      * @return 教室
      */
@@ -60,7 +58,7 @@ public class RoomController {
     }
 
     /**
-     * 新增教室
+     * 更新教室
      * @param room   更新后的教室数据
      * @return 教室
      */

@@ -1,17 +1,17 @@
 /**
- * 教室
+ * 课程
  */
-export class Room {
+export class Course {
   id: number | undefined;
   name: string | undefined;
-  capacity: number | undefined;
+  hours: number | undefined;
   constructor(data = {} as {
     id?: number
     name?: string,
-    capacity?: number,
+    hours?: number,
   }) {
     this.id = data.id;
     this.name = data.name;
-    this.capacity = data.capacity;
+    this.hours = data.hours;
   }
 }
