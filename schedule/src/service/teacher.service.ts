@@ -71,4 +71,11 @@ export class TeacherService {
   delete(id: number): Observable<any> {
     return this.httpClient.delete<any>(`${this.url}/` + id.toString());
   }
+
+  /**
+   * 获取所有教师
+   */
+  getAll(): Observable<Teacher[]> {
+    return this.httpClient.get<Teacher[]>(`${this.url}/getAll`);
+  }
 }

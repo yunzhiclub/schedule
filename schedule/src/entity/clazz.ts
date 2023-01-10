@@ -4,7 +4,7 @@ import {Assert} from '../common/utils';
  * 班级
  */
 export class Clazz {
-  id: number | undefined;
+  id: number;
   name: string | undefined;
   entranceDate = '';
 
@@ -13,7 +13,7 @@ export class Clazz {
     name?: string,
     entranceDate?: string
   }) {
-    this.id = data.id;
+    this.id = (data.id as number);
     this.name = data.name;
     this.entranceDate = data.entranceDate ? data.entranceDate : '';
   }

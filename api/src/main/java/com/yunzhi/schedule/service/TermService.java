@@ -39,4 +39,9 @@ public interface TermService {
     StateTerm activeTerm(Long termId);
 
     Term getById(Long termId);
+
+    /**
+     * 获取当前学期，即已激活学期
+     */
+    Term getCurrentTerm();
 }

@@ -1,7 +1,7 @@
 package com.yunzhi.schedule.service;
 
 import com.yunzhi.schedule.entity.Clazz;
-import com.yunzhi.schedule.entity.Term;
+import com.yunzhi.schedule.entity.Schedule;
 import com.yunzhi.schedule.repository.ClazzRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,10 +19,13 @@ import java.util.Objects;
 public class ClazzServiceImpl implements ClazzService {
 
     public ClazzRepository clazzRepository;
+    public ScheduleService scheduleService;
 
     @Autowired
-    ClazzServiceImpl(ClazzRepository clazzRepository) {
+    ClazzServiceImpl(ClazzRepository clazzRepository,
+                     ScheduleService scheduleService) {
         this.clazzRepository = clazzRepository;
+        this.scheduleService = scheduleService;
     }
 
     @Override
@@ -73,5 +76,26 @@ public class ClazzServiceImpl implements ClazzService {
         List<Clazz> clazzes = new ArrayList<>();
         this.clazzRepository.findAll().forEach(clazzes::add);
         return clazzes;
+    }
+
+    @Override
+    public List<Long> clazzIdsHaveSelectCourse(Long courseId) {
+        Assert.notNull(courseId, "courseId不能为null");
+        List<Schedule> schedules = this.scheduleService.clazzesHaveSelectCourse(courseId);
+        List<Long> clazzIds = this.getClazzIdsBySchedules(schedules);
+        return clazzIds;
+    }
+
+    private List<Long> getClazzIdsBySchedules(List<Schedule> schedules) {
+        List<Long> results = new ArrayList<>();
+        for (Schedule schedule:
+                schedules) {
+            schedule.getClazzes().forEach(clazz -> {
+                if (!results.contains(clazz.getId())) {
+                    results.add(clazz.getId());
+                }
+            });
+        }
+        return results;
     }
 }
