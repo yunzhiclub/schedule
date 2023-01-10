@@ -7,7 +7,7 @@ export class BaseMenu {
   name: string | undefined;
 
   /** 路由 */
-  url: string | undefined;
+  url = '';
 
   /** 图标 */
   icon: string | undefined;

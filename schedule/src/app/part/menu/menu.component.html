@@ -1,7 +1,7 @@
 <ul class="menu">
   <li *ngFor="let menu of menus" class="border-bottom">
     <a routerLink="{{ menu.url }}">
-      <div class="inner">
+      <div class="inner" [style.background-color]="getBackgroundColor(menu)" [style.color]="getTextColor(menu)">
         <span>{{ menu.name }}</span>
         <span>{{ menu.url }}</span>
       </div>

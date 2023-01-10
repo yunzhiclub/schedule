@@ -2,11 +2,25 @@ import { Injectable } from '@angular/core';
 import {randomNumber} from '../common/utils';
 import {Router} from '@angular/router';
 import swal, {SweetAlertIcon, SweetAlertResult} from 'sweetalert2';
+import {BaseMenu} from '../common/base-menu';
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
+  private menus = [
+    { name: '首页',      url: 'dashboard' } as BaseMenu,
+    { name: '学期管理',   url: 'term' } as BaseMenu,
+    { name: '教师管理',   url: 'teacher' } as BaseMenu,
+    { name: '班级管理',   url: 'clazz' } as BaseMenu,
+    { name: '学生管理',   url: 'student' } as BaseMenu,
+    { name: '教室管理',   url: 'room' } as BaseMenu,
+    { name: '课程管理',   url: 'course' } as BaseMenu,
+    { name: '排课管理',   url: 'schedule' } as BaseMenu,
+    { name: '课程表',     url: 'timetable' } as BaseMenu,
+    { name: '个人中心',   url: 'personal' } as BaseMenu,
+  ];
 
   constructor(private router: Router) { }
 
@@ -144,5 +158,17 @@ export class CommonService {
         }
       }
     });
+  }
+
+  /**
+   * 判断当前菜单是否激活
+   * @param menu 菜单
+   */
+  active(menu: BaseMenu): boolean {
+    return this.router.isActive(menu.url, false);
+  }
+
+  getMenus(): BaseMenu[] {
+    return this.menus;
   }
 }
