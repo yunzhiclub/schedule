@@ -8,11 +8,15 @@
     </form>
   </div>
   <div class="col-md-2">
-    <a class="btn btn-primary mr-2" style="float: right" [routerLink]="'/room/add'"><i class="fas fa-plus"></i>新增</a>
+    <a class="btn btn-primary mr-2" style="float: right" routerLink="add"><i class="fas fa-plus"></i>新增</a>
   </div>
 </div>
 <hr/>
-<app-size [size]="pageData.size" (changeSize)="onSizeChange($event)"></app-size><br>
+<div class="row mb-2">
+  <div class="col-6 text-left">
+    <app-size [size]="pageData.size" (changeSize)="onSizeChange($event)"></app-size>
+  </div>
+</div>
 <table class="table table-striped mt-3">
   <thead class="table-primary">
   <tr class="info">
@@ -29,7 +33,6 @@
     <td>{{ room.capacity }}</td>
     <td>
       <a class="btn btn-sm btn-primary" [routerLink]="'/room/edit/' + room.id">编辑</a>
-      &nbsp;
       <a class="btn btn-sm btn-danger" (click)="onDelete(room.id!)">删除</a>
     </td>
   </tr>

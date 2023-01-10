@@ -1,25 +1,28 @@
+<body class="container" style="margin-left: 300px; margin-top: 20px">
 <form class="container-sm"  [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
-  <div class="mb-3 row">
+  <div class="form-group row">
     <label for="name" class="col-3 text-right col-form-label"><code>*</code>名称</label>
     <div class="col-7">
-      <input type="text" class="form-control" id="name" formControlName="name">
+      <input type="text" class="form-control" style="width: 200px" id="name" formControlName="name">
       <small class="text-danger" *ngIf="formGroup.get('name')!.touched && formGroup.get('name')!.invalid ">
         <span *ngIf="!formGroup.get('name')?.errors?.clazzNameUnique">格式不正确</span>
         <span *ngIf="formGroup.get('name')?.errors?.clazzNameUnique">班级名已存在</span>
       </small>
     </div>
   </div>
-  <div class="mb-3 row">
+  <div class="form-group row">
     <label for="entranceDate" class="col-3 text-right col-form-label"><code>*</code>开学日期</label>
     <div class="col-7">
       <app-date formControlName="entranceDate" id="entranceDate"></app-date>
     </div>
   </div>
-  <div class="mb-3 row">
-    <div class="col-sm-10 offset-5">
+  <div class="form-group row" style="margin-left: 90px">
+    <div class="col-sm-10 offset-3">
       <button class="btn btn-primary" [disabled]="formGroup.invalid">
         <i class="fas fa-save"></i>保存
       </button>
+      <a [routerLink]="'/clazz'" class="btn btn-primary">返回</a>
     </div>
   </div>
 </form>
+</body>
