@@ -1,6 +1,7 @@
 package com.yunzhi.schedule.entity;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,7 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Room {
+@SQLDelete(sql = "update `room` set deleted = 1 where id = ?")
+public class Room implements SoftDelete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty("id")
@@ -20,6 +22,8 @@ public class Room {
     @ApiModelProperty("容量")
     private String capacity;
 
+    @ApiModelProperty("是否已删除")
+    private Boolean deleted = false;
     public Long getId() {
         return id;
     }
@@ -42,5 +46,13 @@ public class Room {
 
     public void setCapacity(String capacity) {
         this.capacity = capacity;
+    }
+    @Override
+    public Boolean getDeleted() {
+        return this.deleted;
+    }
+
+    private void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

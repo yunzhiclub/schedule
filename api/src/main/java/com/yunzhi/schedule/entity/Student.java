@@ -1,6 +1,7 @@
 package com.yunzhi.schedule.entity;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 
@@ -8,7 +9,8 @@ import javax.persistence.*;
  * 学期实体
  */
 @Entity
-public class Student {
+@SQLDelete(sql = "update `student` set deleted = 1 where id = ?")
+public class Student implements SoftDelete {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +32,8 @@ public class Student {
     private Clazz clazz;
 
 
+    @ApiModelProperty("是否已删除")
+    private Boolean deleted = false;
 
     public String getSno() {
         return sno;
@@ -69,5 +73,13 @@ public class Student {
 
     public void setSex(boolean sex) {
         this.sex = sex;
+    }
+    @Override
+    public Boolean getDeleted() {
+        return this.deleted;
+    }
+
+    private void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }
