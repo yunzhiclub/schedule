@@ -31,5 +31,5 @@ public interface ClazzRepository extends PagingAndSortingRepository<Clazz, Long>
         return this.findAll(specification, pageable);
     }
 
-    Optional<Clazz> findByName(String name);
+    Optional<Clazz> findByNameAndDeletedFalse(String name);
 }

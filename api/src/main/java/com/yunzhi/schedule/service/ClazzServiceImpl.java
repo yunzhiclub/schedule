@@ -41,7 +41,7 @@ public class ClazzServiceImpl implements ClazzService {
 
     @Override
     public Clazz getByName(String name) {
-        return this.clazzRepository.findByName(name).orElseThrow(
+        return this.clazzRepository.findByNameAndDeletedFalse(name).orElseThrow(
                 () -> new EntityNotFoundException("找不到相关用户"));
     }
 

@@ -24,7 +24,7 @@ public interface TermRepository extends PagingAndSortingRepository<Term, Long>, 
         return this.findAll(specification, pageable);
     }
 
-    List<Term> findTermsByStateIsTrue();
+    List<Term> findTermsByStateIsTrueAndDeletedFalse();
 
-    Optional<Term> findByName(String name);
+    Optional<Term> findByNameAndDeletedFalse(String name);
 }

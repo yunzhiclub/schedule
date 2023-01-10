@@ -36,7 +36,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student getByName(String name) {
-        return this.studentRepository.findByName(name).orElseThrow(() -> new EntityNotFoundException("找不到对应实体"));
+        return this.studentRepository.findByNameAndDeletedFalse(name).orElseThrow(() -> new EntityNotFoundException("找不到对应实体"));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private Student getBySno(String sno) {
-        return this.studentRepository.findBySno(sno).orElseThrow(() -> new EntityNotFoundException("找不到对应实体"));
+        return this.studentRepository.findBySnoAndDeletedFalse(sno).orElseThrow(() -> new EntityNotFoundException("找不到对应实体"));
     }
 
     @Override

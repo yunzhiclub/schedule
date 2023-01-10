@@ -28,7 +28,7 @@ public interface StudentRepository extends PagingAndSortingRepository<Student, L
         return this.findAll(specification, pageable);
     }
 
-    Optional<Student> findByName(String name);
+    Optional<Student> findByNameAndDeletedFalse(String name);
 
-    Optional<Student> findBySno(String sno);
+    Optional<Student> findBySnoAndDeletedFalse(String sno);
 }
