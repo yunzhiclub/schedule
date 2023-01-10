@@ -41,7 +41,7 @@ public class TermServiceImpl implements TermService {
 
     @Override
     public Term getByName(String name) {
-        return this.termRepository.findByName(name).orElseThrow(
+        return this.termRepository.findByNameAndDeletedFalse(name).orElseThrow(
                 () -> new EntityNotFoundException("找不到相关用户"));
     }
 
@@ -64,7 +64,7 @@ public class TermServiceImpl implements TermService {
 
     @Override
     public StateTerm activeTerm(Long id) {
-        List<Term> terms = this.termRepository.findTermsByStateIsTrue();
+        List<Term> terms = this.termRepository.findTermsByStateIsTrueAndDeletedFalse();
         terms.forEach(term -> {
             term.setState(Term.NOT_ACTIVATE);
             this.termRepository.save(term);

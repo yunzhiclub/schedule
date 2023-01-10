@@ -1,6 +1,7 @@
 package com.yunzhi.schedule.entity;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,8 @@ import java.sql.Timestamp;
  * 学期实体
  */
 @Entity
-public class Term {
+@SQLDelete(sql = "update `term` set deleted = 1 where id = ?")
+public class Term implements SoftDelete {
 
     public static Boolean ACTIVATE = true;
     public static Boolean NOT_ACTIVATE = false;
@@ -22,7 +24,7 @@ public class Term {
     private Long id;
 
     @ApiModelProperty("学期状态")
-    private Boolean state;
+    private Boolean state = false;
 
     public String getName() {
         return name;
@@ -40,6 +42,9 @@ public class Term {
 
     @ApiModelProperty("结束时间")
     private Long endTime;
+
+    @ApiModelProperty("是否已删除")
+    private Boolean deleted = false;
 
     public Long getId() {
         return id;
@@ -72,4 +77,14 @@ public class Term {
     public void setEndTime(Long endTime) {
         this.endTime = endTime;
     }
+
+    @Override
+    public Boolean getDeleted() {
+        return this.deleted;
+    }
+
+    private void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
 }
