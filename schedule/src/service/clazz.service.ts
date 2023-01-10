@@ -69,4 +69,11 @@ export class ClazzService {
     Assert.isNumber(clazzId, 'termId类型必须为number');
     return this.httpClient.get<Clazz>(`${this.url}/${clazzId}`).pipe(map(data => new Clazz(data)));
   }
+
+  /**
+   * 获取所有班级
+   */
+  getAll(): Observable<Clazz[]> {
+    return this.httpClient.get<Clazz[]>(`${this.url}/getAll`);
+  }
 }

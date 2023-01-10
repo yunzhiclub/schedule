@@ -8,6 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.Optional;
+
 public interface StudentRepository extends PagingAndSortingRepository<Student, Long>, JpaSpecificationExecutor<Student> {
 
     /**
@@ -19,8 +21,14 @@ public interface StudentRepository extends PagingAndSortingRepository<Student, L
      */
     default Page<Student> findAllByNameAndSnoAndClazzId(String name, String sno, Long clazzId, Pageable pageable) {
         Specification<Student> specification = StudentSpecs.containingName(name)
-                .and(StudentSpecs.containingSno(sno))
-                .and(StudentSpecs.containingClazzId(clazzId));
+                .and(StudentSpecs.containingSno(sno));
+        if (clazzId != null) {
+            specification = specification.and(StudentSpecs.containingClazzId(clazzId));
+        }
         return this.findAll(specification, pageable);
     }
+
+    Optional<Student> findByName(String name);
+
+    Optional<Student> findBySno(String sno);
 }

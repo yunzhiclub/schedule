@@ -1,0 +1,6 @@
+<select class="form-control" style="width: 200px" id="clazz" [formControl]="clazzSelected">
+  <option [value]="null">请选择</option>
+  <option *ngFor="let clazz of clazzes" [value]="clazz.id">
+    {{clazz.name}}
+  </option>
+</select>

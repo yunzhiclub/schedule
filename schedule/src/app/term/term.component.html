@@ -3,8 +3,11 @@
     <div class="form-group col-md-3">
       <input type="text" class="form-control" formControlName="name" placeholder="学期名称">
     </div>
-    <div class="form-group col-md-9 text-left align-self-end">
+    <div class="form-group col-md-3 text-left align-self-end">
       <button type="submit" class="btn btn-info"><i class="fas fa-search"></i> 查询</button>
+    </div>
+    <div class="col-6 text-right">
+      <a class="btn btn-primary" routerLink="add"><i class="fas fa-plus"></i>新增</a>
     </div>
   </div>
 </form>
@@ -12,9 +15,6 @@
 <div class="row mb-2">
   <div class="col-6 text-left">
     <app-size [size]="pageData.size" (changeSize)="onSizeChange($event)"></app-size>
-  </div>
-  <div class="col-6 text-right">
-    <a class="btn btn-primary" routerLink="add"><i class="fas fa-plus"></i>新增</a>
   </div>
 </div>
 <table class="table table-striped mt-3">

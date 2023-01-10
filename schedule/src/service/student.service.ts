@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Page} from '../common/page';
 import {map} from 'rxjs/operators';
 import {Assert} from '../common/utils';
 import {Student} from '../entity/student';
+import {Clazz} from '../entity/clazz';
 
 @Injectable({
   providedIn: 'root'
@@ -20,14 +21,16 @@ export class StudentService {
   page(param: {
     page: number,
     size: number,
-    clazzId: string,
+    clazzId?: string,
     name?: string,
     sno?: string,
   }): Observable<Page<Student>> {
     let httpParams = new HttpParams()
       .append('page', param.page.toString())
-      .append('size', param.size.toString())
-      .append('clazzId', param.clazzId.toString());
+      .append('size', param.size.toString());
+    if (param.clazzId) {
+      httpParams = httpParams.append('clazzId', param.clazzId);
+    }
     if (param.name) {
       httpParams = httpParams.append('name', param.name);
     }
@@ -35,7 +38,7 @@ export class StudentService {
       httpParams = httpParams.append('sno', param.sno);
     }
 
-    return this.httpClient.get<Page<Student>>(`${this.url}/members`, {params: httpParams})
+    return this.httpClient.get<Page<Student>>(`${this.url}/page`, {params: httpParams})
       .pipe(map(data => new Page<Student>(data).toObject(d => new Student(d))));
   }
 
@@ -59,6 +62,14 @@ export class StudentService {
     return this.httpClient.get<boolean>(this.url + '/studentNameUnique', {params: httpParams});
   }
 
+
+  snoUnique(sno: string, studentId = 0): Observable<boolean> {
+    const httpParams = new HttpParams()
+      .append('sno', sno)
+      .append('studentId', studentId.toString());
+    return this.httpClient.get<boolean>(this.url + '/snoUnique', {params: httpParams});
+  }
+
   /**
    * 删除
    * @param studentId id
@@ -73,6 +84,10 @@ export class StudentService {
    */
   getById(studentId: number): Observable<Student> {
     Assert.isNumber(studentId, 'termId类型必须为number');
-    return this.httpClient.get<Student>(`${this.url}/${studentId}`).pipe(map(data => new Student(data)));
+    return this.httpClient.get<Student>(`${this.url}/${studentId}`).pipe(map(data => {
+      data.clazz = new Clazz(data.clazz!);
+      return new Student(data);
+    }));
   }
+
 }
