@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit {
             this.commonService.success(() => this.router.navigateByUrl('/dashboard').then());
           }).subscribe();
         } else {
-          this.commonService.error(() => {}, "登录失败，请检查您填写的信息是否正确");
+          this.commonService.error(() => {}, '登录失败，请检查您填写的信息是否正确');
         }
       }, () => {
         this.errorInfo = '登录失败，请检查您填写的信息是否正确';
