@@ -1,11 +1,14 @@
 package com.yunzhi.schedule.service;
 
+import com.yunzhi.schedule.entity.Course;
 import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.repository.TeacherRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import java.util.List;
 
 @Service
 public class TeacherServiceImpl implements TeacherService{
@@ -48,5 +51,10 @@ public class TeacherServiceImpl implements TeacherService{
     @Override
     public void deleteById(Long id) {
         this.teacherRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Teacher> getAll() {
+        return (List<Teacher>) this.teacherRepository.findAll();
     }
 }

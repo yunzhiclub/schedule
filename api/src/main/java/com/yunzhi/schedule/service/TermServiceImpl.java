@@ -82,4 +82,9 @@ public class TermServiceImpl implements TermService {
         return this.termRepository.findById(termId).orElseThrow(()
                 -> new EntityNotFoundException("未找到对应实体"));
     }
+
+    @Override
+    public Term getCurrentTerm() {
+        return this.termRepository.findTermByState(true);
+    }
 }

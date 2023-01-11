@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.controller;
 
+import com.yunzhi.schedule.entity.Course;
 import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.service.TeacherService;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("teacher")
@@ -80,5 +83,14 @@ public class TeacherController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
         this.teacherService.deleteById(id);
+    }
+
+    /**
+     * 通过所有教师
+     * @return     教师
+     */
+    @GetMapping("getAll")
+    public List<Teacher> getAll() {
+        return this.teacherService.getAll();
     }
 }

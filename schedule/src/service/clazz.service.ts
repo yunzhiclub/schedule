@@ -76,4 +76,11 @@ export class ClazzService {
   getAll(): Observable<Clazz[]> {
     return this.httpClient.get<Clazz[]>(`${this.url}/getAll`);
   }
+
+  /**
+   * 通过课程id获取所有已经被排过该课程的班级
+   */
+  clazzesHaveSelectCourse(courseId: number): Observable<number[]> {
+    return this.httpClient.get<number[]>('/clazz/clazzesHaveSelectCourse/' + courseId.toString());
+  }
 }

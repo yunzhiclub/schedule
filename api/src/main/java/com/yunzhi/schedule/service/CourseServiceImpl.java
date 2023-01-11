@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.List;
+
 @Service
 public class CourseServiceImpl implements CourseService{
     private final CourseRepository courseRepository;
@@ -43,5 +45,10 @@ public class CourseServiceImpl implements CourseService{
         OldCourse.setName(course.getName());
         OldCourse.setHours(course.getHours());
         return this.courseRepository.save(OldCourse);
+    }
+
+    @Override
+    public List<Course> getAll() {
+        return (List<Course>) this.courseRepository.findAll();
     }
 }
