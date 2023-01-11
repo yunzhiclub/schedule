@@ -26,7 +26,10 @@ import {PageModule} from '../common/page/page.module';
     PipeModule,
     ApiProModule,
     HttpClientModule,
+<<<<<<< HEAD
     AuthModule,
+=======
+>>>>>>> origin
     SizeModule,
     PageModule,
   ],
