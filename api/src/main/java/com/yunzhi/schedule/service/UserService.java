@@ -10,7 +10,7 @@ public interface UserService {
 
     User save(User student);
 
-    User login(String phone);
+    User login();
 
     /**
      * 判断用户是否登录
@@ -18,4 +18,10 @@ public interface UserService {
      * @return
      */
     boolean isLogin(String XAuthToken);
+
+    /**
+     * 获取当前登录用户
+     * @return user
+     */
+    User getCurrentLoginUser();
 }

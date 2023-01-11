@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -16,15 +18,23 @@ import java.util.List;
 public class UserController {
 
     UserService userService;
+    HttpServletRequest request;
 
     @Autowired
-    UserController(UserService userService) {
+    UserController(UserService userService,
+                   HttpServletRequest request) {
         this.userService = userService;
+        this.request = request;
     }
 
     @GetMapping("{id}")
     public User getById(@PathVariable Long id) {
         return this.userService.findById(id);
+    }
+
+    @GetMapping("me")
+    public User getCurrentLoginUser() {
+        return this.userService.getCurrentLoginUser();
     }
 
     @PostMapping
@@ -34,11 +44,7 @@ public class UserController {
     }
 
     @RequestMapping("login")
-    public User login(@RequestParam String basicMessage) {
-        byte[] message = Base64.getDecoder().decode(basicMessage);
-        for (int i = 0; i < message.length; i++) {
-            System.out.println(message[i]);
-        }
-        return this.userService.login(basicMessage);
+    public User login() {
+        return this.userService.login();
     }
 }

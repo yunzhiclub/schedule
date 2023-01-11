@@ -1,9 +1,9 @@
 package com.yunzhi.schedule.repository;
 
 import com.yunzhi.schedule.entity.Teacher;
+import com.yunzhi.schedule.repository.specs.TeacherSpecs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.yunzhi.schedule.repository.specs.TeacherSpecs;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;

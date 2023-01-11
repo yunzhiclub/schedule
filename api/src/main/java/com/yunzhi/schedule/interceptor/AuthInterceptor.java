@@ -32,7 +32,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         // 获取请求地址及请求方法
         String url = request.getRequestURI();
         String method = request.getMethod();
-
+        //  && "GET".equals(method)
         // 判断请求地址、方法是否与用户登录相同
         if ("/user/login".equals(url) && "GET".equals(method)) {
             return true;
@@ -40,6 +40,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         // auth-token是否绑定了用户
         String authToken = request.getHeader(TokenFilter.TOKEN_KEY);
         if (this.userService.isLogin(authToken)) {
+            System.out.println("用户已登录");
             return true;
         }
 
