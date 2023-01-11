@@ -26,12 +26,9 @@ import {PageModule} from '../common/page/page.module';
     PipeModule,
     ApiProModule,
     HttpClientModule,
-<<<<<<< HEAD
-    AuthModule
-=======
+    AuthModule,
     SizeModule,
     PageModule,
->>>>>>> origin
   ],
   providers: [],
   bootstrap: [AppComponent]
