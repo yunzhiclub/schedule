@@ -1,0 +1,6 @@
+<select class="form-control"  [formControl]="currentSelectFormControl">
+  <option *ngFor="let option of options" [ngValue]="option.value">
+    {{option.description}}
+  </option>
+</select>
+

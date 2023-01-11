@@ -11,21 +11,26 @@ import {ApiProModule} from '../api/api.pro.module';
 import {HttpClientModule} from '@angular/common/http';
 import { ClazzSelectComponent } from '../common/clazz-select/clazz-select.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import { AuthComponent } from './auth/auth.component';
+import { LoginComponent } from './auth/login/login.component';
+import {AuthModule} from './auth/auth.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     ScheduleComponent,
     TimetableComponent,
+    AuthComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    LayoutModule,
-    PipeModule,
-    ApiProModule,
-    HttpClientModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        LayoutModule,
+        PipeModule,
+        ApiProModule,
+        HttpClientModule,
+        AuthModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

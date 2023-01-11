@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -26,22 +27,32 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
     private final StudentRepository studentRepository;
     private final RoomRepository roomRepository;
     private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
     @Autowired
     public CommandLineRunnerImpl(TermRepository termRepository,
                                  TeacherRepository teacherRepository,
                                  StudentRepository studentRepository,
                                  RoomRepository roomRepository,
+                                 UserRepository userRepository,
                                  ClazzRepository clazzRepository, CourseRepository courseRepository) {
         this.termRepository = termRepository;
         this.teacherRepository = teacherRepository;
         this.clazzRepository = clazzRepository;
         this.studentRepository = studentRepository;
         this.roomRepository = roomRepository;
+        this.userRepository = userRepository;
         this.courseRepository = courseRepository;
     }
 
     @Override
     public void run(String... args) {
+        User user = new User();
+        //角色为系统管理员
+        String password = "yunzhi";
+        user.setPhone("13920618851");
+        user.setName("系统管理员");
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        this.userRepository.save(user);
         // 添加50条学期数据
         for (int i = 0; i < 50; i++) {
             this.addTerm("学期" + i, false, 1672502400L, 1688140800L);
