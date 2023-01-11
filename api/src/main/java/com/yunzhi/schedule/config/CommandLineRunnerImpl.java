@@ -56,9 +56,10 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         user.setPassword(Encoder.getMD5Result(password));
         this.userRepository.save(user);
         // 添加50条学期数据
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 49; i++) {
             this.addTerm("学期" + i, false, 1672502400L, 1688140800L);
         }
+        this.addTerm("学期49", true, 1672502400L, 1688140800L);
         // 添加50条教师数据
         for (int i = 0; i < 50; i++) {
             this.addTeacher("教师" + i, true, "13100000000");

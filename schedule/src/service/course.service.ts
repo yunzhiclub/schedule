@@ -5,6 +5,7 @@ import {Room} from '../entity/room';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {Course} from '../entity/course';
+import {Clazz} from "../entity/clazz";
 
 @Injectable({
   providedIn: 'root'
@@ -71,5 +72,12 @@ export class CourseService {
   update(id: number, data: {hours: any; name: any}): Observable<any> {
     console.log('update', data);
     return this.httpClient.post<any>(`${this.url}/update/` + id.toString(), data);
+  }
+
+  /**
+   * 获取所有课程
+   */
+  getAll(): Observable<Course[]> {
+    return this.httpClient.get<Course[]>(`${this.url}/getAll/`);
   }
 }

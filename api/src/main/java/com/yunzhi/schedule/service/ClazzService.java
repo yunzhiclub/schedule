@@ -42,4 +42,6 @@ public interface ClazzService {
     Clazz getById(Long clazzId);
 
     List<Clazz> getAll();
+
+    List<Long> clazzIdsHaveSelectCourse(Long courseId);
 }

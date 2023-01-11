@@ -10,6 +10,8 @@ import {PipeModule} from './pipe/pipe.module';
 import {ApiProModule} from '../api/api.pro.module';
 import {HttpClientModule} from '@angular/common/http';
 import {AuthModule} from './auth/auth.module';
+import {SizeModule} from '../common/size/size.module';
+import {PageModule} from '../common/page/page.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,12 @@ import {AuthModule} from './auth/auth.module';
     PipeModule,
     ApiProModule,
     HttpClientModule,
+<<<<<<< HEAD
     AuthModule
+=======
+    SizeModule,
+    PageModule,
+>>>>>>> origin
   ],
   providers: [],
   bootstrap: [AppComponent]

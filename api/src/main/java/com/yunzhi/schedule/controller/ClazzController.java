@@ -73,4 +73,12 @@ public class ClazzController {
         return this.clazzService.getAll();
     }
 
+    /**
+     * 选择某个课程的所有班级ID
+     */
+    @GetMapping("clazzesHaveSelectCourse/{courseId}")
+    public List<Long> clazzesHaveSelectCourse(@PathVariable Long courseId) {
+        return this.clazzService.clazzIdsHaveSelectCourse(courseId);
+    }
+
 }

@@ -12,6 +12,8 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("course")
 public class CourseController {
@@ -71,12 +73,21 @@ public class CourseController {
 
     /**
      * 更新课程
-     * @param room   更新后的课程数据
+     * @param course   更新后的课程数据
      * @return 课程
      */
     @PostMapping("update/{id}")
     public Course update(@PathVariable Long id,
                        @RequestBody Course course) {
         return this.courseService.update(id, course);
+    }
+
+    /**
+     * 通过所有课程
+     * @return     课程
+     */
+    @GetMapping("getAll")
+    public List<Course> getAll() {
+        return this.courseService.getAll();
     }
 }
