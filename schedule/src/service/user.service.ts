@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {User} from '../entity/user';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {tap} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,16 @@ export class UserService {
   public isLogin$: Observable<boolean>;
   url = 'user';
 
-  constructor(private httpClient: HttpClient) {
+
+  protected currentLoginUserSubject = new BehaviorSubject<User | null | undefined>(undefined);
+  currentLoginUser$ = this.currentLoginUserSubject.asObservable();
+
+  constructor(private httpClient: HttpClient,
+              private router: Router) {
     const isLogin = window.sessionStorage.getItem(this.isLoginCacheKey) as string;
     this.isLogin = new BehaviorSubject(this.convertStringToBoolean(isLogin));
     this.isLogin$ = this.isLogin.asObservable();
+    this.initCurrentLoginUser().subscribe();
   }
 
 
@@ -57,5 +64,49 @@ export class UserService {
    */
   convertBooleanToString(value: boolean): string {
     return value ? '1' : '0';
+  }
+
+  /**
+   * 设置当前登录用户
+   * @param user 登录用户
+   */
+  setCurrentLoginUser(user: User | undefined): void {
+    if (user !== this.currentLoginUserSubject.value) {
+      this.currentLoginUserSubject.next(user);
+    }
+    if (user === undefined) {
+      this.router.navigateByUrl('/login').then();
+    }
+  }
+
+  /**
+   * 请求当前登录用户
+   */
+  initCurrentLoginUser(callback?: () => void): Observable<User> {
+    return new Observable<User>(subscriber => {
+      this.httpClient.get<User>(`${this.url}/me`)
+        .subscribe({
+          next: (user: User) => {
+            console.log('initCurrentLoginUser', user);
+            this.setCurrentLoginUser(user);
+            subscriber.next();
+          },
+          error: () => {
+            console.log('initCurrentLoginUser2', );
+            if (callback) {
+              callback();
+            }
+            subscriber.error();
+          },
+          complete: () => {
+            console.log('initCurrentLoginUser3', );
+
+            if (callback) {
+              callback();
+            }
+            subscriber.complete();
+          }
+        });
+    });
   }
 }

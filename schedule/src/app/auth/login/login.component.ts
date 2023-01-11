@@ -58,11 +58,16 @@ export class LoginComponent implements OnInit {
     };
     console.log('登录0');
     this.userService.login(user)
-      .subscribe(() => {
-        console.log('登录2');
-        // this.userService.initCurrentLoginUser(() => {
-        //   this.router.navigateByUrl('dashboard').then();
-        // });
+      .subscribe((data) => {
+        if (data) {
+          this.userService.initCurrentLoginUser(() => {
+            this.commonService.success(() => this.router.navigateByUrl('/dashboard').then());
+          }).subscribe();
+        } else {
+          this.commonService.error(() => {}, "登录失败，请检查您填写的信息是否正确");
+        }
+      }, () => {
+        this.errorInfo = '登录失败，请检查您填写的信息是否正确';
       });
     //   }, (response) => {
     //     console.log('登录3');

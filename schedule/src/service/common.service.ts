@@ -161,6 +161,34 @@ export class CommonService {
   }
 
   /**
+   * 友情提示消息框
+   * @param callback    回调
+   * @param description 描述
+   * @param title       标题
+   * @param options showConfirmButton: 是否显示确认按钮
+   */
+  info(callback?: () => void, description: string = '', title: string = '友情提示', options = {showConfirmButton: true}): void {
+    swal.fire({
+      titleText: title,
+      text: description,
+      icon: 'info',
+      background: '#F7F8FA',
+      allowOutsideClick: false,
+      confirmButtonText: '确定',
+      confirmButtonColor: '#007BFF',
+      showCancelButton: false,
+      showConfirmButton: options.showConfirmButton
+    }).then((result: SweetAlertResult) => {
+      if (result.value) {
+        // 执行回调
+        if (callback) {
+          callback();
+        }
+      }
+    });
+  }
+
+  /**
    * 判断当前菜单是否激活
    * @param menu 菜单
    */

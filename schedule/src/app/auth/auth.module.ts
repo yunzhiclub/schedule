@@ -4,12 +4,14 @@ import {LoginComponent} from './login/login.component';
 import {AuthRoutingModule} from './auth-routing.module';
 import {YzSubmitButtonModule} from '../func/yz-submit-button/yz-submit-button.module';
 import {ReactiveFormsModule} from '@angular/forms';
+import {AuthComponent} from "./auth.component";
 
 
 
 @NgModule({
-  declarations: [LoginComponent],
+  declarations: [AuthComponent, LoginComponent],
   exports: [
+    AuthComponent,
     LoginComponent
   ],
   imports: [
