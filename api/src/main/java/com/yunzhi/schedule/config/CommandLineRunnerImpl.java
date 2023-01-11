@@ -26,22 +26,35 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
     private final StudentRepository studentRepository;
     private final RoomRepository roomRepository;
     private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
     @Autowired
     public CommandLineRunnerImpl(TermRepository termRepository,
                                  TeacherRepository teacherRepository,
                                  StudentRepository studentRepository,
                                  RoomRepository roomRepository,
-                                 ClazzRepository clazzRepository, CourseRepository courseRepository) {
+                                 ClazzRepository clazzRepository,
+                                 UserRepository userRepository,
+                                 CourseRepository courseRepository) {
         this.termRepository = termRepository;
         this.teacherRepository = teacherRepository;
         this.clazzRepository = clazzRepository;
         this.studentRepository = studentRepository;
         this.roomRepository = roomRepository;
+        this.userRepository = userRepository;
         this.courseRepository = courseRepository;
     }
 
     @Override
     public void run(String... args) {
+
+        User user = new User();
+        //角色为系统管理员
+        Short identity = (short) 2;
+        String password = "yunzhi";
+        user.setPhone("13900000000");
+        user.setName("系统管理员");
+        user.setPassword(Encoder.getMD5Result(password));
+        this.userRepository.save(user);
         // 添加50条学期数据
         for (int i = 0; i < 49; i++) {
             this.addTerm("学期" + i, false, 1672502400L, 1688140800L);

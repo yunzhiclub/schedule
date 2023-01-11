@@ -1,0 +1,49 @@
+<div class="container-fluid p-0">
+  <div class="row m-0 _bower-warning yz-show-update-bower-tips" *ngIf="showUpdateBowerTips">
+    <div class="col-md-12 text-center">
+      <p>
+        <b>
+          检测到您当前使用了基于IE内核的浏览器,部分功能可能无法正常工作,建议您切换为<a href="https://www.firefox.com.cn/" target="_blank">firefox</a>或<a
+          href="https://www.google.cn/chrome/" target="_blank">chrome</a>浏览器。
+        </b>
+      </p>
+    </div>
+  </div>
+  <div class="header">
+    <div class="row m-0">
+      <div class="col-md-3 offset-md-2">
+        <p class="title"><b>欢迎使用本系统!</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="container">
+      <div class="row pt-5 ">
+        <div class="col mt-5 pl-3 pr-3 pt-4 pb-4 bg-white login-form">
+          <div class="row">
+            <div class="col-md-12 " (click)="onChangeToLogin()" >
+              <h6 class="text-center" [ngClass]="{'text-success font-weight-bolder' : mode === 'login'}">
+<!--                <a href="javascript:void(0);"class="text-reset text-decoration-none fon">登录</a>-->
+                <h5 class="text-reset text-decoration-none fon">用户登录</h5>
+              </h6>
+            </div>
+<!--            <div class="col-md-6" (click)="onChangeToRegister()">-->
+<!--              <h6 class="text-center" [ngClass]="{'text-success font-weight-bolder' : mode === 'register'}">-->
+<!--                <a href="javascript:void(0);"-->
+<!--                   class="text-reset text-decoration-none">用户注册</a>-->
+<!--              </h6>-->
+<!--            </div>-->
+          </div>
+          <hr>
+          <app-login *ngIf="mode === 'login'"></app-login>
+<!--          <app-register (beDone)="onRegisterDone()" *ngIf="mode === 'register'"></app-register>-->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer text-center">
+    <small>©{{year}} 河北工业大学 </small>
+    <br>
+    <small (click)="onShowYz()" class="yz-support">技术支持: 梦云智开发团队</small>
+  </div>
+</div>

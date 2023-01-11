@@ -9,8 +9,9 @@ import { TimetableComponent } from './timetable/timetable.component';
 import {PipeModule} from './pipe/pipe.module';
 import {ApiProModule} from '../api/api.pro.module';
 import {HttpClientModule} from '@angular/common/http';
-import {SizeModule} from "../common/size/size.module";
-import {PageModule} from "../common/page/page.module";
+import {AuthModule} from './auth/auth.module';
+import {SizeModule} from '../common/size/size.module';
+import {PageModule} from '../common/page/page.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,10 @@ import {PageModule} from "../common/page/page.module";
     PipeModule,
     ApiProModule,
     HttpClientModule,
+<<<<<<< HEAD
+    AuthModule,
+=======
+>>>>>>> origin
     SizeModule,
     PageModule,
   ],

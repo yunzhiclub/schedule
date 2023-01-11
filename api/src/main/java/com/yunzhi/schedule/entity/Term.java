@@ -35,7 +35,7 @@ public class Term implements SoftDelete {
     }
 
     @ApiModelProperty("学期名称")
-    private String name;
+    private String name = "";
 
     @ApiModelProperty("开学时间")
     private Long startTime;

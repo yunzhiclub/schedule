@@ -31,13 +31,15 @@
   <div *ngIf="this.isShowTeacherSelect">
     <div class="form-group row">
       <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>教师</label>
-      <div class="col-sm-4">
+      <div class="col-sm-2">
         <select class="select picker form-control col-sm-12" style="width: 200px" (change)="onTeacherIdChange()" formControlName="teacher1Id" id="teacher1Id" required>
-          <option [value]="''">请选择教师1</option>
+          <option [value]="null">请选择教师1</option>
           <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>
         </select>
+      </div>
+      <div class="col-sm-2">
         <select class="select picker form-control col-sm-12" style="width: 200px; margin-top: 2px" (change)="onTeacherIdChange()" formControlName="teacher2Id" id="teacher2Id" required>
-          <option [value]="''">请选择教师2</option>
+          <option [value]="null">请选择教师2</option>
           <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>
         </select>
       </div>
