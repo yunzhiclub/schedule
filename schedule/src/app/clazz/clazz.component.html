@@ -1,16 +1,14 @@
-<form (submit)="onSubmit(queryForm)" [formGroup]="queryForm">
-  <div class="form-row justify-content-between">
-    <div class="form-group col-md-3">
-      <input type="text" class="form-control" formControlName="name" placeholder="班级名称">
-    </div>
-    <div class="form-group col-md-3 text-left align-self-end">
+<div class="row">
+  <div class="col-md-10">
+    <form class="form-inline" (submit)="onSubmit(queryForm)" [formGroup]="queryForm">
+      <input type="text" class="form-control" style="margin-right: 10px" formControlName="name" placeholder="班级名称">
       <button type="submit" class="btn btn-info"><i class="fas fa-search"></i> 查询</button>
-    </div>
-    <div class="col-6 text-right">
-      <a class="btn btn-primary" routerLink="add"><i class="fas fa-plus"></i>新增</a>
-    </div>
+    </form>
   </div>
-</form>
+  <div class="col-md-2">
+    <a class="btn btn-primary mr-2" style="float: right" routerLink="add"><i class="fas fa-plus"></i>新增</a>
+  </div>
+</div>
 <hr>
 <div class="row mb-2">
   <div class="col-6 text-left">
