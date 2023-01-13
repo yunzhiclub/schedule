@@ -4,9 +4,8 @@ import {Course} from '../../../entity/course';
 import {Clazz} from '../../../entity/clazz';
 import {ClazzService} from '../../../service/clazz.service';
 import {CourseService} from '../../../service/course.service';
-import {Teacher} from "../../../entity/teacher";
-import {TeacherService} from "../../../service/teacher.service";
-import {parseJsonSchemaToCommandDescription} from "@angular/cli/utilities/json-schema";
+import {Teacher} from '../../../entity/teacher';
+import {TeacherService} from '../../../service/teacher.service';
 
 @Component({
   selector: 'app-add',
@@ -29,10 +28,10 @@ export class AddComponent implements OnInit {
   clazzesToBeScreened = [] as Clazz[];
   /* 可选班级，clazzes筛选过后的班级 */
   clazzes: Clazz[] = [];
-  lessons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  lessons = [0, 1, 2, 3, 4];
   days = ['一', '二', '三', '四', '五', '六', '日'];
-  days1 = ['一', '二', '三', '四', '五', '六', '日', 1, 2, 3, 4, 5, 6, 7];
   isShowTeacherSelect = false;
+  isShow = false;
   constructor(private clazzService: ClazzService,
               private courseService: CourseService,
               private teacherService: TeacherService) { }
@@ -96,5 +95,15 @@ export class AddComponent implements OnInit {
   onTeacherIdChange(): void {
     // 教师有变动，courseTimes要清空， 防止之前的班级选择的某些数据影响之后的选择
     this.initCourseTimes();
+  }
+
+  /**
+   * 展示model
+   * @param day 天
+   * @param lesson 节
+   */
+  showModel(day: number, lesson: number): void {
+    this.isShow = true;
+
   }
 }

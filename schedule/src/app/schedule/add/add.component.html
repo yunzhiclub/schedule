@@ -1,4 +1,5 @@
 <form [formGroup]="formGroup">
+
   <!-- 选择课程 -->
   <div class="form-group row">
     <label class="col-sm-1 text-right col-form-label" style="width: 162px"><code>*</code>课程</label>
@@ -47,7 +48,7 @@
   </div>
 
   <!--选择时间-->
-  <div *ngIf="!formGroup.invalid" class="form-group row">
+  <div *ngIf="!formGroup.invalid || true" class="form-group row">
     <div class="col-sm-12">
       <label class="col-sm-2 col-form-label"><code>*</code>上课时间</label>
     </div>
@@ -63,8 +64,8 @@
           <tr *ngFor="let day of days; index as d">
             <th   class="col-sm-1">周{{day}}</th>
             <td  *ngFor="let lesson of lessons" class="col-sm-1 container-fluid">
-              <div class="list-group  ">
-                <button class="list-group-item"></button>
+              <div class="list-group">
+                <button class="list-group-item" (click)="showModel(d, lesson)"><h6>周{{day}}第{{lesson + 1}}节</h6></button>
               </div>
 <!--              <ul class="list-group list-group-horizontal-sm small col-sm-12">-->
 <!--                <button class="list-group-item small col-sm-6">1</button>-->
@@ -101,3 +102,30 @@
     </div>
   </div>
 </form>
+
+<app-yz-modal *ngIf="isShow" [width]="'60%'" [size]="'sm'">
+  <div class="">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content" >
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-yz-modal>
