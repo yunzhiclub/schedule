@@ -10,6 +10,8 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
+
 @RestController
 @RequestMapping("room")
 public class RoomController {
@@ -77,5 +79,21 @@ public class RoomController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
         this.roomService.deleteById(id);
+    }
+
+    /**
+     * 教室名称唯一性验证
+     * @return     boolean
+     */
+    @GetMapping("roomNameUnique")
+    public Boolean roomNameUnique(@RequestParam String roomName,
+                             @RequestParam Long roomId) {
+
+        try {
+
+            return this.roomService.roomNameUnique(roomName, roomId);
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
     }
 }

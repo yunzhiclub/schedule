@@ -14,4 +14,6 @@ public interface RoomService {
     Room update(Long id, Room room);
 
     void deleteById(Long id);
+
+    Boolean roomNameUnique(String roomName, Long roomId);
 }

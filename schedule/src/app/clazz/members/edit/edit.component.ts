@@ -38,7 +38,6 @@ export class EditComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(param => {
       const studentId = +param.studentId;
-      console.log('2222222222', studentId);
       Assert.isNotNullOrUndefined(studentId, 'ID类型不正确');
       this.formGroup.get(this.keys.name)!.setAsyncValidators(this.yzAsyncValidators.studentNameUnique(studentId));
       this.formGroup.get(this.keys.sno)!.setAsyncValidators(this.yzAsyncValidators.snoUnique(studentId));

@@ -70,4 +70,15 @@ export class RoomService {
   delete(id: number): Observable<any> {
     return this.httpClient.delete<any>(`${this.url}/` + id.toString());
   }
+
+
+  /**
+   * 教师手机号唯一性验证
+   */
+  roomNameUnique(roomName: string, roomId = 0): Observable<boolean> {
+    const httpParams = new HttpParams()
+      .append('roomName', roomName)
+      .append('roomId', roomId.toString());
+    return this.httpClient.get<boolean>(this.url + '/roomNameUnique', {params: httpParams});
+  }
 }

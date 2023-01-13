@@ -9,6 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.Objects;
+
 @Service
 public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
@@ -44,5 +47,21 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void deleteById(Long id) {
         this.roomRepository.deleteById(id);
+    }
+
+    @Override
+    public Boolean roomNameUnique(String roomName, Long roomId) {
+        // 有异常，C层直接返回false
+        // 无异常，如果是已排除的教室，允许教室名称相同， 返回 false
+        //                 其他教室，不允许， 返回 true
+        Room room = this.getByName(roomName);
+        if (Objects.equals(room.getId(), roomId)) {
+            return false;
+        }
+        return true;
+    }
+
+    private Room getByName(String roomName) {
+        return this.roomRepository.findByNameAndDeletedFalse(roomName).orElseThrow(() -> new EntityNotFoundException("找不到对应实体"));
     }
 }

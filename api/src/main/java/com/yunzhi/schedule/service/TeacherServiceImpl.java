@@ -1,6 +1,7 @@
 package com.yunzhi.schedule.service;
 
 import com.yunzhi.schedule.entity.Course;
+import com.yunzhi.schedule.entity.Student;
 import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.repository.TeacherRepository;
 import org.springframework.data.domain.Page;
@@ -8,7 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TeacherServiceImpl implements TeacherService{
@@ -56,5 +59,21 @@ public class TeacherServiceImpl implements TeacherService{
     @Override
     public List<Teacher> getAll() {
         return (List<Teacher>) this.teacherRepository.findAll();
+    }
+
+    @Override
+    public Boolean phoneUnique(String phone, Long teacherId) {
+        // 有异常，C层直接返回false
+        // 无异常，如果是已排除的教师，允许手机号相同， 返回 false
+        //                 其他教师，不允许， 返回 true
+        Teacher teacher = this.getByPhone(phone);
+        if (Objects.equals(teacher.getId(), teacherId)) {
+            return false;
+        }
+        return true;
+    }
+
+    private Teacher getByPhone(String sno) {
+        return this.teacherRepository.findByPhoneAndDeletedFalse(sno).orElseThrow(() -> new EntityNotFoundException("找不到对应实体"));
     }
 }
