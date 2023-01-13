@@ -2,7 +2,7 @@
   <div class="form-group row">
     <label for="name" class="col-sm-4 text-right col-form-label"><code>*</code>姓名</label>
     <div class="col-sm-8">
-      <input type="text" class="form-control mr-3" id="name" formControlName="name">
+      <input type="text" class="form-control col-sm-3 mr-3" id="name" formControlName="name">
       <small class="text-danger" *ngIf="formGroup.get('name')!.touched && formGroup.get('name')!.invalid ">
         <span *ngIf="!formGroup.get('name')?.errors?.studentNameUnique">格式不正确</span>
         <span *ngIf="formGroup.get('name')?.errors?.studentNameUnique">学生名已存在</span>

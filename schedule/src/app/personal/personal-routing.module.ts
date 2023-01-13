@@ -1,12 +1,16 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {RouterModule, Routes} from '@angular/router';
 import {PersonalComponent} from './personal.component';
+import {EditComponent} from './edit/edit.component';
 
 const routes: Routes = [
   {
     path: '',
     component: PersonalComponent
+  },
+  {
+    path: 'edit',
+    component: EditComponent
   },
 ];
 

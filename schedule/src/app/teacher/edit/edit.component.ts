@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {TeacherService} from '../../../service/teacher.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonService} from '../../../service/common.service';
 import {HttpClient} from '@angular/common/http';
 import {Assert} from '@yunzhi/ng-mock-api';
+import {YzAsyncValidators} from '../../validator/yz-async.validators';
+import {YzValidator} from '../../validator/yz-validator';
 
 @Component({
   selector: 'app-edit',
@@ -19,13 +21,14 @@ export class EditComponent implements OnInit {
               private router: Router,
               private route: ActivatedRoute,
               private commonService: CommonService,
+              private yzAsyncValidators: YzAsyncValidators,
               private httpClient: HttpClient) {
     // id为teacher所对应的user_id
     this.id = +this.route.snapshot.params.id;
     this.formGroup = new FormGroup({
       name: new FormControl(''),
       sex: new FormControl(0),
-      phone: new FormControl('')
+      phone: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.phoneUnique(this.id))
     });
   }
 

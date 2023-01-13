@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.controller;
 
+import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.entity.User;
 import com.yunzhi.schedule.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +47,17 @@ public class UserController {
     @RequestMapping("login")
     public User login() {
         return this.userService.login();
+    }
+
+    /**
+     * 更新用户
+     * @param userId   用户id
+     * @param user   更新后的用户数据
+     * @return 教师
+     */
+    @PostMapping("update/{userId}")
+    public User update(@PathVariable Long userId,
+                          @RequestBody User user) {
+        return this.userService.update(userId, user);
     }
 }

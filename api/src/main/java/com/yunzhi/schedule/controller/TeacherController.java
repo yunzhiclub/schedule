@@ -13,6 +13,7 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
@@ -64,7 +65,7 @@ public class TeacherController {
     }
 
     /**
-     * 新增教师
+     * 更新教师
      * @param teacher   更新后的教师数据
      * @return 教师
      */
@@ -92,5 +93,21 @@ public class TeacherController {
     @GetMapping("getAll")
     public List<Teacher> getAll() {
         return this.teacherService.getAll();
+    }
+
+    /**
+     * 教师手机号唯一性验证
+     * @return     boolean
+     */
+    @GetMapping("phoneUnique")
+    public Boolean snoUnique(@RequestParam String phone,
+                             @RequestParam Long teacherId) {
+
+        try {
+
+            return this.teacherService.phoneUnique(phone, teacherId);
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
     }
 }

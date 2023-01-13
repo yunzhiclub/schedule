@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonService} from '../../../service/common.service';
 import {HttpClient} from '@angular/common/http';
 import {RoomService} from '../../../service/room.service';
 import {Assert} from '@yunzhi/ng-mock-api';
+import {YzValidator} from "../../validator/yz-validator";
+import {YzAsyncValidators} from "../../validator/yz-async.validators";
 
 @Component({
   selector: 'app-edit',
@@ -18,10 +20,11 @@ export class EditComponent implements OnInit {
               private router: Router,
               private route: ActivatedRoute,
               private commonService: CommonService,
+              private yzAsyncValidators: YzAsyncValidators,
               private httpClient: HttpClient) {
     this.id = +this.route.snapshot.params.id;
     this.formGroup = new FormGroup({
-      name: new FormControl(''),
+      name: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.roomNameUnique(this.id)),
       capacity: new FormControl(''),
     });
   }

@@ -19,4 +19,6 @@ public interface TeacherService {
     void deleteById(Long id);
 
     List<Teacher> getAll();
+
+    Boolean phoneUnique(String phone, Long teacherId);
 }

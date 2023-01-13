@@ -60,7 +60,6 @@ export class TeacherService {
    * @param data 更新后的教师数据
    */
   update(id: number, data: {name: string, sex: number, phone: string}): Observable<any> {
-    console.log('update', data);
     return this.httpClient.post<any>(`${this.url}/update/` + id.toString(), data);
   }
 
@@ -77,5 +76,15 @@ export class TeacherService {
    */
   getAll(): Observable<Teacher[]> {
     return this.httpClient.get<Teacher[]>(`${this.url}/getAll`);
+  }
+
+  /**
+   * 教师手机号唯一性验证
+   */
+  phoneUnique(phone: string, teacherId = 0): Observable<boolean> {
+    const httpParams = new HttpParams()
+      .append('phone', phone)
+      .append('teacherId', teacherId.toString());
+    return this.httpClient.get<boolean>(this.url + '/phoneUnique', {params: httpParams});
   }
 }

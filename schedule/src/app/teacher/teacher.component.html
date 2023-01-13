@@ -35,7 +35,6 @@
     <td>{{ teacher.phone }}</td>
     <td>
       <a class="btn btn-sm btn-primary" [routerLink]="'/teacher/edit/' + teacher.id">编辑</a>
-      &nbsp;
       <a class="btn btn-sm btn-danger" (click)="onDelete(teacher.id)">删除</a>
     </td>
   </tr>
