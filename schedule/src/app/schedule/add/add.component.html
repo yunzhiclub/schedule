@@ -1,9 +1,9 @@
 <form [formGroup]="formGroup">
   <!-- 选择课程 -->
   <div class="form-group row">
-    <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>课程</label>
-    <div class="col-sm-4">
-      <select class="select picker form-control col-sm-12" style="width: 200px" (change)="onCourseIdChange()" formControlName="courseId" id="courseId" required>
+    <label class="col-sm-1 text-right col-form-label" style="width: 162px"><code>*</code>课程</label>
+    <div class="col-sm">
+      <select class="select picker form-control col-sm-3" style="width: 200px" (change)="onCourseIdChange()" formControlName="courseId" id="courseId" required>
         <option [value]="''">请选择课程</option>
         <option *ngFor="let course of courses" [value]="+course.id">{{course.name}}</option>
       </select>
@@ -13,15 +13,15 @@
   <!-- 选择班级 -->
   <div *ngIf="formGroup.get('courseId')?.value !== ''">
     <div class="form-group row">
-      <label class="col-sm-2 text-right col-form-label"><code>*</code>上课班级<br>(可多选)</label>
-      <div class="col-sm-4">
-        <select class="select picker form-control col-sm-12" style="width: 200px" (change)="onClazzIdsChange()" formControlName="clazzIds" multiple id="klass">
+      <label class="col-sm-1 text-right col-form-label"><code>*</code>上课班级<br>(可多选)</label>
+      <div class="col-sm">
+        <select class="select picker form-control col-sm-3" style="width: 200px" (change)="onClazzIdsChange()" formControlName="clazzIds" multiple id="klass">
           <option *ngFor="let clazz of clazzes" [value]="+clazz.id">{{clazz.name}}</option>
         </select>
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-4 text-right">
+      <div class="offset-1 text-right">
         <label style="font-size: 15px"><code>*</code>操作提示：Ctrl+鼠标左键可进行多选操作</label>
       </div>
     </div>
@@ -30,7 +30,7 @@
   <!-- 选择教师 -->
   <div *ngIf="this.isShowTeacherSelect">
     <div class="form-group row">
-      <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>教师</label>
+      <label class="col-sm-1 text-right col-form-label" style="width: 162px"><code>*</code>教师</label>
       <div class="col-sm-2">
         <select class="select picker form-control col-sm-12" style="width: 200px" (change)="onTeacherIdChange()" formControlName="teacher1Id" id="teacher1Id" required>
           <option [value]="null">请选择教师1</option>
@@ -46,28 +46,26 @@
     </div>
   </div>
 
+
   <!--选择时间-->
-  <div *ngIf="!formGroup.invalid">
-    <div class="form-group row">
-      <div class="col-sm-11">
-        <label><code>*</code>上课时间</label>
-      </div>
+  <div *ngIf="!formGroup.invalid || true" class="form-group row">
+    <div class="col-sm-12">
+      <label class="col-sm-1 text-right col-form-label"><code>*</code>上课时间</label>
     </div>
-    <div class="row">
-      <div class="col-sm-12" style="float: right">
-        <table class="table table-hover table-bordered">
-          <tr>
-            <th class="">周几/课序</th>
-            <th class="">1</th>
-            <th class="">2</th>
-            <th class="">3</th>
-            <th class="">4</th>
-            <th class="">5</th>
-          </tr>
-          <tr *ngFor="let day of days; index as d">
-            <td>周{{day}}</td>
-            <td *ngFor="let lesson of lessons; index as l">
-              <div class="row">
+    <div class="offset-1 col-sm-12" style="float: right">
+      <table class="table table-hover table-bordered">
+        <tr>
+          <th class="">周几/课序</th>
+          <th class="">1</th>
+          <th class="">2</th>
+          <th class="">3</th>
+          <th class="">4</th>
+          <th class="">5</th>
+        </tr>
+        <tr *ngFor="let day of days; index as d">
+          <td>周{{day}}</td>
+          <td *ngFor="let lesson of lessons; index as l">
+            <div class="row">
 <!--                <app-course-time-->
 <!--                  [day]="d"-->
 <!--                  [lesson]="l"-->
@@ -79,15 +77,14 @@
 <!--                  [clazzes]="formGroup.get('clazz_ids')?.value"-->
 <!--                  (outer)="getFooterRun($event)"-->
 <!--                ></app-course-time>-->
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div class="form-group row">
-        <div class="col">
-          <a type="submit" class="btn btn-primary">确定</a>
-        </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="form-group row">
+      <div class="col">
+        <a type="submit" class="btn btn-primary">确定</a>
       </div>
     </div>
   </div>

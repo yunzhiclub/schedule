@@ -12,6 +12,7 @@ import { EditComponent as membersEditComponent } from './members/edit/edit.compo
 import { AddComponent as membersAddComponent } from './members/add/add.component';
 import { MembersComponent } from './members/members.component';
 import {PipeModule} from '../pipe/pipe.module';
+import {ClazzSelectModule} from "../../common/clazz-select/clazz-select.module";
 
 
 
@@ -24,14 +25,15 @@ import {PipeModule} from '../pipe/pipe.module';
     membersEditComponent,
     membersAddComponent
   ],
-    imports: [
-        CommonModule,
-        ClazzRoutingModule,
-        SizeModule,
-        PageModule,
-        ReactiveFormsModule,
-        DateModule,
-        PipeModule
-    ]
+  imports: [
+    CommonModule,
+    ClazzRoutingModule,
+    SizeModule,
+    PageModule,
+    ReactiveFormsModule,
+    DateModule,
+    PipeModule,
+    ClazzSelectModule
+  ]
 })
 export class ClazzModule { }
