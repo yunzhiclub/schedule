@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {environment} from '../../../environments/environment';
+import {UserService} from '../../../service/user.service';
 
 @Component({
   selector: 'app-header',
@@ -7,12 +8,19 @@ import {environment} from '../../../environments/environment';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  username = 'username';
+  username: string | undefined = '';
   title = environment.title;
 
-  constructor() { }
+  constructor( private userService: UserService ) { }
 
   ngOnInit(): void {
+    this.userService.getCurrentLoginUser()
+      .subscribe(currentLoginUser => {
+        this.username = currentLoginUser.name;
+        console.log(this.username);
+      });
   }
-
+  a(): void {
+    window.location.reload();
+  }
 }

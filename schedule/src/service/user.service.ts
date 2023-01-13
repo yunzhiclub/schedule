@@ -14,6 +14,7 @@ export class UserService {
   public isLogin$: Observable<boolean>;
   url = 'user';
 
+  public currentLoginUser = new User();
 
   protected currentLoginUserSubject = new BehaviorSubject<User | null | undefined>(undefined);
   currentLoginUser$ = this.currentLoginUserSubject.asObservable();
@@ -87,6 +88,7 @@ export class UserService {
       this.httpClient.get<User>(`${this.url}/me`)
         .subscribe({
           next: (user: User) => {
+            this.currentLoginUser = user;
             console.log('initCurrentLoginUser', user);
             this.setCurrentLoginUser(user);
             subscriber.next();
@@ -108,5 +110,23 @@ export class UserService {
           }
         });
     });
+  }
+
+  /**
+   * 为个人主页获取当前登录用户
+   */
+  getCurrentLoginUser(): Observable<User> {
+    return this.httpClient.get<User>(`${this.url}/me`);
+  }
+
+  /**
+   * 更新用户
+   * @param userId 教师id
+   * @param data 更新后的教师数据
+   */
+  update(userId: number, data: { phone: string; name: string }): Observable<any> {
+    console.log('userId', userId);
+    console.log('update', data);
+    return this.httpClient.post<any>(`${this.url}/update/` + userId.toString(), data);
   }
 }

@@ -12,6 +12,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {AuthModule} from './auth/auth.module';
 import {SizeModule} from '../common/size/size.module';
 import {PageModule} from '../common/page/page.module';
+import {HeaderComponent} from "./part/header/header.component";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,7 @@ import {PageModule} from '../common/page/page.module';
     SizeModule,
     PageModule,
   ],
-  providers: [],
+  providers: [HeaderComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

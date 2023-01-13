@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {UserService} from '../../service/user.service';
+import {User} from '../../entity/user';
 
 @Component({
   selector: 'app-personal',
@@ -6,10 +8,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./personal.component.scss']
 })
 export class PersonalComponent implements OnInit {
+  public user = new User();
 
-  constructor() { }
+  constructor( private userService: UserService ) { }
 
   ngOnInit(): void {
+    this.userService.getCurrentLoginUser()
+      .subscribe(currentLoginUser => {
+        this.user = currentLoginUser;
+      });
   }
 
 }
