@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
 
@@ -17,15 +18,19 @@ public class Teacher implements SoftDelete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty("id")
+    @JsonView(IdJsonView.class)
     private Long id;
 
     @ApiModelProperty("名称")
+    @JsonView(NameJsonView.class)
     private String name;
 
     @ApiModelProperty("手机号")
+    @JsonView(PhoneJsonView.class)
     private String phone;
 
     @ApiModelProperty("性别")
+    @JsonView(SexJsonView.class)
     private Boolean sex;
 
 
@@ -71,4 +76,10 @@ public class Teacher implements SoftDelete {
     private void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
+
+
+    public interface IdJsonView {}
+    public interface NameJsonView {}
+    public interface SexJsonView {}
+    public interface PhoneJsonView {}
 }

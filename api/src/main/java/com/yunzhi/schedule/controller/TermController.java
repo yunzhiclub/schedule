@@ -74,4 +74,8 @@ public class TermController {
     public StateTerm active(@PathVariable Long termId) {
         return this.termService.activeTerm(termId);
     }
+    @GetMapping("getCurrentTerm")
+    public Term getCurrentTerm() {
+        return this.termService.getCurrentTerm();
+    }
 }

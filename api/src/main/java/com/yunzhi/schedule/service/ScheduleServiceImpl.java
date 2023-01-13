@@ -17,6 +17,11 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     @Override
     public List<Schedule> getAllByCourseIdAndTermId(Long courseId, Long termId) {
-        return this.scheduleRepository.findSchedulesByCourseIdAndTermId(courseId, termId);
+        return this.scheduleRepository.findSchedulesByCourseIdAndTermIdAndDeletedFalse(courseId, termId);
+    }
+
+    @Override
+    public List<Schedule> getSchedulesInCurrentTerm(Term term) {
+        return this.scheduleRepository.findSchedulesByTermAndDeletedFalse(term);
     }
 }

@@ -7,6 +7,11 @@ import {CourseService} from '../../../service/course.service';
 import {Teacher} from '../../../entity/teacher';
 import {TeacherService} from '../../../service/teacher.service';
 import {config} from '../../../conf/app.config';
+import {TermService} from '../../../service/term.service';
+import {Term} from '../../../entity/term';
+import {ScheduleService} from '../../../service/schedule.service';
+import {Schedule} from '../../../entity/schedule';
+import {Room} from '../../../entity/room';
 
 @Component({
   selector: 'app-add',
@@ -25,7 +30,7 @@ export class AddComponent implements OnInit {
   // 时间表, 判断是否周可选
   times: boolean[][][] = [];
   // 地点表（教室), 判断是否教室可选
-  sites: {id: number, free: boolean}[][][] = [];
+  sites: number[][][][] = [];
   // 冲突时间分类便于提示
   // 班级冲突时间
   conflictTimesOfClazzes: {day: number, lesson: number, weeks: number[]}[] = [];
@@ -43,6 +48,8 @@ export class AddComponent implements OnInit {
   courses =  []  as Course[];
   // 所有教师
   teachers =  []  as Teacher[];
+  // 所有排课
+  schedules =  []  as Schedule[];
   /* 待处理班级，需要筛选掉已经上过该门课的班级 */
   clazzes = [] as Clazz[];
   /* 可选班级，clazzes筛选过后的班级 */
@@ -56,10 +63,14 @@ export class AddComponent implements OnInit {
   isShowModel = false;
   // 两个教师是否相同
   isTeacherSame = false;
+  // 当前学期
+  term = {} as Term;
 
   constructor(private clazzService: ClazzService,
               private courseService: CourseService,
-              private teacherService: TeacherService) { }
+              private teacherService: TeacherService,
+              private termService: TermService,
+              private scheduleService: ScheduleService) { }
 
   ngOnInit(): void {
     // 初始化时间表
@@ -93,7 +104,7 @@ export class AddComponent implements OnInit {
       for (let j = 0; j < 11; j++) {
         this.sites[i][j] = [];
         for (let k = 0; k < this.weekNumber; k++) {
-          this.sites[i][j][k] = {} as {id: number, free: boolean};
+          this.sites[i][j][k] = [] as number[];
         }
       }
     }
@@ -107,9 +118,9 @@ export class AddComponent implements OnInit {
       this.formGroup.get('clazzIds')?.setValue([]);
       this.formGroup.get('teacher1Id')?.setValue(null);
       this.formGroup.get('teacher2Id')?.setValue(null);
-      this.initScreenedClazzes();
-      this.initConflictTimes();
-      this.initSelectedData();
+      this.clearScreenedClazzes();
+      this.clearConflictTimes();
+      this.clearSelectedData();
       this.makeScreenedClazzes(); // 已实现
       this.makeConflictTimes();
       this.makeTimesAndSites();
@@ -117,19 +128,19 @@ export class AddComponent implements OnInit {
     this.formGroup.get('clazzIds')?.valueChanges.subscribe(() => {
       this.formGroup.get('teacher1Id')?.setValue(null);
       this.formGroup.get('teacher2Id')?.setValue(null);
-      this.initSelectedData();
-      this.initConflictTimes();
+      this.clearConflictTimes();
+      this.clearSelectedData();
       this.makeConflictTimes();
       this.makeTimesAndSites();
     });
     this.formGroup.get('teacher1Id')?.valueChanges.subscribe((teacher1Id: number) => {
-      this.initSelectedData();
+      this.clearSelectedData();
       this.makeConflictTimes();
       this.makeTimesAndSites();
       this.isTeacherSame = teacher1Id === this.formGroup.get('teacher2Id')?.value;
     });
     this.formGroup.get('teacher2Id')?.valueChanges.subscribe((teacher2Id: number) => {
-      this.initSelectedData();
+      this.clearSelectedData();
       this.makeConflictTimes();
       this.makeTimesAndSites();
       this.isTeacherSame = teacher2Id === this.formGroup.get('teacher1Id')?.value;
@@ -172,6 +183,12 @@ export class AddComponent implements OnInit {
   }
 
   private getData(): void {
+    this.scheduleService.getSchedulesInCurrentTerm()
+      .subscribe((schedules: Schedule[]) => {
+        console.log(schedules);
+        this.schedules = schedules;
+        this.makeConflictSites();
+      });
     this.courseService.getAll()
       .subscribe(allCourse => {
         this.courses = allCourse;
@@ -186,15 +203,18 @@ export class AddComponent implements OnInit {
       });
   }
 
-  private initSelectedData(): void {
+  /**
+   * 清空选择的数据
+   */
+  private clearSelectedData(): void {
     this.selectedData = [];
   }
 
-  private initScreenedClazzes(): void {
+  private clearScreenedClazzes(): void {
     this.screenedClazzes = [];
   }
 
-  private initConflictTimes(): void {
+  private clearConflictTimes(): void {
     this.conflictTimesOfClazzes = [];
     this.conflictTimesOfTeacher1 = [];
     this.conflictTimesOfTeacher2 = [];
@@ -219,12 +239,31 @@ export class AddComponent implements OnInit {
         });
     }
   }
-
+  // 需要 schedules clazzIds teacher1 teacher2
   private makeConflictTimes(): void {
     return;
   }
 
+  // 需要 当前学期的schedules
+  private makeConflictSites(): void {
+    this.schedules.forEach(schedule => {
+      schedule.dispatches.forEach(dispatch => {
+        dispatch.rooms.forEach(room => {
+          this.sites[dispatch.day!][dispatch.lesson!][dispatch.week!].push(room.id!);
+        });
+      });
+    });
+    this.sites = Array.from(new Set(this.sites));
+  }
+  // 需要冲突时间和地点
   private makeTimesAndSites(): void {
     return;
+  }
+
+  isShowTeacher(): boolean {
+    return !!(this.formGroup.get('clazzIds')?.valid
+      && this.formGroup.get('clazzIds')?.value !== null
+      && (this.formGroup.get('clazzIds')?.value?.length === 1 && this.formGroup.get('clazzIds')?.value[0] !== null)
+    );
   }
 }

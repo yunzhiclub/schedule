@@ -5,19 +5,19 @@
     <label class="col-sm-1 text-right col-form-label" style="width: 162px"><code>*</code>课程</label>
     <div class="col-sm">
       <select class="select picker form-control col-sm-3" style="width: 200px" (change)="onCourseIdChange()" formControlName="courseId" id="courseId" required>
-        <option [value]="''">请选择课程</option>
+        <option [value]="null">请选择课程</option>
         <option *ngFor="let course of courses" [value]="+course.id">{{course.name}}</option>
       </select>
     </div>
   </div>
 
   <!-- 选择班级 -->
-  <div *ngIf="formGroup.get('courseId')?.valid">
+  <div *ngIf="formGroup.get('courseId')?.value">
     <div class="form-group row">
       <label class="col-sm-1 text-right col-form-label"><code>*</code>上课班级<br>(可多选)</label>
       <div class="col-sm">
-        <select class="select picker form-control col-sm-3" style="width: 200px" (change)="onClazzIdsChange()" formControlName="clazzIds" multiple id="klass">
-          <option [value]="''">请选择班级</option>
+        <select class="select picker form-control col-sm-3" style="width: 200px" formControlName="clazzIds" multiple id="klass">
+          <option [value]="null">请选择班级</option>
           <option *ngFor="let clazz of screenedClazzes" [value]="+clazz.id">{{clazz.name}}</option>
         </select>
       </div>
@@ -30,7 +30,7 @@
   </div>
 
   <!-- 选择教师 -->
-  <div *ngIf="formGroup.get('clazzIds')?.valid">
+  <div *ngIf="isShowTeacher()">
     <div class="form-group row">
       <label class="col-sm-1 text-right col-form-label" style="width: 162px"><code>*</code>教师</label>
       <div class="col-sm-2">

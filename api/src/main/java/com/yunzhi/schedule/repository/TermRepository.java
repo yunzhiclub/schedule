@@ -28,5 +28,5 @@ public interface TermRepository extends PagingAndSortingRepository<Term, Long>, 
 
     Optional<Term> findByNameAndDeletedFalse(String name);
 
-    Term findTermByState(Boolean state);
+    Term findTermByStateAndDeletedFalse(Boolean state);
 }
