@@ -1,9 +1,8 @@
-<body class="container offset-4 mt-sm-5">
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
   <div class="form-group row">
-    <label for="name" class="col-sm-2 text-right col-form-label"><code>*</code>名称</label>
-    <div class="col-sm-4">
-      <input type="text" class="form-control" style="width: 153px;" id="name" formControlName="name">
+    <label for="name" class="col-sm-4 text-right col-form-label"><code>*</code>名称</label>
+    <div class="col-sm-8">
+      <input type="text" class="form-control col-sm-3" id="name" formControlName="name">
       <small class="text-danger" *ngIf="formGroup.get('name')!.touched && formGroup.get('name')!.invalid ">
         <span *ngIf="!formGroup.get('name')?.errors?.termNameUnique">格式不正确</span>
         <span *ngIf="formGroup.get('name')?.errors?.termNameUnique">学期名已存在</span>
@@ -11,15 +10,15 @@
     </div>
   </div>
   <div class="form-group row">
-    <label for="startTime" class="col-sm-2 text-right col-form-label"><code>*</code>开始时间</label>
-    <div class="col-sm-4">
+    <label for="startTime" class="col-sm-4 text-right col-form-label"><code>*</code>开始时间</label>
+    <div class="col-sm-8">
       <app-date formControlName="startTime" id="startTime"></app-date>
     </div>
   </div>
 
   <div class="form-group row">
-    <label for="endTime" class="col-sm-2 text-right col-form-label"><code>*</code>结束时间</label>
-    <div class="col-sm-4">
+    <label for="endTime" class="col-sm-4 text-right col-form-label"><code>*</code>结束时间</label>
+    <div class="col-sm-8">
       <app-date formControlName="endTime" id="endTime"></app-date>
       <small class="text-danger" *ngIf="formGroup.get('startTime')!.valid && formGroup.get('endTime')!.valid &&
       !isTimeRight">
@@ -29,8 +28,8 @@
   </div>
 
   <div class="form-group row">
-    <label class="col-sm-2 text-right col-form-label"><code>*</code>是否激活</label>
-    <div class="col-sm-4 mt-2">
+    <label class="col-sm-4 text-right col-form-label"><code>*</code>是否激活</label>
+    <div class="col-sm-8 mt-2">
       <input [value]="true" type="radio" name="state" id="1" formControlName="state">
       <label for="1">是</label> &nbsp;
       <input [value]="false" type="radio" name="state" id="0" formControlName="state">
@@ -38,7 +37,7 @@
     </div>
   </div>
   <div class="form-group row">
-    <div class="col-sm-4">
+    <div class="offset-4">
       <a style="float: right" [routerLink]="'../../'" class="btn btn-primary">返回</a>
       <button style="float: right" class="btn btn-primary" [disabled]="formGroup.invalid || !isTimeRight">
         <i class="fas fa-save"></i>保存
@@ -46,4 +45,3 @@
     </div>
   </div>
 </form>
-</body>

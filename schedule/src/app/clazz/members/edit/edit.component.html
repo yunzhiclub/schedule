@@ -1,8 +1,8 @@
 <form class="container-sm"  [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
   <div class="mb-3 row">
-    <label for="name" class="col-3 text-right col-form-label"><code>*</code>名称</label>
-    <div class="col-7">
-      <input type="text" class="form-control" id="name" formControlName="name">
+    <label for="name" class="col-sm-4 text-right col-form-label"><code>*</code>名称</label>
+    <div class="col-sm-8">
+      <input type="text" class="form-control col-sm-3" id="name" formControlName="name">
       <small class="text-danger" *ngIf="formGroup.get('name')!.touched && formGroup.get('name')!.invalid ">
         <span *ngIf="!formGroup.get('name')?.errors?.studentNameUnique">格式不正确</span>
         <span *ngIf="formGroup.get('name')?.errors?.studentNameUnique">学生名已存在</span>
@@ -10,9 +10,9 @@
     </div>
   </div>
   <div class="mb-3 row">
-    <label for="sno" class="col-3 text-right col-form-label"><code>*</code>学号</label>
-    <div class="col-7">
-      <input type="text" class="form-control" id="sno" formControlName="sno">
+    <label for="sno" class="col-sm-4 text-right col-form-label"><code>*</code>学号</label>
+    <div class="col-sm-8">
+      <input type="text" class="form-control col-sm-3" id="sno" formControlName="sno">
       <small class="text-danger" *ngIf="formGroup.get('sno')!.touched && formGroup.get('sno')!.invalid ">
         <span *ngIf="!formGroup.get('sno')?.errors?.snoUnique">格式不正确</span>
         <span *ngIf="formGroup.get('sno')?.errors?.snoUnique">学号已存在</span>
@@ -20,14 +20,14 @@
     </div>
   </div>
   <div class="mb-3 row">
-    <label for="clazz" class="col-3 text-right col-form-label"><code>*</code>班级</label>
-    <div class="col-7">
+    <label for="clazz" class="col-sm-4 text-right col-form-label"><code>*</code>班级</label>
+    <div class="col-sm-8">
       <app-clazz-select formControlName="clazzId" id="clazz"></app-clazz-select>
     </div>
   </div>
   <div class="mb-3 row">
-    <label class="col-3 text-right col-form-label"><code>*</code>性别</label>
-    <div class="col-7">
+    <label class="col-sm-4 text-right col-form-label"><code>*</code>性别</label>
+    <div class="col-sm-8">
       <input [value]="true" type="radio"  name="sex" id="sex1"formControlName="sex">
       <label for="sex1">男</label> &nbsp;
       <input [value]="false" type="radio" name="sex" id="sex2" formControlName="sex">
@@ -35,7 +35,7 @@
     </div>
   </div>
   <div class="mb-3 row">
-    <div class="col-sm-10 offset-5">
+    <div class="offset-4">
       <button class="btn btn-primary" [disabled]="formGroup.invalid">
         <i class="fas fa-save"></i>保存
       </button>
