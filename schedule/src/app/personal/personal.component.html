@@ -1,1 +1,32 @@
-<p>personal works!</p>
+<div class="row">
+  <div class="col-md-2">
+    <a class="btn btn-primary" style="float: left" [routerLink]="'edit'"><i class="fas fa-pen"></i>修改个人信息</a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3">
+    <table class="table table-striped mt-2">
+      <thead>
+      <tr class="table-primary">
+        <th scope="col" colspan="2">
+          <h3>我的信息</h3>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>姓名</td>
+        <td>
+          {{ this.user.name }}
+        </td>
+      </tr>
+      <tr>
+        <td>手机号</td>
+        <td>
+          {{ this.user.phone }}
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

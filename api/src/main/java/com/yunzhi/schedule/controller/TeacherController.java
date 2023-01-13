@@ -65,7 +65,7 @@ public class TeacherController {
     }
 
     /**
-     * 新增教师
+     * 更新教师
      * @param teacher   更新后的教师数据
      * @return 教师
      */

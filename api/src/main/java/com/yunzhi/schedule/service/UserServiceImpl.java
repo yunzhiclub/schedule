@@ -6,11 +6,11 @@ import com.yunzhi.schedule.filter.TokenFilter;
 import com.yunzhi.schedule.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.security.Principal;
 import java.util.*;
 
 @Service
@@ -106,5 +106,20 @@ public class UserServiceImpl implements UserService {
         } catch (EntityNotFoundException e) {
             return null;
         }
+    }
+
+    @Override
+    public User update(Long userId, User user) {
+        Assert.notNull(user.getName(), "name不能为null");
+        Assert.notNull(user.getPhone(), "phone不能为null");
+        User OldUser = this.getById(userId);
+        OldUser.setName(user.getName());
+        OldUser.setPhone(user.getPhone());
+        return this.userRepository.save(OldUser);
+    }
+
+    @Override
+    public User getById(Long id) {
+        return this.userRepository.findById(id).get();
     }
 }

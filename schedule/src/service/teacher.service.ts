@@ -60,7 +60,6 @@ export class TeacherService {
    * @param data 更新后的教师数据
    */
   update(id: number, data: {name: string, sex: number, phone: string}): Observable<any> {
-    console.log('update', data);
     return this.httpClient.post<any>(`${this.url}/update/` + id.toString(), data);
   }
 

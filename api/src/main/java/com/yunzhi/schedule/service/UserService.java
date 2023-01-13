@@ -24,4 +24,8 @@ public interface UserService {
      * @return user
      */
     User getCurrentLoginUser();
+
+    User update(Long userId, User user);
+
+    User getById(Long id);
 }
