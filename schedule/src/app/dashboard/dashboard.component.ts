@@ -8,10 +8,14 @@ import {environment} from '../../environments/environment';
 })
 export class DashboardComponent implements OnInit {
   title = environment.title;
+  isEr = true;
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  switch(): void {
+    this.isEr = !this.isEr;
+  }
 }

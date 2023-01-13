@@ -46,43 +46,55 @@
     </div>
   </div>
 
-
   <!--选择时间-->
-  <div *ngIf="!formGroup.invalid || true" class="form-group row">
+  <div *ngIf="!formGroup.invalid" class="form-group row">
     <div class="col-sm-12">
-      <label class="col-sm-1 text-right col-form-label"><code>*</code>上课时间</label>
+      <label class="col-sm-2 col-form-label"><code>*</code>上课时间</label>
     </div>
-    <div class="offset-1 col-sm-12" style="float: right">
-      <table class="table table-hover table-bordered">
-        <tr>
-          <th class="">周几/课序</th>
-          <th class="">1</th>
-          <th class="">2</th>
-          <th class="">3</th>
-          <th class="">4</th>
-          <th class="">5</th>
-        </tr>
-        <tr *ngFor="let day of days; index as d">
-          <td>周{{day}}</td>
-          <td *ngFor="let lesson of lessons; index as l">
-            <div class="row">
-<!--                <app-course-time-->
-<!--                  [day]="d"-->
-<!--                  [lesson]="l"-->
-<!--                  [weeks]="weeks"-->
-<!--                  [rooms]="rooms"-->
-<!--                  [teacher]="teacher"-->
-<!--                  [style]="formGroup.get('clazz_ids')?.value"-->
-<!--                  [conflictData]="getConflictData(d, l)"-->
-<!--                  [clazzes]="formGroup.get('clazz_ids')?.value"-->
-<!--                  (outer)="getFooterRun($event)"-->
-<!--                ></app-course-time>-->
-            </div>
-          </td>
-        </tr>
+    <div class="col-sm" style="float: right">
+      <table class="table  table-bordered">
+        <thead>
+          <tr>
+            <th>周几/课序</th>
+            <th *ngFor="let lesson of lessons">{{lesson + 1}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let day of days; index as d">
+            <th   class="col-sm-1">周{{day}}</th>
+            <td  *ngFor="let lesson of lessons" class="col-sm-1 container-fluid">
+              <div class="list-group  ">
+                <button class="list-group-item"></button>
+              </div>
+<!--              <ul class="list-group list-group-horizontal-sm small col-sm-12">-->
+<!--                <button class="list-group-item small col-sm-6">1</button>-->
+<!--                <button class="list-group-item small">2</button>-->
+<!--              </ul>-->
+<!--              <ul class="list-group small col-sm-12">-->
+<!--                <button class="list-group-item small">2</button>-->
+<!--              </ul>-->
+            </td>
+          </tr>
+
+<!--              <div class="row">-->
+  <!--                <app-course-time-->
+  <!--                  [day]="d"-->
+  <!--                  [lesson]="l"-->
+  <!--                  [weeks]="weeks"-->
+  <!--                  [rooms]="rooms"-->
+  <!--                  [teacher]="teacher"-->
+  <!--                  [style]="formGroup.get('clazz_ids')?.value"-->
+  <!--                  [conflictData]="getConflictData(d, l)"-->
+  <!--                  [clazzes]="formGroup.get('clazz_ids')?.value"-->
+  <!--                  (outer)="getFooterRun($event)"-->
+  <!--                ></app-course-time>-->
+<!--              </div>-->
+        </tbody>
       </table>
+
     </div>
-    <div class="form-group row">
+
+    <div class="row col-sm-12">
       <div class="col">
         <a type="submit" class="btn btn-primary">确定</a>
       </div>

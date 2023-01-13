@@ -29,8 +29,9 @@ export class AddComponent implements OnInit {
   clazzesToBeScreened = [] as Clazz[];
   /* 可选班级，clazzes筛选过后的班级 */
   clazzes: Clazz[] = [];
-  lessons = [1, 2, 3, 4, 5];
+  lessons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   days = ['一', '二', '三', '四', '五', '六', '日'];
+  days1 = ['一', '二', '三', '四', '五', '六', '日', 1, 2, 3, 4, 5, 6, 7];
   isShowTeacherSelect = false;
   constructor(private clazzService: ClazzService,
               private courseService: CourseService,
