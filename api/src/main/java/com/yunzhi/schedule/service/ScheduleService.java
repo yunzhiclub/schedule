@@ -5,5 +5,5 @@ import com.yunzhi.schedule.entity.Schedule;
 import java.util.List;
 
 public interface ScheduleService {
-    List<Schedule> clazzesHaveSelectCourse(Long course_id);
+    List<Schedule> getAllByCourseIdAndTermId(Long courseId, Long id);
 }

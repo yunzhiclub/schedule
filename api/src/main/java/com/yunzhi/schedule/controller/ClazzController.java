@@ -1,7 +1,11 @@
 package com.yunzhi.schedule.controller;
 
 import com.yunzhi.schedule.entity.Clazz;
+import com.yunzhi.schedule.entity.Schedule;
+import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.service.ClazzService;
+import com.yunzhi.schedule.service.ScheduleService;
+import com.yunzhi.schedule.service.TermService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +20,17 @@ import java.util.List;
 @RequestMapping("clazz")
 public class ClazzController {
     private ClazzService clazzService;
+    private TermService termService;
+
+    private ScheduleService scheduleService;
 
     @Autowired
-    ClazzController(ClazzService clazzService) {
+    ClazzController(ClazzService clazzService,
+                    ScheduleService scheduleService,
+                    TermService termService) {
         this.clazzService = clazzService;
+        this.termService = termService;
+        this.scheduleService = scheduleService;
     }
 
     /**
@@ -78,7 +89,9 @@ public class ClazzController {
      */
     @GetMapping("clazzesHaveSelectCourse/{courseId}")
     public List<Long> clazzesHaveSelectCourse(@PathVariable Long courseId) {
-        return this.clazzService.clazzIdsHaveSelectCourse(courseId);
+        Term currentTerm = this.termService.getCurrentTerm();
+        List<Schedule> schedules = this.scheduleService.getAllByCourseIdAndTermId(courseId, currentTerm.getId());
+        return this.clazzService.getClazzIdsBySchedules(schedules);
     }
 
 }

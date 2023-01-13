@@ -1,6 +1,7 @@
 package com.yunzhi.schedule.service;
 
 import com.yunzhi.schedule.entity.Clazz;
+import com.yunzhi.schedule.entity.Schedule;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -43,5 +44,5 @@ public interface ClazzService {
 
     List<Clazz> getAll();
 
-    List<Long> clazzIdsHaveSelectCourse(Long courseId);
+    List<Long> getClazzIdsBySchedules(List<Schedule> schedules);
 }
