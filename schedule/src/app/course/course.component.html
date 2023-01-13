@@ -29,7 +29,6 @@
     <td>{{ course.hours }}</td>
     <td>
       <a class="btn btn-sm btn-primary" [routerLink]="'/course/edit/' + course.id">编辑</a>
-      &nbsp;
       <a class="btn btn-sm btn-danger" (click)="onDelete(course.id)">删除</a>
     </td>
   </tr>
