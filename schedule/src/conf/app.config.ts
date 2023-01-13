@@ -7,5 +7,6 @@ export const config = {
   uploadMaxSize: 20 * 1024 * 1024,      // 最大小传文件大小
   ERROR_RESPONSE_CODE_KEY: 'code',
   ERROR_RESPONSE_MESSAGE_KEY: 'message',
-  PHONE_NUMBER: 'thisIsOurPhoneNumber'  // 系统报错时提示的联系电话
+  PHONE_NUMBER: 'thisIsOurPhoneNumber',  // 系统报错时提示的联系电话
+  weekNumber: 20
 };
