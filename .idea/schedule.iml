@@ -9,5 +9,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="web" />
+    <orderEntry type="module" module-name="workhome-review" />
   </component>
 </module>
