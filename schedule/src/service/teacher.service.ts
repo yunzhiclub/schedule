@@ -78,4 +78,14 @@ export class TeacherService {
   getAll(): Observable<Teacher[]> {
     return this.httpClient.get<Teacher[]>(`${this.url}/getAll`);
   }
+
+  /**
+   * 教师手机号唯一性验证
+   */
+  phoneUnique(phone: string, teacherId = 0): Observable<boolean> {
+    const httpParams = new HttpParams()
+      .append('phone', phone)
+      .append('teacherId', teacherId.toString());
+    return this.httpClient.get<boolean>(this.url + '/phoneUnique', {params: httpParams});
+  }
 }

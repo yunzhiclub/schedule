@@ -4,6 +4,8 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonService} from '../../../service/common.service';
 import {HttpClient} from '@angular/common/http';
+import {YzValidator} from '../../validator/yz-validator';
+import {YzAsyncValidators} from '../../validator/yz-async.validators';
 
 @Component({
   selector: 'app-add',
@@ -16,11 +18,12 @@ export class AddComponent implements OnInit {
               private router: Router,
               private route: ActivatedRoute,
               private commonService: CommonService,
+              private yzAsyncValidators: YzAsyncValidators,
               private httpClient: HttpClient) {
     this.formGroup = new FormGroup({
       name: new FormControl(''),
       sex: new FormControl(0),
-      phone: new FormControl('')
+      phone: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.phoneUnique())
     });
   }
 

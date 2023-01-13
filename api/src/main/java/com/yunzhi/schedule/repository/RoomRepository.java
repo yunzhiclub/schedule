@@ -1,12 +1,15 @@
 package com.yunzhi.schedule.repository;
 
 import com.yunzhi.schedule.entity.Room;
+import com.yunzhi.schedule.entity.Teacher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.yunzhi.schedule.repository.specs.RoomSpecs;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
+
+import java.util.Optional;
 
 public interface RoomRepository  extends PagingAndSortingRepository<Room, Long>, JpaSpecificationExecutor<Room> {
     /**
@@ -21,4 +24,6 @@ public interface RoomRepository  extends PagingAndSortingRepository<Room, Long>,
                 .and(RoomSpecs.containingCapacity(capacity));
         return this.findAll(specification, pageable);
     }
+
+    Optional<Room> findByNameAndDeletedFalse(String roomName);
 }
