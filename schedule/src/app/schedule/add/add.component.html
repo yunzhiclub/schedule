@@ -12,12 +12,13 @@
   </div>
 
   <!-- 选择班级 -->
-  <div *ngIf="formGroup.get('courseId')?.value !== ''">
+  <div *ngIf="formGroup.get('courseId')?.valid">
     <div class="form-group row">
       <label class="col-sm-1 text-right col-form-label"><code>*</code>上课班级<br>(可多选)</label>
       <div class="col-sm">
         <select class="select picker form-control col-sm-3" style="width: 200px" (change)="onClazzIdsChange()" formControlName="clazzIds" multiple id="klass">
-          <option *ngFor="let clazz of clazzes" [value]="+clazz.id">{{clazz.name}}</option>
+          <option [value]="''">请选择班级</option>
+          <option *ngFor="let clazz of screenedClazzes" [value]="+clazz.id">{{clazz.name}}</option>
         </select>
       </div>
     </div>
@@ -29,7 +30,7 @@
   </div>
 
   <!-- 选择教师 -->
-  <div *ngIf="this.isShowTeacherSelect">
+  <div *ngIf="formGroup.get('clazzIds')?.valid">
     <div class="form-group row">
       <label class="col-sm-1 text-right col-form-label" style="width: 162px"><code>*</code>教师</label>
       <div class="col-sm-2">
@@ -48,7 +49,7 @@
   </div>
 
   <!--选择时间-->
-  <div *ngIf="!formGroup.invalid || true" class="form-group row">
+  <div *ngIf="!formGroup.invalid && !isTeacherSame" class="form-group row">
     <div class="col-sm-12">
       <label class="col-sm-2 col-form-label"><code>*</code>上课时间</label>
     </div>
@@ -67,32 +68,10 @@
               <div class="list-group">
                 <button class="list-group-item" (click)="showModel(d, lesson)"><h6>周{{day}}第{{lesson + 1}}节</h6></button>
               </div>
-<!--              <ul class="list-group list-group-horizontal-sm small col-sm-12">-->
-<!--                <button class="list-group-item small col-sm-6">1</button>-->
-<!--                <button class="list-group-item small">2</button>-->
-<!--              </ul>-->
-<!--              <ul class="list-group small col-sm-12">-->
-<!--                <button class="list-group-item small">2</button>-->
-<!--              </ul>-->
             </td>
           </tr>
-
-<!--              <div class="row">-->
-  <!--                <app-course-time-->
-  <!--                  [day]="d"-->
-  <!--                  [lesson]="l"-->
-  <!--                  [weeks]="weeks"-->
-  <!--                  [rooms]="rooms"-->
-  <!--                  [teacher]="teacher"-->
-  <!--                  [style]="formGroup.get('clazz_ids')?.value"-->
-  <!--                  [conflictData]="getConflictData(d, l)"-->
-  <!--                  [clazzes]="formGroup.get('clazz_ids')?.value"-->
-  <!--                  (outer)="getFooterRun($event)"-->
-  <!--                ></app-course-time>-->
-<!--              </div>-->
         </tbody>
       </table>
-
     </div>
 
     <div class="row col-sm-12">
@@ -103,7 +82,7 @@
   </div>
 </form>
 
-<app-yz-modal *ngIf="isShow" [width]="'60%'" [size]="'sm'">
+<app-yz-modal *ngIf="isShowModel" [width]="'60%'" [size]="'sm'">
   <div class="">
     <div class="modal-dialog modal-xl">
       <div class="modal-content" >
@@ -122,8 +101,8 @@
           <br>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-secondary" (click)="close()" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="save()">Save changes</button>
         </div>
       </div>
     </div>

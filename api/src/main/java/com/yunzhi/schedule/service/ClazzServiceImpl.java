@@ -79,14 +79,7 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public List<Long> clazzIdsHaveSelectCourse(Long courseId) {
-        Assert.notNull(courseId, "courseId不能为null");
-        List<Schedule> schedules = this.scheduleService.clazzesHaveSelectCourse(courseId);
-        List<Long> clazzIds = this.getClazzIdsBySchedules(schedules);
-        return clazzIds;
-    }
-
-    private List<Long> getClazzIdsBySchedules(List<Schedule> schedules) {
+    public List<Long> getClazzIdsBySchedules(List<Schedule> schedules) {
         List<Long> results = new ArrayList<>();
         for (Schedule schedule:
                 schedules) {
