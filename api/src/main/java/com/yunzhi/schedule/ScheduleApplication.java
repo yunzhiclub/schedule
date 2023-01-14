@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(exclude= {SecurityAutoConfiguration.class })
 @ServletComponentScan
 @EnableJpaRepositories(value = "com.yunzhi.schedule",
 		repositoryFactoryBeanClass = SoftDeleteRepositoryFactoryBean.class)
+@SpringBootApplication(exclude= {SecurityAutoConfiguration.class })
 public class ScheduleApplication {
 
 	public static void main(String[] args) {

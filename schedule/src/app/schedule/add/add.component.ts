@@ -43,7 +43,11 @@ export class AddComponent implements OnInit {
   // 冲突地点, 通过学期所有被占用教室获取
   conflictSites: {day: number, lesson: number, week: number, roomIds: number[]}[] = [];
   // 选择的时间地点
-  selectedData: {day: number, lesson: number, week: number, roomIds: number[]}[] = [];
+  selectedData: {day: number, smLesson: number, week: number, roomIds: number[]}[] = [];
+  // 临时时间地点
+  tempData: number[][] = [];
+  // 记录每个天节的smLessons
+  smLessonsRecorder = [] as number[][][];
 
 
   /* 所有课程 */
@@ -73,10 +77,20 @@ export class AddComponent implements OnInit {
   day: number | undefined;
   // 当前节( < 5 的大节)
   bigLesson: number | undefined;
+  // 小节
+  smLessons: number[] = [0, 1];
+  // 当前周
+  week: number | undefined;
   // 周
   weeks: number[] = [];
   // 选择的周
   selectedWeeks = [] as number[];
+  // 选择的周
+  selectedRooms = [] as number[];
+  // 时间选择模式: true 分别选择 | false 同步选择 默认为同步选择
+  pattern = false ;
+  // 是否小结确定
+  isSmLessonsDetermine = false;
 
   constructor(private clazzService: ClazzService,
               private courseService: CourseService,
@@ -91,6 +105,8 @@ export class AddComponent implements OnInit {
     this.initTimes();
     // 初始化地点表
     this.initSites();
+    // 初始化smLessons记录器
+    this.initSmLessonsRecorder();
     // 订阅参数
     this.subscribeFormGroup();
     // 请求数据
@@ -122,6 +138,22 @@ export class AddComponent implements OnInit {
           this.sites[i][j][k] = [] as number[];
         }
       }
+    }
+  }
+  // 依赖本学期周数
+  private initSmLessonsRecorder(): void {
+    for (let i = 0; i < 7; i++) {
+      this.smLessonsRecorder[i] = [];
+      for (let j = 0; j < 5; j++) {
+        this.smLessonsRecorder[i][j] = [0, 1];
+        if (j === 4) this.smLessonsRecorder[i][j].push(2);
+      }
+    }
+  }
+  // 依赖本学期周数
+  private initTempData(): void {
+    for (let i = 0; i < this.weekNumber; i++) {
+      this.tempData[i] = [] as number[];
     }
   }
 
@@ -167,8 +199,12 @@ export class AddComponent implements OnInit {
    * @param day 天
    * @param lesson 节
    */
-  showModel(day: number, lesson: number): void {
+  showModel(day: number, bigLesson: number): void {
     this.isShowModel = true;
+    this.day = day;
+    this.bigLesson = bigLesson;
+    this.initTempData();
+    this.makeTempData();
   }
 
   /**
@@ -176,7 +212,10 @@ export class AddComponent implements OnInit {
    */
   close(): void {
     this.isShowModel = false;
-    return;
+    this.day = undefined;
+    this.bigLesson = undefined;
+    this.week = undefined;
+    this.initTempData();
   }
 
 
@@ -184,7 +223,26 @@ export class AddComponent implements OnInit {
    * 保存数据并关闭model
    */
   save(): void {
+    this.updateTempData();
+    this.deleteSelectedData();
+    if (this.pattern) {
+      this.smLessons.forEach(smLesson => {
+        for (let week = 0; week < this.tempData.length; week++) {
+          if (this.tempData[week].length > 0) {
+            this.selectedData.push({week, day: this.day!, smLesson, roomIds: this.tempData[week]});
+          }
+        }
+      });
+    } else {
+      this.smLessons.forEach(smLesson => {
+        this.selectedWeeks.forEach(week => {
+          this.selectedData.push({week, day: this.day!, smLesson, roomIds: this.selectedRooms});
+        });
+      });
+    }
+    this.smLessonsRecorder[this.day!][this.bigLesson!] = Array.from(this.smLessons);
     this.close();
+    console.log('save', this.selectedData);
   }
 
   private getData(): void {
@@ -204,7 +262,6 @@ export class AddComponent implements OnInit {
       });
     this.scheduleService.getSchedulesInCurrentTerm()
       .subscribe((schedules: Schedule[]) => {
-        console.log(schedules);
         this.schedules = schedules;
         this.makeConflictSites();
       });
@@ -251,10 +308,10 @@ export class AddComponent implements OnInit {
       // 选择课程，请求已选择该课程的班级clazzIds, 并在clazzes中筛选掉这些班级
       this.clazzService.clazzesHaveSelectCourse(this.formGroup.get('courseId')?.value)
         .subscribe(clazzIds => {
-          console.log('clazzIds', clazzIds);
+          // console.log('clazzIds', clazzIds);
           this.screenedClazzes = this.clazzes.filter(clazz => !clazzIds.includes(clazz.id));
         }, error => {
-          console.log('error', error);
+          // console.log('error', error);
         });
     }
   }
@@ -321,7 +378,7 @@ export class AddComponent implements OnInit {
         });
       }
     });
-    console.log('teacher1Id', this.conflictTimesOfTeacher1);
+    // console.log('teacher1Id', this.conflictTimesOfTeacher1);
   }
 
   private makeConflictTimesOfTeacher2(): void {
@@ -333,7 +390,7 @@ export class AddComponent implements OnInit {
         });
       }
     });
-    console.log('teacher2Id', this.conflictTimesOfTeacher2);
+    // console.log('teacher2Id', this.conflictTimesOfTeacher2);
   }
 
   private makeSites(): void {
@@ -358,11 +415,90 @@ export class AddComponent implements OnInit {
     this.weeks = Array.from(new Array(this.weekNumber).keys());
   }
 
-  changeWeek(week: number): void {
+
+  onWeekChange(week: number): void {
+    if (this.pattern) {
+      // 在模式 true 下，切换week时保存数据
+      this.updateTempData();
+      this.week = week;
+      console.log(this.tempData[this.week]);
+      this.selectedRooms = [];
+      this.selectedRooms = [...[], ...this.tempData[this.week!]];
+    } else {
+      this.changeSelectedWeeks(week);
+    }
+    console.log('onWeekChange', this.selectedData);
+  }
+
+  changeSelectedWeeks(week: number): void {
     if (!this.selectedWeeks.includes(week)) {
       this.selectedWeeks.push(week);
     } else {
       this.selectedWeeks.splice(this.selectedWeeks.indexOf(week), 1);
     }
+  }
+
+  onSmLessonsChange(smLesson: number): void {
+    if (!this.smLessons.includes(smLesson)) {
+      this.smLessons.push(smLesson);
+    } else {
+      this.smLessons.splice(this.smLessons.indexOf(smLesson), 1);
+    }
+  }
+
+  onIsSmLessonsDetermineChange(): void {
+    this.isSmLessonsDetermine = !this.isSmLessonsDetermine;
+  }
+
+  onRoomChange(roomId: number): void {
+    if (!this.selectedRooms.includes(roomId)) {
+      this.selectedRooms.push(roomId);
+    } else {
+      this.selectedRooms.splice(this.selectedRooms.indexOf(roomId), 1);
+    }
+  }
+
+
+  /**
+   * 保存数据
+   */
+  private updateTempData(): void {
+    this.tempData[this.week!] = [];
+    this.selectedRooms.forEach((room) => {
+      this.tempData[this.week!].push(room);
+    });
+    console.log('保存saveTempData', this.tempData[this.week!]);
+  }
+
+  isRoomChecked(roomId: number): boolean {
+    return this.selectedRooms.includes(roomId);
+  }
+
+  private makeTempData(): void {
+    console.log('makeTempData', this.selectedData);
+    const smLessons = this.smLessonsRecorder[this.day!][this.bigLesson!];
+    this.selectedData.forEach((data) => {
+      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+      if (data.day === this.day && bigLesson === this.bigLesson) {
+        this.tempData[data.week] = data.roomIds;
+      }
+    });
+    this.smLessons = smLessons;
+  }
+
+  updatePattern(pattern: boolean): void {
+    this.pattern = pattern;
+    this.initTempData();
+    this.selectedData = [];
+    this.selectedRooms = [];
+    this.selectedWeeks = [];
+    this.week = undefined;
+  }
+
+  private deleteSelectedData(): void {
+    this.selectedData = this.selectedData.filter(data => {
+      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+      return !(data.day === this.day && bigLesson === this.bigLesson);
+    });
   }
 }
