@@ -73,6 +73,10 @@ export class AddComponent implements OnInit {
   day: number | undefined;
   // 当前节( < 5 的大节)
   bigLesson: number | undefined;
+  // 小节
+  smLesson: number[] = [];
+  // 当前周
+  week: number | undefined;
   // 周
   weeks: number[] = [];
   // 选择的周
