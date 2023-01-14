@@ -117,7 +117,8 @@ export class ClazzComponent implements OnInit {
         const index = this.pageData.content.indexOf(clazz);
         this.clazzService.delete(clazz.id as number)
           .subscribe(() => {
-            this.commonService.success(() => this.pageData.content.splice(index, 1));
+            this.commonService.success();
+            this.ngOnInit();
           });
       }
     }, '');
