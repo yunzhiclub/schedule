@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -59,6 +60,11 @@ public class RoomServiceImpl implements RoomService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public List<Room> getAll() {
+        return (List<Room>) this.roomRepository.findAll();
     }
 
     private Room getByName(String roomName) {

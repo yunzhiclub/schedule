@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Course} from '../../../entity/course';
 import {Clazz} from '../../../entity/clazz';
@@ -11,8 +11,9 @@ import {TermService} from '../../../service/term.service';
 import {Term} from '../../../entity/term';
 import {ScheduleService} from '../../../service/schedule.service';
 import {Schedule} from '../../../entity/schedule';
-import {Room} from '../../../entity/room';
 import {Dispatch} from '../../../entity/dispatch';
+import {Room} from '../../../entity/room';
+import {RoomService} from '../../../service/room.service';
 
 @Component({
   selector: 'app-add',
@@ -51,13 +52,15 @@ export class AddComponent implements OnInit {
   teachers =  []  as Teacher[];
   // 所有排课
   schedules =  []  as Schedule[];
+  // 所有教室
+  rooms: Room[] = [];
   /* 待处理班级，需要筛选掉已经上过该门课的班级 */
   clazzes = [] as Clazz[];
   /* 可选班级，clazzes筛选过后的班级 */
   screenedClazzes: Clazz[] = [];
 
   // v层循环用
-  lessons = [0, 1, 2, 3, 4];
+  bigLessons = [0, 1, 2, 3, 4];
   days = ['一', '二', '三', '四', '五', '六', '日'];
 
   // 是否展示模态框
@@ -66,12 +69,22 @@ export class AddComponent implements OnInit {
   isTeacherSame = false;
   // 当前学期
   term = {} as Term;
+  // 当前天
+  day: number | undefined;
+  // 当前节( < 5 的大节)
+  bigLesson: number | undefined;
+  // 周
+  weeks: number[] = [];
+  // 选择的周
+  selectedWeeks = [] as number[];
 
   constructor(private clazzService: ClazzService,
               private courseService: CourseService,
               private teacherService: TeacherService,
               private termService: TermService,
-              private scheduleService: ScheduleService) { }
+              private scheduleService: ScheduleService,
+              private roomService: RoomService,
+              ) { }
 
   ngOnInit(): void {
     // 初始化时间表
@@ -84,6 +97,7 @@ export class AddComponent implements OnInit {
     this.getData();
   }
 
+  // 依赖本学期周数
   private initTimes(): void {
     // 天
     for (let i = 0; i < 7; i++) {
@@ -98,7 +112,7 @@ export class AddComponent implements OnInit {
       }
     }
   }
-
+  // 依赖本学期周数
   private initSites(): void {
     for (let i = 0; i < 7; i++) {
       this.sites[i] = [];
@@ -174,6 +188,20 @@ export class AddComponent implements OnInit {
   }
 
   private getData(): void {
+    this.termService.getCurrentTerm()
+      .subscribe((term: Term) => {
+        this.term = term;
+        const seconds = +term.endTime - +term.startTime;
+        const days = Math.ceil(seconds / (60 * 60 * 24));
+        this.weekNumber = Math.ceil(days / 7);
+        this.initTimes();
+        this.initSites();
+        this.makeWeeks();
+      });
+    this.roomService.getAll()
+      .subscribe((rooms: Room[]) => {
+        this.rooms = rooms;
+      });
     this.scheduleService.getSchedulesInCurrentTerm()
       .subscribe((schedules: Schedule[]) => {
         console.log(schedules);
@@ -324,5 +352,17 @@ export class AddComponent implements OnInit {
     this.conflictTimesOfTeacher2.forEach(conflictTime => {
       this.times[conflictTime.day][conflictTime.lesson][conflictTime.week] = false;
     });
+  }
+
+  private makeWeeks(): void {
+    this.weeks = Array.from(new Array(this.weekNumber).keys());
+  }
+
+  changeWeek(week: number): void {
+    if (!this.selectedWeeks.includes(week)) {
+      this.selectedWeeks.push(week);
+    } else {
+      this.selectedWeeks.splice(this.selectedWeeks.indexOf(week), 1);
+    }
   }
 }

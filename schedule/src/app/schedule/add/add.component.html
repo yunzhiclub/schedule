@@ -64,15 +64,15 @@
         <thead>
           <tr>
             <th>周几/课序</th>
-            <th *ngFor="let lesson of lessons">{{lesson + 1}}</th>
+            <th *ngFor="let bigLesson of bigLessons">{{bigLesson + 1}}</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let day of days; index as d">
             <th   class="col-sm-1">周{{day}}</th>
-            <td  *ngFor="let lesson of lessons" class="col-sm-1 container-fluid">
+            <td  *ngFor="let bigLesson of bigLessons" class="col-sm-1 container-fluid">
               <div class="list-group">
-                <button class="list-group-item" (click)="showModel(d, lesson)"><h6>周{{day}}第{{lesson + 1}}节</h6></button>
+                <button class="list-group-item" (click)="showModel(d, bigLesson)"><h6>周{{day}}第{{bigLesson + 1}}节</h6></button>
               </div>
             </td>
           </tr>
@@ -88,23 +88,30 @@
   </div>
 </form>
 
-<app-yz-modal *ngIf="isShowModel" [width]="'60%'" [size]="'sm'">
+<app-yz-modal *ngIf="isShowModel || true" [width]="'65%'" [size]="'md'">
   <div class="">
     <div class="modal-dialog modal-xl">
       <div class="modal-content" >
         <div class="modal-header">
-          <h5 class="modal-title">Modal title</h5>
+          <h5 class="modal-title">周{{days[day]}}第{{bigLesson}}节</h5>
           <button type="button" class="close" data-dismiss="modal">
-            <span></span>
+            <span>123</span>
           </button>
         </div>
         <div class="modal-body">
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
+          <h6>选择周:</h6>
+          <ul class="list-group list-group-horizontal">
+            <ng-container *ngFor="let week of weeks" class="list-group-item">
+              <button class="mr-1 border-white" style="font-size: 0.8em">第{{ week + 1 }}周</button>
+            </ng-container>
+          </ul><br>
+          <h6>选择教室:</h6>
+          <ul class="list-group list-group-horizontal">
+            <ng-container *ngFor="let room of rooms" class="list-group-item">
+              <button class="mr-1 border-white" [value]="room.id" style="font-size: 0.8em">{{ room.name }}</button>
+            </ng-container>
+          </ul>
+          <br><br>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="close()" data-dismiss="modal">Close</button>

@@ -81,4 +81,8 @@ export class RoomService {
       .append('roomId', roomId.toString());
     return this.httpClient.get<boolean>(this.url + '/roomNameUnique', {params: httpParams});
   }
+
+  getAll(): Observable<Room[]> {
+    return this.httpClient.get<Room[]>(this.url + '/getAll');
+  }
 }
