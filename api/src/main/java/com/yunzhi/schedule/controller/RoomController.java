@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @RestController
 @RequestMapping("room")
@@ -95,5 +96,13 @@ public class RoomController {
         } catch (EntityNotFoundException e) {
             return false;
         }
+    }
+
+    /**
+     * 获取所有教室
+     */
+    @GetMapping("getAll")
+    public List<Room> getAll() {
+        return this.roomService.getAll();
     }
 }
