@@ -42,4 +42,6 @@ public interface StudentService {
 
 
     Student getById(Long studentId);
+
+    Student update(Long id, Student student);
 }

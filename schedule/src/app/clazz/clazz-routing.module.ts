@@ -5,6 +5,8 @@ import {ClazzComponent} from './clazz.component';
 import {AddComponent} from './add/add.component';
 import {EditComponent} from './edit/edit.component';
 import {MembersComponent} from './members/members.component';
+import { EditComponent as membersEditComponent } from './members/edit/edit.component';
+import { AddComponent as membersAddComponent } from './members/add/add.component';
 
 const routes: Routes = [
   {
@@ -25,11 +27,11 @@ const routes: Routes = [
   },
   {
     path: 'members/:clazzId/add',
-    component: AddComponent
+    component: membersAddComponent
   },
   {
     path: 'members/:clazzId/edit/:studentId',
-    component: EditComponent
+    component: membersEditComponent
   },
 
 ];

@@ -14,12 +14,14 @@ import {Assert} from '../../../common/utils';
   styleUrls: ['./edit.component.scss']
 })
 export class EditComponent implements OnInit {
+  id = 0;
 
   constructor(private clazzService: ClazzService,
               private commonService: CommonService,
               private router: Router,
               private route: ActivatedRoute,
-              private yzAsyncValidators: YzAsyncValidators) { }
+              private yzAsyncValidators: YzAsyncValidators) {
+  }
 
   formGroup = new FormGroup({
     name: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.clazzNameUnique()),
@@ -34,6 +36,7 @@ export class EditComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(param => {
+      this.id = +param.clazzId;
       const clazzId = +param.clazzId;
       Assert.isNotNullOrUndefined(clazzId, 'ID类型不正确');
       this.formGroup.get(this.keys.name)!.setAsyncValidators(this.yzAsyncValidators.clazzNameUnique(clazzId));
@@ -47,7 +50,7 @@ export class EditComponent implements OnInit {
       name: formGroup.get('name')?.value,
       entranceDate: formGroup.get('entranceDate')?.value
     });
-    this.clazzService.save(clazz)
+    this.clazzService.update(this.id, clazz)
       .subscribe(() => {
         this.commonService.success(() => {
           this.router.navigateByUrl('/clazz');

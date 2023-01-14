@@ -14,12 +14,15 @@ import {Assert} from '../../../common/utils';
   styleUrls: ['./edit.component.scss']
 })
 export class EditComponent implements OnInit {
+  id: number;
 
   constructor(private termService: TermService,
               private commonService: CommonService,
               private router: Router,
               private route: ActivatedRoute,
-              private yzAsyncValidators: YzAsyncValidators) { }
+              private yzAsyncValidators: YzAsyncValidators) {
+    this.id = +this.route.snapshot.params.id;
+  }
 
   term = {} as Term;
 
@@ -62,7 +65,8 @@ export class EditComponent implements OnInit {
       endTime: formGroup.get('endTime')?.value,
     });
     console.log(term);
-    this.termService.save(term)
+    console.log(this.id);
+    this.termService.update(this.id, term)
       .subscribe(() => {
         this.commonService.success(() => {
           this.router.navigateByUrl('/term');
