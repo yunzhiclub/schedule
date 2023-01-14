@@ -101,14 +101,15 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         Term term = this.addTerm("已激活学期", true, 1672502400L, 1688140800L);
         Teacher teacher1 = this.addTeacher("张三", true, "13100000000");
         Teacher teacher2 = this.addTeacher("李四", false, "13100000001");
+        Teacher teacher3 = this.addTeacher("王五", false, "13100000002");
         Course course1 = this.addCourse("计算机组成原理", "48");
         Course course2 = this.addCourse("汇编", "48");
 
         Clazz clazz1 = this.addClazz("计科221", 1672502400L);
         Clazz clazz2 = this.addClazz("软件221", 1672502400L);
 
-        Schedule schedule1 = this.addSchedule(course1, term, teacher1, teacher2, Collections.singletonList(clazz1));
-        Schedule schedule2 = this.addSchedule(course2, term, teacher1, teacher2, Collections.singletonList(clazz2));
+        Schedule schedule1 = this.addSchedule(course1, term, teacher1, teacher3, Collections.singletonList(clazz1));
+        Schedule schedule2 = this.addSchedule(course2, term, teacher2, teacher3, Collections.singletonList(clazz2));
 
 
         // 添加测试教室
@@ -122,6 +123,7 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         this.addDispatch(schedule1, 1L, 1L, 1L, rooms1);
         this.addDispatch(schedule1, 2L, 1L, 1L, rooms1);
         this.addDispatch(schedule1, 3L, 1L, 1L, rooms1);
+
         this.addDispatch(schedule2, 4L, 1L, 1L, rooms2);
         this.addDispatch(schedule2, 5L, 1L, 1L, rooms2);
         this.addDispatch(schedule2, 6L, 1L, 1L, rooms2);

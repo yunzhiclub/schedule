@@ -2,7 +2,8 @@ import {Assert} from '../common/utils';
 import {Course} from './course';
 import {Term} from './term';
 import {Teacher} from './teacher';
-import {Dispatch} from "./dispatch";
+import {Dispatch} from './dispatch';
+import {Clazz} from './clazz';
 
 /**
  * 排课
@@ -14,6 +15,7 @@ export class Schedule {
   teacher1 = {} as Teacher;
   teacher2 = {} as Teacher;
   dispatches = [] as Dispatch[];
+  clazzes = [] as Clazz[];
   constructor(data = {} as {
     id?: number,
     course?: Course,
@@ -21,6 +23,7 @@ export class Schedule {
     teacher1?: Teacher,
     teacher2?: Teacher,
     dispatches?: Dispatch[]
+    clazzes?: Clazz[]
   }) {
     this.id = (data.id as number);
     this.course = data.course!;
@@ -28,12 +31,12 @@ export class Schedule {
     this.teacher1 = data.teacher1!;
     this.teacher2 = data.teacher2!;
     this.dispatches = data.dispatches!;
+    this.clazzes = data.clazzes!;
   }
   getCourse(): Course {
     Assert.isDefined(this.course, '不满足获取course的前提条件');
     return this.course!;
   }
-
   getTerm(): Term {
     Assert.isDefined(this.term, '不满足获取term的前提条件');
     return this.term!;
@@ -49,6 +52,10 @@ export class Schedule {
   getDispatches(): Dispatch[] {
     Assert.isDefined(this.dispatches, '不满足获取dispatches的前提条件');
     return this.dispatches!;
+  }
+  getClazzes(): Clazz[] {
+    Assert.isDefined(this.clazzes, '不满足获取clazzes的前提条件');
+    return this.clazzes!;
   }
   getId(): number {
     Assert.isDefined(this.id, '不满足获取id的前提条件');

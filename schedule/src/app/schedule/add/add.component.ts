@@ -12,6 +12,7 @@ import {Term} from '../../../entity/term';
 import {ScheduleService} from '../../../service/schedule.service';
 import {Schedule} from '../../../entity/schedule';
 import {Room} from '../../../entity/room';
+import {Dispatch} from '../../../entity/dispatch';
 
 @Component({
   selector: 'app-add',
@@ -33,11 +34,11 @@ export class AddComponent implements OnInit {
   sites: number[][][][] = [];
   // 冲突时间分类便于提示
   // 班级冲突时间
-  conflictTimesOfClazzes: {day: number, lesson: number, weeks: number[]}[] = [];
+  conflictTimesOfClazzes: {day: number, lesson: number, week: number}[] = [];
   // 教师1冲突时间
-  conflictTimesOfTeacher1: {day: number, lesson: number, weeks: number[]}[] = [];
+  conflictTimesOfTeacher1: {day: number, lesson: number, week: number}[] = [];
   // 教师2冲突时间
-  conflictTimesOfTeacher2: {day: number, lesson: number, weeks: number[]}[] = [];
+  conflictTimesOfTeacher2: {day: number, lesson: number, week: number}[] = [];
   // 冲突地点, 通过学期所有被占用教室获取
   conflictSites: {day: number, lesson: number, week: number, roomIds: number[]}[] = [];
   // 选择的时间地点
@@ -118,43 +119,33 @@ export class AddComponent implements OnInit {
       this.formGroup.get('clazzIds')?.setValue([]);
       this.formGroup.get('teacher1Id')?.setValue(null);
       this.formGroup.get('teacher2Id')?.setValue(null);
-      this.clearScreenedClazzes();
-      this.clearConflictTimes();
-      this.clearSelectedData();
-      this.makeScreenedClazzes(); // 已实现
-      this.makeConflictTimes();
-      this.makeTimesAndSites();
+      this.clearScreenedClazzes(); // 已实现
+      this.clearConflictTimes();   // 已实现
+      this.clearSelectedData();    // 已实现
+      this.makeScreenedClazzes();  // 已实现
+      this.makeTimesAndSites();    // 未实现
     });
     this.formGroup.get('clazzIds')?.valueChanges.subscribe(() => {
       this.formGroup.get('teacher1Id')?.setValue(null);
       this.formGroup.get('teacher2Id')?.setValue(null);
       this.clearConflictTimes();
       this.clearSelectedData();
-      this.makeConflictTimes();
       this.makeTimesAndSites();
     });
     this.formGroup.get('teacher1Id')?.valueChanges.subscribe((teacher1Id: number) => {
       this.clearSelectedData();
-      this.makeConflictTimes();
+      this.clearConflictTimes();
+      this.makeConflictTimes();    // 已实现
       this.makeTimesAndSites();
       this.isTeacherSame = teacher1Id === this.formGroup.get('teacher2Id')?.value;
     });
     this.formGroup.get('teacher2Id')?.valueChanges.subscribe((teacher2Id: number) => {
       this.clearSelectedData();
+      this.clearConflictTimes();
       this.makeConflictTimes();
       this.makeTimesAndSites();
       this.isTeacherSame = teacher2Id === this.formGroup.get('teacher1Id')?.value;
     });
-  }
-
-  onCourseIdChange(): void {
-    this.formGroup.get('clazzIds')?.setValue([]);
-
-
-  }
-
-  onTeacherIdChange(): void {
-    // 教师有变动，courseTimes要清空， 防止之前的班级选择的某些数据影响之后的选择
   }
 
   /**
@@ -241,7 +232,12 @@ export class AddComponent implements OnInit {
   }
   // 需要 schedules clazzIds teacher1 teacher2
   private makeConflictTimes(): void {
-    return;
+    this.makeConflictTimesOfClazzes();
+    this.makeConflictTimesOfTeacher1();
+    this.makeConflictTimesOfTeacher2();
+    // console.log('clazzes', this.conflictTimesOfClazzes);
+    // console.log('teacherId1', this.conflictTimesOfTeacher1);
+    // console.log('teacherId2', this.conflictTimesOfTeacher2);
   }
 
   // 需要 当前学期的schedules
@@ -265,5 +261,49 @@ export class AddComponent implements OnInit {
       && this.formGroup.get('clazzIds')?.value !== null
       && (this.formGroup.get('clazzIds')?.value?.length === 1 && this.formGroup.get('clazzIds')?.value[0] !== null)
     );
+  }
+
+  /**
+   *  生成班级冲突时间
+   */
+  private makeConflictTimesOfClazzes(): void {
+    const clazzIds: number[] = this.formGroup.get('clazzIds')?.value as [];
+    this.schedules.forEach(schedule => {
+      let status = false;
+      // schedule对应班级是否包含已选中班级
+      schedule.clazzes.forEach((clazz: Clazz) => {
+        if (!status && clazzIds.includes(clazz.id)) {
+          status = true;
+          // 包含已选中班级则将对应dispatch保存
+          schedule.dispatches.forEach((dispatch: Dispatch) => {
+            this.conflictTimesOfClazzes.push({day: dispatch.day!, lesson: dispatch.lesson!, week: dispatch.week!});
+          });
+        }
+      });
+    });
+  }
+
+  private makeConflictTimesOfTeacher1(): void {
+    const teacher1Id = +this.formGroup.get('teacher1Id')?.value;
+    this.schedules.forEach((schedule: Schedule) => {
+      if (schedule.teacher1.id === teacher1Id) {
+        schedule.dispatches.forEach((dispatch: Dispatch) => {
+          this.conflictTimesOfTeacher1.push({day: dispatch.day!, lesson: dispatch.lesson!, week: dispatch.week!});
+        });
+      }
+    });
+    console.log('teacher1Id', this.conflictTimesOfTeacher1);
+  }
+
+  private makeConflictTimesOfTeacher2(): void {
+    const teacher2Id = +this.formGroup.get('teacher2Id')?.value;
+    this.schedules.forEach((schedule: Schedule) => {
+      if (schedule.teacher2.id === teacher2Id) {
+        schedule.dispatches.forEach((dispatch: Dispatch) => {
+          this.conflictTimesOfTeacher2.push({day: dispatch.day!, lesson: dispatch.lesson!, week: dispatch.week!});
+        });
+      }
+    });
+    console.log('teacher2Id', this.conflictTimesOfTeacher2);
   }
 }

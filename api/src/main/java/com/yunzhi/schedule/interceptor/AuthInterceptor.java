@@ -45,8 +45,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         // 为响应加入提示：用户未登录
-        response.setStatus(401);
-        return false;
+//        response.setStatus(401);
+//        return false;
+        // todo: 暂时不检查是否登录
+        return true;
     }
 
     @Override
