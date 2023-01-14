@@ -83,4 +83,13 @@ export class ClazzService {
   clazzesHaveSelectCourse(courseId: number): Observable<number[]> {
     return this.httpClient.get<number[]>('/clazz/clazzesHaveSelectCourse/' + courseId.toString());
   }
+
+  /**
+   * 更新班级
+   * @param id    班级id
+   * @param clazz 将要更新的班级对象
+   */
+  update(id: number, clazz: Clazz): Observable<any> {
+    return this.httpClient.post<any>(`${this.url}/update/` + id.toString(), clazz);
+  }
 }

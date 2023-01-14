@@ -61,8 +61,8 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         user.setPassword(Encoder.getMD5Result(password));
         this.userRepository.save(user);
 
-//        this.forHePanTest();
-        this.chen();
+        this.forHePanTest();
+//        this.chen();
     }
 
 

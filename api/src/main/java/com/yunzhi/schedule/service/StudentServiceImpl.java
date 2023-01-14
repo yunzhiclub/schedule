@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.service;
 
+import com.yunzhi.schedule.entity.Clazz;
 import com.yunzhi.schedule.entity.Student;
 import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.repository.StudentRepository;
@@ -75,5 +76,18 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student getById(Long studentId) {
         return this.studentRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException("未找到相关实体"));
+    }
+
+    @Override
+    public Student update(Long id, Student student) {
+        Assert.notNull(student.getName(), "name不能为null");
+        Assert.notNull(student.getSno(), "sno不能为null");
+        Assert.notNull(student.getClazz(), "clazz不能为null");
+        Student OldStudent = this.getById(id);
+        OldStudent.setName(student.getName());
+        OldStudent.setSex(student.getSex());
+        OldStudent.setSno(student.getSno());
+        OldStudent.setClazz(student.getClazz());
+        return this.studentRepository.save(OldStudent);
     }
 }

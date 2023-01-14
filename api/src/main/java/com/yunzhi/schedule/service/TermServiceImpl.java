@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.service;
 
+import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.repository.TermRepository;
 import com.yunzhi.schedule.vo.StateTerm;
@@ -86,5 +87,23 @@ public class TermServiceImpl implements TermService {
     @Override
     public Term getCurrentTerm() {
         return this.termRepository.findTermByStateAndDeletedFalse(true);
+    }
+
+    @Override
+    public Term update(Long id, Term term) {
+        Assert.notNull(term.getName(), "name不能为null");
+        Assert.notNull(term.getState(), "state不能为null");
+        Assert.notNull(term.getStartTime(), "startTime不能为null");
+        Assert.notNull(term.getEndTime(), "endTime不能为null");
+        Term OldTerm = this.getById(id);
+        OldTerm.setName(term.getName());
+        OldTerm.setState(term.getState());
+        OldTerm.setStartTime(term.getStartTime());
+        OldTerm.setEndTime(term.getEndTime());
+        Term Term = this.termRepository.save(OldTerm);
+        if (Term.getState()) {
+            this.activeTerm(Term.getId());
+        }
+        return Term;
     }
 }

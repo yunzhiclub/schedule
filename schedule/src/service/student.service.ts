@@ -90,4 +90,12 @@ export class StudentService {
     }));
   }
 
+  /**
+   * 更新学生
+   * @param id      学生id
+   * @param student 将要更新的学生对象
+   */
+  update(id: number, student: Student): Observable<any> {
+    return this.httpClient.post<any>(`${this.url}/update/` + id.toString(), student);
+  }
 }

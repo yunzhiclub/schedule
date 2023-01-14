@@ -12,7 +12,7 @@ import { EditComponent as membersEditComponent } from './members/edit/edit.compo
 import { AddComponent as membersAddComponent } from './members/add/add.component';
 import { MembersComponent } from './members/members.component';
 import {PipeModule} from '../pipe/pipe.module';
-import {ClazzSelectModule} from "../../common/clazz-select/clazz-select.module";
+import {ClazzSelectModule} from '../../common/clazz-select/clazz-select.module';
 
 
 
