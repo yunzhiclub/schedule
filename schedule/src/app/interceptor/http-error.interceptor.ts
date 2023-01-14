@@ -31,7 +31,6 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('wwwwwww', req.headers);
     if ('true' === req.headers.get(HttpErrorInterceptor.DONT_INTERCEPT_HEADER_KEY)) {
       return next.handle(req);
     } else {
@@ -47,7 +46,6 @@ export class HttpErrorInterceptor implements HttpInterceptor {
    * @param error 异常
    */
   private handleHttpException(error: HttpErrorResponse): Observable<HttpEvent<any>> {
-    console.log(this.router.url);
     switch (error.status) {
       case 401:
         const userService = this.injector.get(UserService);

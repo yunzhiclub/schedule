@@ -1,6 +1,7 @@
 package com.yunzhi.schedule.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
 
@@ -9,26 +10,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@SQLDelete(sql = "update `room` set deleted = 1 where id = ?")
+@SQLDelete(sql = "update `dispatch` set deleted = 1 where id = ?")
 public class Dispatch implements SoftDelete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty("调度ID")
+    @JsonView(IdJsonView.class)
     private Long id;
 
     @ManyToOne
     @ApiModelProperty("对应排课")
     @JsonIgnoreProperties({"dispatches"})
+    @JsonView(ScheduleJsonView.class)
     private Schedule schedule = new Schedule();
 
     @ApiModelProperty("对应周")
+    @JsonView(WeekJsonView.class)
     private Long week;
     @ApiModelProperty("对应天")
+    @JsonView(DayJsonView.class)
     private Long day;
     @ApiModelProperty("对应节")
+    @JsonView(LessonJsonView.class)
     private Long lesson;
     @ManyToMany
     @ApiModelProperty("对应教室")
+    @JsonView(RoomsJsonView.class)
     private List<Room> rooms = new ArrayList<>();
 
     @ApiModelProperty("是否已删除")
@@ -90,4 +97,12 @@ public class Dispatch implements SoftDelete {
     private void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
+
+
+    public interface IdJsonView {}
+    public interface ScheduleJsonView {}
+    public interface WeekJsonView {}
+    public interface LessonJsonView {}
+    public interface DayJsonView {}
+    public interface RoomsJsonView {}
 }

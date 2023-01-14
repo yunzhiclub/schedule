@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 /**
@@ -55,44 +53,21 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-
         User user = new User();
         //角色为系统管理员
-        Short identity = (short) 2;
         String password = "yunzhi";
         user.setPhone("13900000000");
         user.setName("系统管理员");
         user.setPassword(Encoder.getMD5Result(password));
         this.userRepository.save(user);
-        // 添加50条学期数据
-        for (int i = 0; i < 49; i++) {
-            this.addTerm("学期" + i, false, 1672502400L, 1688140800L);
-        }
-        Term term = this.addTerm("已激活学期", true, 1672502400L, 1688140800L);
-        // 添加50条教师数据
-        for (int i = 0; i < 50; i++) {
-            this.addTeacher("教师" + i, new Random().nextBoolean(), RandomString.make(11));
-        }
-        // 添加50条教室数据
-        for (int i = 0; i < 50; i++) {
-            this.addRoom("教室" + i,  RandomString.make(2));
-        }
-        // 添加100条班级数据
-        for (int i = 0; i < 50; i++) {
-            Clazz clazz = this.addClazz("班级" + i, 1672502400L);
-            for (int j = 0; j < 20; j++) {
-                this.addStudent("学生" + i + '|' + j, new Random().nextBoolean(), RandomString.make(6), clazz);
-            }
-        }
-        // 添加50条课程数据
-        for (int i = 0; i < 50; i++) {
-            this.addCourse("课程" + i,  RandomString.make(2));
-        }
 
-        this.forHePanTest(term);
+//        this.forHePanTest();
+        this.chen();
     }
 
-    private void forHePanTest(Term term) {
+
+    private void forHePanTest() {
+        Term term = this.addTerm("已激活学期", true, 1672502400L, 1688140800L);
         // 添加测试教师
         Teacher teacher1 = this.addTeacher("张三", true, "13100000000");
         Teacher teacher2 = this.addTeacher("李四", false, "13100000001");
@@ -119,7 +94,39 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         this.addDispatch(schedule, 1L, 1L, 1L, rooms);
         this.addDispatch(schedule, 2L, 1L, 1L, rooms);
         this.addDispatch(schedule, 3L, 1L, 1L, rooms);
+    }
 
+
+    private void chen() {
+        Term term = this.addTerm("已激活学期", true, 1672502400L, 1688140800L);
+        Teacher teacher1 = this.addTeacher("张三", true, "13100000000");
+        Teacher teacher2 = this.addTeacher("李四", false, "13100000001");
+        Teacher teacher3 = this.addTeacher("王五", false, "13100000002");
+        Course course1 = this.addCourse("计算机组成原理", "48");
+        Course course2 = this.addCourse("汇编", "48");
+
+        Clazz clazz1 = this.addClazz("计科221", 1672502400L);
+        Clazz clazz2 = this.addClazz("软件221", 1672502400L);
+
+        Schedule schedule1 = this.addSchedule(course1, term, teacher1, teacher3, Collections.singletonList(clazz1));
+        Schedule schedule2 = this.addSchedule(course2, term, teacher2, teacher3, Collections.singletonList(clazz2));
+
+
+        // 添加测试教室
+        Room room1 = this.addRoom("A1",  new Random().nextLong() + "");
+        Room room2 = this.addRoom("A2",  new Random().nextLong() + "");
+        List<Room> rooms1 = new ArrayList<>();
+        rooms1.add(room1);
+        List<Room> rooms2 = new ArrayList<>();
+        rooms2.add(room2);
+
+        this.addDispatch(schedule1, 1L, 1L, 1L, rooms1);
+        this.addDispatch(schedule1, 2L, 1L, 1L, rooms1);
+        this.addDispatch(schedule1, 3L, 1L, 1L, rooms1);
+
+        this.addDispatch(schedule2, 4L, 1L, 1L, rooms2);
+        this.addDispatch(schedule2, 5L, 1L, 1L, rooms2);
+        this.addDispatch(schedule2, 6L, 1L, 1L, rooms2);
 
     }
 

@@ -85,6 +85,6 @@ public class TermServiceImpl implements TermService {
 
     @Override
     public Term getCurrentTerm() {
-        return this.termRepository.findTermByState(true);
+        return this.termRepository.findTermByStateAndDeletedFalse(true);
     }
 }

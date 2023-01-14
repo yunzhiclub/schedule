@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
 
@@ -8,35 +9,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@SQLDelete(sql = "update `room` set deleted = 1 where id = ?")
+@SQLDelete(sql = "update `schedule` set deleted = 1 where id = ?")
 public class Schedule implements SoftDelete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty("排课Id")
+    @JsonView(IdJsonView.class)
     private Long id;
 
     @ManyToOne
     @ApiModelProperty("该排课对应教师1")
+    @JsonView(Teacher1JsonView.class)
     private Teacher teacher1 = new Teacher();
 
     @ManyToOne
     @ApiModelProperty("该排课对应教师2")
+    @JsonView(Teacher2JsonView.class)
     private Teacher teacher2 = new Teacher();
 
     @ManyToOne
     @ApiModelProperty("该排课对应学期")
+    @JsonView(TermJsonView.class)
     private Term term = new Term();
 
     @ManyToOne
     @ApiModelProperty("该排课对应课程")
+    @JsonView(CourseJsonView.class)
     private Course course = new Course();
 
     @ManyToMany
     @ApiModelProperty("该排课对应班级")
+    @JsonView(ClazzJsonView.class)
     private List<Clazz> clazzes = new ArrayList<>();
 
     @OneToMany(mappedBy = "schedule")
     @ApiModelProperty("排课所含调度")
+    @JsonView(DispatchesJsonView.class)
     private List<Dispatch> dispatches = new ArrayList<>();
 
     @ApiModelProperty("是否已删除")
@@ -105,4 +113,12 @@ public class Schedule implements SoftDelete {
     private void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
+
+    public interface IdJsonView {}
+    public interface Teacher1JsonView {}
+    public interface Teacher2JsonView {}
+    public interface TermJsonView {}
+    public interface CourseJsonView {}
+    public interface ClazzJsonView {}
+    public interface DispatchesJsonView {}
 }

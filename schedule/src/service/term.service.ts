@@ -82,4 +82,8 @@ export class TermService {
     return this.httpClient.get<Term>(`${this.url}/${termId}`).pipe(map(data => new Term(data)));
   }
 
+  getCurrentTerm(): Observable<Term> {
+    return this.httpClient.get<Term>(`${this.url}/getCurrentTerm`)
+      .pipe(map(term => new Term(term)));
+  }
 }
