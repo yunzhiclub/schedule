@@ -28,7 +28,7 @@ export class AddComponent implements OnInit {
   });
   weekNumber = config.weekNumber;
 
-  // 时间表, 判断是否周可选
+  // 时间表, 判断是否周可选; true: 可选
   times: boolean[][][] = [];
   // 地点表（教室), 判断是否教室可选
   sites: number[][][][] = [];
@@ -253,7 +253,8 @@ export class AddComponent implements OnInit {
   }
   // 需要冲突时间和地点
   private makeTimesAndSites(): void {
-    return;
+    this.makeSites();
+    this.makeTimes();
   }
 
   isShowTeacher(): boolean {
@@ -305,5 +306,23 @@ export class AddComponent implements OnInit {
       }
     });
     console.log('teacher2Id', this.conflictTimesOfTeacher2);
+  }
+
+  private makeSites(): void {
+    this.conflictSites.forEach(conflictSite => {
+      this.sites[conflictSite.day][conflictSite.lesson][conflictSite.week].concat(conflictSite.roomIds);
+    });
+  }
+
+  private makeTimes(): void {
+    this.conflictTimesOfClazzes.forEach(conflictTime => {
+      this.times[conflictTime.day][conflictTime.lesson][conflictTime.week] = false;
+    });
+    this.conflictTimesOfTeacher1.forEach(conflictTime => {
+      this.times[conflictTime.day][conflictTime.lesson][conflictTime.week] = false;
+    });
+    this.conflictTimesOfTeacher2.forEach(conflictTime => {
+      this.times[conflictTime.day][conflictTime.lesson][conflictTime.week] = false;
+    });
   }
 }
