@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.controller;
 
+import com.yunzhi.schedule.entity.Clazz;
 import com.yunzhi.schedule.entity.Student;
 import com.yunzhi.schedule.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,17 @@ public class StudentController {
     @GetMapping("{studentId}")
     public Student getById(@PathVariable Long studentId) {
         return this.studentService.getById(studentId);
+    }
+
+    /**
+     * 更新学生
+     * @param student   更新后的学生数据
+     * @return 学生
+     */
+    @PostMapping("update/{id}")
+    public Student update(@PathVariable Long id,
+                        @RequestBody Student student) {
+        return this.studentService.update(id, student);
     }
 
 }

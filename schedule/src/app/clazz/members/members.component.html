@@ -1,13 +1,14 @@
 <div class="row">
   <div class="col-md-10">
     <form class="form-inline" (submit)="onSubmit(queryForm)" [formGroup]="queryForm">
-      <input type="text" class="form-control" placeholder="学生姓名" formControlName="name">
-      <input type="text" class="form-control" placeholder="学号" formControlName="sno">
+      <input type="text" class="form-control mr-3" placeholder="学生姓名" formControlName="name">
+      <input type="text" class="form-control mr-3" placeholder="学号" formControlName="sno">
       <button type="submit" class="btn btn-info"><i class="fas fa-search"></i>查询</button>
     </form>
   </div>
   <div class="col-md-2">
     <a class="btn btn-primary mr-2" style="float: right" routerLink="add"><i class="fas fa-plus"></i>新增</a>
+    <a style="float: right" [routerLink]="'../../'" class="btn btn-primary">返回</a>
   </div>
 </div>
 <hr>

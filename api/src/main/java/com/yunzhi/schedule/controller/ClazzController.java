@@ -94,4 +94,15 @@ public class ClazzController {
         return this.clazzService.getClazzIdsBySchedules(schedules);
     }
 
+    /**
+     * 更新班级
+     * @param clazz   更新后的班级数据
+     * @return 班级
+     */
+    @PostMapping("update/{id}")
+    public Clazz update(@PathVariable Long id,
+                       @RequestBody Clazz clazz) {
+        return this.clazzService.update(id, clazz);
+    }
+
 }

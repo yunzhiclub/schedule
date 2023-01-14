@@ -37,12 +37,21 @@ export class TermService {
   }
 
   /**
-   * 新建班级
+   * 新建学期
    * @param term 将要保存的学期对象
    */
   save(term: Term): Observable<Term> {
     return this.httpClient.post<Term>(`${this.url}`, term)
       .pipe(map(data => new Term(data)));
+  }
+
+  /**
+   * 更新学期
+   * @param id 学期id
+   * @param term 更新后的学期数据
+   */
+  update(id: number, term: Term): Observable<any> {
+    return this.httpClient.post<any>(`${this.url}/update/` + id.toString(), term);
   }
   /**
    * 学期名是否存在

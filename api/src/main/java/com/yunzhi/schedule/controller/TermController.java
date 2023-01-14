@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.controller;
 
+import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.service.TermService;
 import com.yunzhi.schedule.vo.StateTerm;
@@ -59,6 +60,17 @@ public class TermController {
     @PostMapping
     public Term add(@RequestBody Term term) {
         return this.termService.add(term);
+    }
+
+    /**
+     * 更新学期
+     * @param term   更新后的学期数据
+     * @return 学期
+     */
+    @PostMapping("update/{id}")
+    public Term update(@PathVariable Long id,
+                          @RequestBody Term term) {
+        return this.termService.update(id, term);
     }
 
     @DeleteMapping("{termId}")
