@@ -55,7 +55,7 @@
   </div>
 
   <!--选择时间-->
-  <div *ngIf="!formGroup.invalid && !isTeacherSame" class="form-group row">
+  <div *ngIf="isShowTimeSelect()" class="form-group row">
     <div class="col-sm-2">
       <label class="col-sm-12 col-form-label"><code>*</code>上课时间:</label>
     </div>
@@ -123,7 +123,7 @@
           </div>
           <ul class="list-group list-group-horizontal">
             <ng-container *ngFor="let w of weeks" class="list-group-item">
-              <button (click)="onWeekChange(w)" [ngClass]="{'bg-primary': w === week || selectedWeeks.includes(w)}" class="mr-1 border-white" style="font-size: 0.8em">第{{ w! + 1 }}周</button>
+              <button [disabled]="isWeekDisabled(w)" (click)="onWeekChange(w)" [ngClass]="{'bg-primary': w === week || selectedWeeks.includes(w)}" class="mr-1 border-white" style="font-size: 0.8em">第{{ w! + 1 }}周</button>
             </ng-container>
           </ul><br>
 
@@ -131,18 +131,20 @@
             <h6>选择教室<span class="text-muted" style="font-size: 0.7em">(当前周:{{week! + 1}})</span>:</h6>
             <ul class="list-group list-group-horizontal">
               <ng-container *ngFor="let room of rooms" class="list-group-item">
-                <button  (click)="onRoomChange(room.id!)" [ngClass]="{'bg-primary': isRoomChecked(room.id!)}"  class="mr-1 border-white" [value]="room.id" style="font-size: 0.8em">{{ room.name }}</button>
+                <button [disabled]="isRoomDisabled(room.id!)" (click)="onRoomChange(room.id!)" [ngClass]="{'bg-primary': isRoomChecked(room.id!)}"  class="mr-1 border-white" [value]="room.id" style="font-size: 0.8em">{{ room.name }}</button>
               </ng-container>
             </ul>
           </div>
           selectedWeeks{{selectedWeeks | json}}<br>
           selectedRooms{{selectedRooms | json}}<br>
+          disabledWeeks{{disabledWeeks | json}}<br>
+          disabledRooms{{disabledRooms | json}}<br>
           tempData{{tempData| json}}
           <br><br>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="close()" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" (click)="save()">Save changes</button>
+          <button type="button" class="btn btn-secondary" (click)="close()" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-primary" [disabled]="!canSave()" (click)="save()">保存修改</button>
         </div>
       </div>
     </div>
