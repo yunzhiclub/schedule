@@ -14,6 +14,8 @@ import {Schedule} from '../../../entity/schedule';
 import {Dispatch} from '../../../entity/dispatch';
 import {Room} from '../../../entity/room';
 import {RoomService} from '../../../service/room.service';
+import {CommonService} from '../../../service/common.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-add',
@@ -102,6 +104,8 @@ export class AddComponent implements OnInit {
               private termService: TermService,
               private scheduleService: ScheduleService,
               private roomService: RoomService,
+              private commonService: CommonService,
+              private router: Router,
               ) { }
 
   ngOnInit(): void {
@@ -601,5 +605,31 @@ export class AddComponent implements OnInit {
       !this.isTeacherSame &&
       this.formGroup.get('teacher1Id')?.value !== 'null' &&
       this.formGroup.get('teacher2Id')?.value !== 'null';
+  }
+
+  onSubmit(): void {
+    console.log('onSubmit is called');
+    const course = new Course({id: this.formGroup.get('courseId')?.value});
+    const clazzes = this.formGroup.get('clazzIds')?.value.map((clazzId: number) => {
+      return new Clazz({id: clazzId});
+    });
+    const teacher1Id = this.formGroup.get('teacher1Id')?.value;
+    const teacher2Id = this.formGroup.get('teacher2Id')?.value;
+    const schedule = new Schedule();
+    schedule.course = course;
+    schedule.clazzes = clazzes;
+    schedule.term = this.term;
+    schedule.teacher1 = new Teacher({id: teacher1Id});
+    schedule.teacher2 = new Teacher({id: teacher2Id});
+    this.selectedData.forEach((data) => {
+      const rooms = data.roomIds.map(roomId => {
+        return new Room({id: roomId});
+      });
+      schedule.dispatches.push(new Dispatch({day: data.day, lesson: data.smLesson, week: data.week, rooms}));
+    });
+    this.scheduleService.add(schedule)
+      .subscribe(() => {
+        this.commonService.success(() => this.router.navigateByUrl('../'));
+      });
   }
 }

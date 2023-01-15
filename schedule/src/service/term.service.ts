@@ -30,8 +30,6 @@ export class TermService {
       httpParams = httpParams.append('name', param.name);
     }
 
-    console.log('service', httpParams);
-
     return this.httpClient.get<Page<Term>>(`${this.url}/page`, {params: httpParams})
       .pipe(map(data => new Page<Term>(data).toObject(d => new Term(d))));
   }

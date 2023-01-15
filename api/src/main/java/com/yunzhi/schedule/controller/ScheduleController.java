@@ -2,13 +2,14 @@ package com.yunzhi.schedule.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.*;
-import com.yunzhi.schedule.service.RoomService;
 import com.yunzhi.schedule.service.ScheduleService;
 import com.yunzhi.schedule.service.TermService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +31,27 @@ public class ScheduleController {
     public List<Schedule> getSchedulesInCurrentTerm() {
         Term term = this.termService.getCurrentTerm();
         return this.scheduleService.getSchedulesInCurrentTerm(term);
+    }
+
+    /**
+     * 分页接口.
+     * @param pageable 分页数据.
+     * @return 分页排课
+     */
+    @GetMapping("page")
+    public Page<Schedule> page(
+            @RequestParam(required = false, defaultValue = "") String courseName,
+            @RequestParam(required = false, defaultValue = "") String termName,
+            @RequestParam(required = false, defaultValue = "") String clazzName,
+            @RequestParam(required = false, defaultValue = "") String teacherName,
+            @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
+            Pageable pageable) {
+        return this.scheduleService.page(courseName, termName, clazzName, teacherName, pageable);
+    }
+
+    @PostMapping
+    public Schedule add(@RequestBody Schedule schedule) {
+        return this.scheduleService.add(schedule);
     }
 
     public interface getSchedulesInCurrentTerm extends
@@ -54,4 +76,5 @@ public class ScheduleController {
             Room.IdJsonView,
             Room.NameJsonView
     {}
+
 }

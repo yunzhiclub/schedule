@@ -102,6 +102,9 @@ public class UserServiceImpl implements UserService {
         String xAuthToken = request.getHeader(TokenFilter.TOKEN_KEY);
         Long userId = this.xAuthTokenUserIdHashMap.get(xAuthToken);
         try {
+            if (userId == null) {
+                return null;
+            }
             return this.findById(userId);
         } catch (EntityNotFoundException e) {
             return null;
