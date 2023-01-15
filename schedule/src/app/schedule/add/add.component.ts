@@ -85,10 +85,14 @@ export class AddComponent implements OnInit {
   weeks: number[] = [];
   // 选择的周
   selectedWeeks = [] as number[];
-  // 选择的周
+  // 选择的教室
   selectedRooms = [] as number[];
+  // 不可用的周
+  disabledWeeks = [] as number[];
+  // 不可用的教室
+  disabledRooms = [] as number[];
   // 时间选择模式: true 分别选择 | false 同步选择 默认为同步选择
-  pattern = false ;
+  pattern = false;
   // 是否小结确定
   isSmLessonsDetermine = false;
 
@@ -146,7 +150,7 @@ export class AddComponent implements OnInit {
       this.smLessonsRecorder[i] = [];
       for (let j = 0; j < 5; j++) {
         this.smLessonsRecorder[i][j] = [0, 1];
-        if (j === 4) this.smLessonsRecorder[i][j].push(2);
+        if (j === 4) { this.smLessonsRecorder[i][j].push(2); }
       }
     }
   }
@@ -165,11 +169,11 @@ export class AddComponent implements OnInit {
       this.formGroup.get('clazzIds')?.setValue([]);
       this.formGroup.get('teacher1Id')?.setValue(null);
       this.formGroup.get('teacher2Id')?.setValue(null);
-      this.clearScreenedClazzes(); // 已实现
-      this.clearConflictTimes();   // 已实现
-      this.clearSelectedData();    // 已实现
-      this.makeScreenedClazzes();  // 已实现
-      this.makeTimesAndSites();    // 未实现
+      this.clearScreenedClazzes();
+      this.clearConflictTimes();
+      this.clearSelectedData();
+      this.makeScreenedClazzes();
+      this.makeTimesAndSites();
     });
     this.formGroup.get('clazzIds')?.valueChanges.subscribe(() => {
       this.formGroup.get('teacher1Id')?.setValue(null);
@@ -197,14 +201,14 @@ export class AddComponent implements OnInit {
   /**
    * 展示model
    * @param day 天
-   * @param lesson 节
+   * @param bigLesson 大节
    */
   showModel(day: number, bigLesson: number): void {
-    this.isShowModel = true;
     this.day = day;
     this.bigLesson = bigLesson;
     this.initTempData();
     this.makeTempData();
+    this.isShowModel = true;
   }
 
   /**
@@ -215,6 +219,8 @@ export class AddComponent implements OnInit {
     this.day = undefined;
     this.bigLesson = undefined;
     this.week = undefined;
+    this.selectedRooms = [];
+    this.selectedWeeks = [];
     this.initTempData();
   }
 
@@ -223,7 +229,6 @@ export class AddComponent implements OnInit {
    * 保存数据并关闭model
    */
   save(): void {
-    this.updateTempData();
     this.deleteSelectedData();
     if (this.pattern) {
       this.smLessons.forEach(smLesson => {
@@ -326,7 +331,7 @@ export class AddComponent implements OnInit {
   }
 
   // 需要 当前学期的schedules
-  private makeConflictSites(): void {
+  private makeSites(): void {
     this.schedules.forEach(schedule => {
       schedule.dispatches.forEach(dispatch => {
         dispatch.rooms.forEach(room => {
@@ -338,6 +343,9 @@ export class AddComponent implements OnInit {
   }
   // 需要冲突时间和地点
   private makeTimesAndSites(): void {
+    this.initSites();
+    this.initTimes();
+    console.log('makeTimesAndSites', this.times, this.sites);
     this.makeSites();
     this.makeTimes();
   }
@@ -372,7 +380,7 @@ export class AddComponent implements OnInit {
   private makeConflictTimesOfTeacher1(): void {
     const teacher1Id = +this.formGroup.get('teacher1Id')?.value;
     this.schedules.forEach((schedule: Schedule) => {
-      if (schedule.teacher1.id === teacher1Id) {
+      if (schedule.teacher1.id === teacher1Id || schedule.teacher2.id === teacher1Id) {
         schedule.dispatches.forEach((dispatch: Dispatch) => {
           this.conflictTimesOfTeacher1.push({day: dispatch.day!, lesson: dispatch.lesson!, week: dispatch.week!});
         });
@@ -384,7 +392,7 @@ export class AddComponent implements OnInit {
   private makeConflictTimesOfTeacher2(): void {
     const teacher2Id = +this.formGroup.get('teacher2Id')?.value;
     this.schedules.forEach((schedule: Schedule) => {
-      if (schedule.teacher2.id === teacher2Id) {
+      if (schedule.teacher2.id === teacher2Id || schedule.teacher1.id === teacher2Id) {
         schedule.dispatches.forEach((dispatch: Dispatch) => {
           this.conflictTimesOfTeacher2.push({day: dispatch.day!, lesson: dispatch.lesson!, week: dispatch.week!});
         });
@@ -393,13 +401,14 @@ export class AddComponent implements OnInit {
     // console.log('teacher2Id', this.conflictTimesOfTeacher2);
   }
 
-  private makeSites(): void {
+  private makeConflictSites(): void {
     this.conflictSites.forEach(conflictSite => {
       this.sites[conflictSite.day][conflictSite.lesson][conflictSite.week].concat(conflictSite.roomIds);
     });
   }
 
   private makeTimes(): void {
+    console.log('123123', [...this.conflictTimesOfClazzes], [...this.conflictTimesOfTeacher1], [...this.conflictTimesOfTeacher2]);
     this.conflictTimesOfClazzes.forEach(conflictTime => {
       this.times[conflictTime.day][conflictTime.lesson][conflictTime.week] = false;
     });
@@ -418,12 +427,12 @@ export class AddComponent implements OnInit {
 
   onWeekChange(week: number): void {
     if (this.pattern) {
-      // 在模式 true 下，切换week时保存数据
-      this.updateTempData();
+      // // 在模式 true 下，切换week时保存数据
+      // this.updateTempData();
       this.week = week;
       console.log(this.tempData[this.week]);
       this.selectedRooms = [];
-      this.selectedRooms = [...[], ...this.tempData[this.week!]];
+      this.selectedRooms = this.tempData[this.week!].filter(() => true);
     } else {
       this.changeSelectedWeeks(week);
     }
@@ -431,10 +440,20 @@ export class AddComponent implements OnInit {
   }
 
   changeSelectedWeeks(week: number): void {
+    console.log('changeSelectedWeeks', week);
     if (!this.selectedWeeks.includes(week)) {
       this.selectedWeeks.push(week);
+      this.smLessons.forEach(smLesson => {
+        console.log('this.sites', this.sites[this.day!][this.bigLesson! * 2 + smLesson][week]);
+        this.disabledRooms = this.disabledRooms.concat(this.sites[this.day!][this.bigLesson! * 2 + smLesson][week]);
+      });
     } else {
       this.selectedWeeks.splice(this.selectedWeeks.indexOf(week), 1);
+      this.smLessons.forEach(smLesson => {
+        this.sites[this.day!][this.bigLesson! * 2 + smLesson][week].forEach(roomId => {
+          this.disabledRooms.splice(this.disabledRooms.indexOf(roomId), 1);
+        });
+      });
     }
   }
 
@@ -451,10 +470,36 @@ export class AddComponent implements OnInit {
   }
 
   onRoomChange(roomId: number): void {
-    if (!this.selectedRooms.includes(roomId)) {
-      this.selectedRooms.push(roomId);
+
+    if (this.pattern) {
+      this.updateTempData();
+      if (!this.selectedRooms.includes(roomId)) {
+        this.selectedRooms.push(roomId);
+      } else {
+        this.selectedRooms.splice(this.selectedRooms.indexOf(roomId), 1);
+      }
     } else {
-      this.selectedRooms.splice(this.selectedRooms.indexOf(roomId), 1);
+      if (!this.selectedRooms.includes(roomId)) {
+        this.selectedRooms.push(roomId);
+        this.smLessons.forEach(smLesson => {
+          const weekObjects = this.sites[this.day!][this.bigLesson! * 2 + smLesson];
+          for (let i = 0; i < weekObjects.length; i++) {
+            if (weekObjects[i].includes(roomId)) {
+              this.disabledWeeks.push(i);
+            }
+          }
+        });
+      } else {
+        this.selectedRooms.splice(this.selectedRooms.indexOf(roomId), 1);
+        this.smLessons.forEach(smLesson => {
+          const weekObjects = this.sites[this.day!][this.bigLesson! * 2 + smLesson];
+          for (let i = 0; i < weekObjects.length; i++) {
+            if (weekObjects[i].includes(roomId)) {
+              this.disabledWeeks.splice(this.disabledWeeks.indexOf(i), 1);
+            }
+          }
+        });
+      }
     }
   }
 
@@ -500,5 +545,61 @@ export class AddComponent implements OnInit {
       const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
       return !(data.day === this.day && bigLesson === this.bigLesson);
     });
+  }
+
+  canSave(): boolean {
+    if (this.pattern) {
+      // 如果所有周对应教室都是空，那就不能保存
+      let isHave = false;
+      this.tempData.forEach(week => {
+        if (week.length !== 0) {
+          isHave = true;
+        }
+      });
+      return isHave;
+    } else {
+      let status = true;
+      if (this.selectedWeeks.length === 0 || this.selectedRooms.length === 0) {
+        status = false;
+      }
+      return status;
+    }
+  }
+
+  isWeekDisabled(week: number): boolean {
+    let status = false;
+    // @ts-ignore
+    this.smLessons.forEach((smLesson: number) => {
+      if (!this.times[this.day!][this.bigLesson! * 2 + smLesson][week]) {
+        console.log('456', this.day + '', this.bigLesson! * 2 + smLesson + '', week + '');
+        status = true;
+      }
+    });
+    if (!this.pattern) {
+      return status || this.disabledWeeks.includes(week);
+    }
+    return status;
+  }
+
+  isRoomDisabled(roomId: number): boolean {
+    if (this.pattern) {
+      let status = false;
+      // @ts-ignore
+      this.smLessons.forEach(smLesson => {
+        if (this.sites[this.day!][smLesson][this.week!].includes(roomId)) {
+          status = true;
+        }
+      });
+      return status;
+    } else {
+      return this.disabledRooms.includes(roomId);
+    }
+  }
+
+  isShowTimeSelect(): boolean {
+    return !this.formGroup.invalid &&
+      !this.isTeacherSame &&
+      this.formGroup.get('teacher1Id')?.value !== 'null' &&
+      this.formGroup.get('teacher2Id')?.value !== 'null';
   }
 }
