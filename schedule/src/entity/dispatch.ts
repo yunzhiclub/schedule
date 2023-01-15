@@ -7,9 +7,9 @@ import {Room} from './room';
  */
 export class Dispatch {
   id: number;
-  week: number | undefined;
-  day: number | undefined;
-  lesson: number | undefined;
+  week: number;
+  day: number;
+  lesson: number;
   schedule = {} as Schedule;
   rooms = [] as Room[];
 

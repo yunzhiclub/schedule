@@ -1,1 +1,40 @@
-<p>timetable works!</p>
+<div class="row" [formGroup]="formGroup">
+  <label class="col-form-label text-right ml-2"><code>*</code>教师</label>
+  <select class=" selectpicker form-control col-sm-2 ml-3" formControlName="selectedTeacherId" (change)="onTeacherChange()" >
+    <option [value]="999">全部教师</option>
+    <option *ngFor="let teacher of allTeachers;" [value]="teacher.id">{{ teacher.name }}</option>
+  </select>
+</div>
+<hr/>
+<div class="row" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null">
+  <div class="col-md-12">
+    <table class="table table-striped table-bordered">
+      <thead class="table-primary">
+      <tr>
+        <th class="col-md-1"></th>
+        <th class="col-md-1">周一</th>
+        <th class="col-md-1">周二</th>
+        <th class="col-md-1">周三</th>
+        <th class="col-md-1">周四</th>
+        <th class="col-md-1">周五</th>
+        <th class="col-md-1">周六</th>
+        <th class="col-md-1">周日</th>
+      </tr>
+      </thead>
+      <tbody >
+      <tr *ngFor="let lesson of lessons; index as l">
+        <td>第{{ lesson }}节</td>
+        <td *ngFor="let day of days;index as d">
+          <div *ngIf="this.isShow[l][d]">
+              <div>{{ this.content[l][d].course.name}}</div>
+              <div>周数: {{ this.content[l][d].weeks }}</div>
+              <div>教室: <label *ngFor="let room of this.content[l][d].rooms">{{ room.name }}&nbsp;</label></div>
+              <div>班级: <label *ngFor="let clazz of this.content[l][d].clazzes">{{ clazz.name }}&nbsp;</label></div>
+              <div>教师: <label *ngFor="let teacher of this.content[l][d].teachers">{{ teacher.name }}&nbsp;</label></div>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
