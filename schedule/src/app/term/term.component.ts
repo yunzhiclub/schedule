@@ -121,7 +121,8 @@ export class TermComponent implements OnInit {
         const index = this.pageData.content.indexOf(term);
         this.termService.delete(term.id as number)
           .subscribe(() => {
-            this.commonService.success(() => this.pageData.content.splice(index, 1));
+            this.commonService.success();
+            this.ngOnInit();
           });
       }
     }, '');
@@ -131,6 +132,7 @@ export class TermComponent implements OnInit {
     this.termService.active(term.id as number)
       .subscribe((data: {state: TermState}) => {
         if (data.state) {
+          this.ngOnInit();
           this.deactivate();
           term.state = data.state;
         }

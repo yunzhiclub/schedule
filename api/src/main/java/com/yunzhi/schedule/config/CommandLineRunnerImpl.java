@@ -67,6 +67,37 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
 
 
     private void forHePanTest() {
+//        // 添加50条测试学期
+//        for (int i = 0; i < 50; i++) {
+//            this.addTerm("学期" + i, false, 1672502400L, 1688140800L);
+//        }
+//
+//        // 添加50条测试老师
+//        for (int i = 0; i < 50; i++) {
+//            this.addTeacher("老师" + i, false,  "1688140800");
+//        }
+//
+//        // 添加50条测试班级
+//        for (int i = 0; i < 50; i++) {
+//            this.addClazz("班级" + i, 1672502400L);
+//        }
+//
+//        Clazz clazzA = this.addClazz("班级A", 1672502400L);
+//        // 添加50条测试学生
+//        for (int i = 0; i < 50; i++) {
+//            this.addStudent("学生" + i, true, RandomString.make(6), clazzA);
+//        }
+//
+//        // 添加50条测试教室
+//        for (int i = 0; i < 50; i++) {
+//            this.addRoom("教室" + i,  RandomString.make(2));
+//        }
+//
+//        // 添加50条测试课程
+//        for (int i = 0; i < 50; i++) {
+//            this.addCourse("课程" + i,  RandomString.make(2));
+//        }
+
         Term term = this.addTerm("已激活学期", true, 1672502400L, 1688140800L);
         // 添加测试教师
         Teacher teacher1 = this.addTeacher("张三", true, "13100000000");

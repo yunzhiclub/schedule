@@ -58,9 +58,7 @@ export class EditComponent implements OnInit {
     } as Student);
     this.studentService.update(this.id, student)
       .subscribe(() => {
-        this.commonService.success(() => {
-          this.router.navigateByUrl('/student');
-        });
+        this.commonService.success(() => this.router.navigate(['../../'], {relativeTo: this.route}));
       });
   }
 

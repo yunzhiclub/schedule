@@ -128,7 +128,8 @@ export class StudentComponent implements OnInit {
         const index = this.pageData.content.indexOf(student);
         this.studentService.delete(student.id as number)
           .subscribe(() => {
-            this.commonService.success(() => this.pageData.content.splice(index, 1));
+            this.commonService.success();
+            this.ngOnInit();
           });
       }
     }, '');
