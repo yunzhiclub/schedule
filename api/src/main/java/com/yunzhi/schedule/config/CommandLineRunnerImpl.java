@@ -108,9 +108,14 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         Teacher teacher4 = this.addTeacher("赵六", false, "13100000001");
 
         // 添加测试教室
-        Room room = this.addRoom("A1",  RandomString.make(2));
+        Room room1 = this.addRoom("A1",  RandomString.make(2));
+        Room room2 = this.addRoom("B1",  RandomString.make(2));
+        Room room3 = this.addRoom("C1",  RandomString.make(2));
         List<Room> rooms = new ArrayList<>();
-        rooms.add(room);
+        rooms.add(room1);
+        rooms.add(room2);
+        List<Room> rooms3 = new ArrayList<>();
+        rooms3.add(room3);
 
         // 添加测试班级
         Clazz clazz1 = this.addClazz("计科221", 1672502400L);
@@ -132,6 +137,10 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         this.addDispatch(schedule1, 1L, 1L, 1L, rooms);
         this.addDispatch(schedule1, 2L, 1L, 1L, rooms);
         this.addDispatch(schedule1, 3L, 1L, 1L, rooms);
+
+        this.addDispatch(schedule1, 7L, 1L, 1L, rooms3);
+        this.addDispatch(schedule1, 8L, 1L, 1L, rooms3);
+        this.addDispatch(schedule1, 9L, 1L, 1L, rooms3);
 
         this.addDispatch(schedule2, 4L, 2L, 2L, rooms);
         this.addDispatch(schedule2, 5L, 2L, 2L, rooms);

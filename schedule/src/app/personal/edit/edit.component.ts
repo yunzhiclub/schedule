@@ -18,8 +18,7 @@ export class EditComponent implements OnInit {
   constructor( private userService: UserService,
                private router: Router,
                private commonService: CommonService,
-               private route: ActivatedRoute,
-               private headerComponent: HeaderComponent) {
+               private route: ActivatedRoute) {
     this.formGroup = new FormGroup({
       name: new FormControl(''),
       phone: new FormControl('')
@@ -44,7 +43,6 @@ export class EditComponent implements OnInit {
     })
       .subscribe(success => {
         console.log('用户更新成功', success);
-        // this.headerComponent.a();
         this.commonService.success(() => this.router.navigate(['../'], {relativeTo: this.route}));
       }, error => {
         console.log('用户更新失败', error);

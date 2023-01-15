@@ -8,6 +8,8 @@ import {ScheduleService} from '../../service/schedule.service';
 import {Course} from '../../entity/course';
 import {Room} from '../../entity/room';
 import {Clazz} from '../../entity/clazz';
+import {Term} from '../../entity/term';
+import {TermService} from '../../service/term.service';
 
 @Component({
   selector: 'app-timetable',
@@ -18,6 +20,7 @@ export class TimetableComponent implements OnInit {
   formGroup = new FormGroup({
     selectedTeacherId: new FormControl(null, Validators.required),
   });
+  term: Term | undefined;
   lessons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   days = ['一', '二', '三', '四', '五', '六', '日'];
   // 全部教师
@@ -36,11 +39,17 @@ export class TimetableComponent implements OnInit {
     teachers: Teacher[];
     clazzes: Clazz[]
   }[][];
+  // 教室与周的组
+  roomsAndWeeks = [] as unknown as {
+    rooms: Room[];
+    weeks: number[]
+  }[][][];
   // 已经选择的教师
   selectedTeacher: Teacher = new Teacher();
 
   constructor(private  teacherService: TeacherService,
-              private scheduleService: ScheduleService) { }
+              private scheduleService: ScheduleService,
+              private termService: TermService) { }
 
   ngOnInit(): void {
     this.teacherService.getAll()
@@ -52,8 +61,28 @@ export class TimetableComponent implements OnInit {
         this.allSchedulesInCurrentTerm = allSchedulesInCurrentTerm;
         console.log('allSchedulesInCurrentTerm', this.allSchedulesInCurrentTerm);
       });
+    this.termService.getCurrentTerm()
+      .subscribe(currentTerm => {
+        this.term = currentTerm;
+      });
     this.initIsShow();
     this.initContent();
+    this.initRoomsAndWeeks();
+  }
+  private initRoomsAndWeeks(): void {
+    for (let i = 0; i < 11; i++) {
+      this.roomsAndWeeks[i] = [];
+      for (let j = 0; j < 7; j++) {
+        this.roomsAndWeeks[i][j] = [];
+        for (let k = 0; k < 5; k++) {
+          this.roomsAndWeeks[i][j][k] = {
+            rooms: [],
+            weeks: []
+          };
+        }
+      }
+    }
+    console.log('this.roomsAndWeeks', this.roomsAndWeeks);
   }
 
   private initContent(): void {
@@ -81,6 +110,8 @@ export class TimetableComponent implements OnInit {
   }
 
   private onTeacherChange(): void {
+    // 重新选择教师后,将教室与周的组置空
+    this.initRoomsAndWeeks();
     // 重新选择教师后,将内容置空
     this.initContent();
     // 重新选择教师后,将用于判断天节小单元是否有内容需要显示的数组置空
@@ -119,8 +150,50 @@ export class TimetableComponent implements OnInit {
       for (const dispatch of schedule.dispatches) {
         this.isShow[dispatch.lesson][dispatch.day] = 1;
         this.setContent(schedule, dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms);
+        this.setRoomsAndWeeks(dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms);
       }
     }
+  }
+
+  private setRoomsAndWeeks(lesson: number, day: number, week: number, rooms: Room[]): void {
+    // 当此个天节未存roomsAndWeeks组时
+    if (this.roomsAndWeeks[lesson][day][0].rooms.length === 0) {
+      // 将rooms与week存入第一个元素
+      for (const room of rooms) {
+        this.roomsAndWeeks[lesson][day][0].rooms.push(room);
+      }
+      this.roomsAndWeeks[lesson][day][0].weeks.push(week);
+    } else {
+      // 当此个天节原来存有roomsAndWeeks组时
+      // 设置key
+      let key = true;
+      // 循环此个天节的所有roomsAndWeeks组
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < this.roomsAndWeeks[lesson][day].length; i++) {
+        // 如果新存入的rooms与当前已经存有的rooms相等
+        if (this.roomsAndWeeks[lesson][day][i].rooms.toString() === rooms.toString()) {
+          // 只将新week存入已存在的对象的weeks中,不再重复存rooms
+          this.roomsAndWeeks[lesson][day][i].weeks.push(week);
+          // 当有当前情况时设置key为false
+          key = false;
+        }
+      }
+      // key为true时，即如果新存入的rooms与当前已经存有的所有rooms都不相等
+      if (key) {
+        // 将新存入的rooms与对应week存入下一个roomsAndWeeks组
+        // tslint:disable-next-line:prefer-for-of
+        for (let j = 0; j < this.roomsAndWeeks[lesson][day].length; j++) {
+          if (this.roomsAndWeeks[lesson][day][j].rooms.length === 0) {
+            for (const room of rooms) {
+              this.roomsAndWeeks[lesson][day][j].rooms.push(room);
+            }
+            this.roomsAndWeeks[lesson][day][j].weeks.push(week);
+            break;
+          }
+        }
+      }
+    }
+    console.log('this.roomsAndWeeks', this.roomsAndWeeks);
   }
 
   private setContent(schedule: Schedule, lesson: number, day: number, week: number, rooms: Room[]): void {
@@ -169,7 +242,17 @@ export class TimetableComponent implements OnInit {
       for (const dispatch of schedule.dispatches) {
         this.isShow[dispatch.lesson][dispatch.day] = 1;
         this.setContent(schedule, dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms);
+        this.setRoomsAndWeeks(dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms);
       }
     }
+  }
+
+  private whetherWeeksIncludeWeek(weeks: number[], newWeek: number): boolean {
+    for (const week of weeks) {
+      if (week === newWeek) {
+        return true;
+      }
+    }
+    return false;
   }
 }
