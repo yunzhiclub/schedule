@@ -44,4 +44,7 @@ public interface TermService {
      * 获取当前学期，即已激活学期
      */
     Term getCurrentTerm();
+
+    Term update(Long id, Term term);
+
 }

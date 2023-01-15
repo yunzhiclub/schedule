@@ -23,7 +23,6 @@ export class EditComponent implements OnInit {
               private commonService: CommonService,
               private yzAsyncValidators: YzAsyncValidators,
               private httpClient: HttpClient) {
-    // id为teacher所对应的user_id
     this.id = +this.route.snapshot.params.id;
     this.formGroup = new FormGroup({
       name: new FormControl(''),

@@ -2,6 +2,7 @@ package com.yunzhi.schedule.service;
 
 import com.yunzhi.schedule.entity.Clazz;
 import com.yunzhi.schedule.entity.Schedule;
+import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.repository.ClazzRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -90,5 +91,15 @@ public class ClazzServiceImpl implements ClazzService {
             });
         }
         return results;
+    }
+
+    @Override
+    public Clazz update(Long id, Clazz clazz) {
+        Assert.notNull(clazz.getName(), "name不能为null");
+        Assert.notNull(clazz.getEntranceDate(), "entranceDate不能为null");
+        Clazz OldClazz = this.getById(id);
+        OldClazz.setName(clazz.getName());
+        OldClazz.setEntranceDate(clazz.getEntranceDate());
+        return this.clazzRepository.save(OldClazz);
     }
 }

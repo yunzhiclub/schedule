@@ -36,7 +36,7 @@
     <td>
       <a class="btn btn-sm btn-primary" [routerLink]="'edit/' + term.id">编辑</a>
       <a class="btn btn-sm btn-danger" (click)="onDelete(term)">删除</a>
-      <a class="btn btn-sm btn-success col-md-2" (click)="active(term)">激活</a>
+      <button class="btn btn-sm btn-success col-md-2" (click)="active(term)" [disabled]="term.state">激活</button>
     </td>
   </tr>
   </tbody>

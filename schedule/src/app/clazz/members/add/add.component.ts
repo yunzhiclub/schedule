@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {StudentService} from '../../../../service/student.service';
 import {CommonService} from '../../../../service/common.service';
@@ -17,6 +17,7 @@ export class AddComponent implements OnInit {
   constructor(private studentService: StudentService,
               private commonService: CommonService,
               private router: Router,
+              private route: ActivatedRoute,
               private yzAsyncValidators: YzAsyncValidators) { }
 
   formGroup = new FormGroup({
@@ -47,9 +48,7 @@ export class AddComponent implements OnInit {
     } as Student);
     this.studentService.save(student)
       .subscribe(() => {
-        this.commonService.success(() => {
-          this.router.navigateByUrl('/student');
-        });
+        this.commonService.success(() => this.router.navigate(['../'], {relativeTo: this.route}));
       });
   }
 

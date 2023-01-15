@@ -14,6 +14,7 @@ import {Assert} from '../../../../common/utils';
   styleUrls: ['./edit.component.scss']
 })
 export class EditComponent implements OnInit {
+  private id = 0;
 
   constructor(private studentService: StudentService,
               private commonService: CommonService,
@@ -37,6 +38,7 @@ export class EditComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(param => {
+      this.id = +param.studentId;
       const studentId = +param.studentId;
       Assert.isNotNullOrUndefined(studentId, 'ID类型不正确');
       this.formGroup.get(this.keys.name)!.setAsyncValidators(this.yzAsyncValidators.studentNameUnique(studentId));
@@ -54,11 +56,9 @@ export class EditComponent implements OnInit {
         id: formGroup.get(this.keys.clazzId)?.value
       }
     } as Student);
-    this.studentService.save(student)
+    this.studentService.update(this.id, student)
       .subscribe(() => {
-        this.commonService.success(() => {
-          this.router.navigateByUrl('/student');
-        });
+        this.commonService.success(() => this.router.navigate(['../../'], {relativeTo: this.route}));
       });
   }
 
