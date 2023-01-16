@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {UserService} from '../../../service/user.service';
+import {User} from "../../../entity/user";
 
 @Component({
   selector: 'app-header',
@@ -16,8 +17,13 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getCurrentLoginUser()
       .subscribe(currentLoginUser => {
-        this.username = currentLoginUser.name;
-        console.log(this.username);
+        // todo: 更改
+        if (currentLoginUser && currentLoginUser.name) {
+          this.username = currentLoginUser.name;
+          console.log(this.username);
+        } else {
+          this.username = '无';
+        }
       });
   }
   a(): void {

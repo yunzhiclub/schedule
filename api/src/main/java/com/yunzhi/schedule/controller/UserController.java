@@ -30,6 +30,9 @@ public class UserController {
 
     @GetMapping("{id}")
     public User getById(@PathVariable Long id) {
+        if (id == null) {
+            return null;
+        }
         return this.userService.findById(id);
     }
 

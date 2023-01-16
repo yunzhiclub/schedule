@@ -1,0 +1,105 @@
+<!-- 选择课程 -->
+<div class="form-group row">
+  <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>课程</label>
+  <div class="col-sm">
+    <input type="text" class="disabled" disabled [value]="course.name">
+  </div>
+</div>
+
+<!--选择时间-->
+<div class="form-group row">
+  <div class="col-sm-2">
+    <label class="col-sm-12 col-form-label"><code>*</code>上课时间:</label>
+  </div>
+  <div class="col-sm-5">
+    <div class="dropdown">
+      <button class="btn btn-sm btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+        <span>{{pattern ? '定制选择' : '同步选择'}}</span>
+      </button>
+      <div class="dropdown-menu">
+        <button class="dropdown-item" type="button" (click)="updatePattern(false)">同步选择</button>
+        <button class="dropdown-item" type="button" (click)="updatePattern(true)">定制选择</button>
+      </div>
+    </div>
+  </div>
+  <input disabled class="col col-3" value="当前学时: {{ selectedData.length}}">
+
+
+  <div class="col-sm" style="float: right">
+    <table class="table  table-bordered">
+      <thead>
+      <tr>
+        <th>周几/课序</th>
+        <th *ngFor="let bigLesson of bigLessons">{{bigLesson! + 1}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let day of days; index as d">
+        <th   class="col-sm-1">周{{day}}</th>
+        <td  *ngFor="let bigLesson of bigLessons" class="col-sm-1 container-fluid">
+          <div class="list-group">
+            <button class="list-group-item" (click)="showModel(d, bigLesson)"><h6>周{{day}}第{{bigLesson! + 1}}节</h6></button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row col-sm-12">
+    <div class="col">
+      <button type="submit" (click)="onSubmit()" [disabled]="!canSubmit()" class="btn btn-primary">确定</button>
+    </div>
+  </div>
+</div>
+
+<app-yz-modal *ngIf="isShowModel" [width]="'65%'" [size]="'md'">
+  <div class="">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content" >
+        <div class="modal-header">
+          <h5 class="modal-title">周{{days[day!]}}第{{bigLesson! + 1}}节</h5>
+          <ul class="list-group list-group-horizontal ml-5">
+            <button class="btn border list-group-item" [ngClass]="{'bg-primary': smLessons.includes(0), 'text-white': smLessons.includes(0)}" (click)="onSmLessonsChange(0)" [disabled]="isSmLessonsDetermine">小节1</button>
+            <button class="btn border list-group-item" [ngClass]="{'bg-primary': smLessons.includes(1), 'text-white': smLessons.includes(1)}" (click)="onSmLessonsChange(1)" [disabled]="isSmLessonsDetermine">小节2</button>
+            <button class="btn border list-group-item" [ngClass]="{'bg-primary': smLessons.includes(2), 'text-white': smLessons.includes(2)}" (click)="onSmLessonsChange(2)" [disabled]="bigLesson !== 4 || isSmLessonsDetermine">小节3</button>
+          </ul>
+          <!--          <button class="btn btn-outline-primary btn-sm hide" (click)="onIsSmLessonsDetermineChange()">-->
+          <!--            {{ isSmLessonsDetermine ? '修改' : '确定' }}小节选择-->
+          <!--          </button>-->
+        </div>
+        <div class="modal-body">
+          <div class=" row ">
+            <span class="col-4">选择周:&nbsp;
+              <span class="text-muted" style="font-size: 0.7em">(选择某个周再选择对应教室)</span>
+            </span>
+          </div>
+          <ul class="list-group list-group-horizontal">
+            <ng-container *ngFor="let w of weeks" class="list-group-item">
+              <button [disabled]="isWeekDisabled(w)" (click)="onWeekChange(w)" [ngClass]="{'bg-primary': w === week || selectedWeeks.includes(w)}" class="mr-1 border-white" style="font-size: 0.8em">第{{ w! + 1 }}周</button>
+            </ng-container>
+          </ul><br>
+
+          <div *ngIf="week !== undefined || !pattern">
+            <h6>选择教室<span class="text-muted" style="font-size: 0.7em">(当前周:{{week! + 1}})</span>:</h6>
+            <ul class="list-group list-group-horizontal">
+              <ng-container *ngFor="let room of rooms" class="list-group-item">
+                <button [disabled]="isRoomDisabled(room.id!)" (click)="onRoomChange(room.id!)" [ngClass]="{'bg-primary': isRoomChecked(room.id!)}"  class="mr-1 border-white" [value]="room.id" style="font-size: 0.8em">{{ room.name }}</button>
+              </ng-container>
+            </ul>
+          </div>
+          selectedWeeks{{selectedWeeks | json}}<br>
+          selectedRooms{{selectedRooms | json}}<br>
+          disabledWeeks{{disabledWeeks | json}}<br>
+          disabledRooms{{disabledRooms | json}}<br>
+          tempData{{tempData| json}}
+          <br><br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="close()" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-primary" [disabled]="!canSave()" (click)="save()">保存修改</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-yz-modal>

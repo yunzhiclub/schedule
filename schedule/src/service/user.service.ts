@@ -89,7 +89,6 @@ export class UserService {
         .subscribe({
           next: (user: User) => {
             this.currentLoginUser = user;
-            console.log('initCurrentLoginUser', user);
             this.setCurrentLoginUser(user);
             subscriber.next();
           },

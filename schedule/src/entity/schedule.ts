@@ -26,12 +26,12 @@ export class Schedule {
     clazzes?: Clazz[]
   }) {
     this.id = (data.id as number);
-    this.course = data.course!;
-    this.term = data.term!;
-    this.teacher1 = data.teacher1!;
-    this.teacher2 = data.teacher2!;
-    this.dispatches = data.dispatches!;
-    this.clazzes = data.clazzes!;
+    this.course = data.course ? data.course : new Course();
+    this.term = data.term ? data.term : new Term();
+    this.teacher1 = data.teacher1 ? data.teacher1 : new Teacher();
+    this.teacher2 = data.teacher2 ? data.teacher2 : new Teacher();
+    this.dispatches = data.dispatches ? data.dispatches : [];
+    this.clazzes = data.clazzes ? data.clazzes : [];
   }
   getCourse(): Course {
     Assert.isDefined(this.course, '不满足获取course的前提条件');
@@ -61,4 +61,5 @@ export class Schedule {
     Assert.isDefined(this.id, '不满足获取id的前提条件');
     return this.id!;
   }
+
 }

@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.sql.Timestamp;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 班级实体
@@ -35,6 +33,11 @@ public class Clazz implements SoftDelete {
 
     @ApiModelProperty("是否已删除")
     private Boolean deleted = false;
+
+
+    @ManyToMany
+    private List<Schedule> schedules = new ArrayList<>();
+
     public Long getId() {
         return id;
     }
