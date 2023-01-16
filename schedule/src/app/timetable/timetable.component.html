@@ -32,14 +32,17 @@
         <td>第{{ lesson }}节</td>
         <td *ngFor="let day of days;index as d">
           <div *ngIf="this.isShow[l][d]">
-              <div>{{ this.content[l][d].course.name}}</div>
-<!--              <div>周数: {{ this.content[l][d].weeks }}</div>-->
-<!--              <div>教室: <label *ngFor="let room of this.content[l][d].rooms">{{ room.name }}&nbsp;</label></div>-->
-              <div *ngFor="let roomsAndWeeks of this.roomsAndWeeks[l][d]">
-                <div *ngIf="roomsAndWeeks.rooms.length !== 0">第<label>{{ roomsAndWeeks.weeks }}</label>周在教室<label *ngFor="let room of roomsAndWeeks.rooms">{{ room.name }}</label></div>
+            <div *ngFor="let schedule of this.content[l][d].schedules">
+              <div>{{ schedule.course.name }}</div>
+              <div *ngFor="let roomsAndWeeks of this.roomsAndWeeks[l][d][schedule.id]">
+                <div *ngIf="roomsAndWeeks.rooms.length !== 0">第<label *ngFor="let week of roomsAndWeeks.weeks">{{ week + 1 }}&nbsp;</label>周在教室<label *ngFor="let room of roomsAndWeeks.rooms">{{ room.name }}</label></div>
               </div>
-              <div>班级: <label *ngFor="let clazz of this.content[l][d].clazzes">{{ clazz.name }}&nbsp;</label></div>
-              <div>教师: <label *ngFor="let teacher of this.content[l][d].teachers">{{ teacher.name }}&nbsp;</label></div>
+              <div>班级：<label *ngFor="let clazz of schedule.clazzes">{{ clazz.name }}&nbsp;</label></div>
+              <div>教师：<label>{{ schedule.teacher1.name }}&nbsp;</label>
+                        <label>{{ schedule.teacher2.name }}&nbsp;</label>
+              </div>
+              <hr>
+            </div>
           </div>
         </td>
       </tr>

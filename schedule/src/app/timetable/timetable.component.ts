@@ -33,17 +33,16 @@ export class TimetableComponent implements OnInit {
   isShow = [] as number[][];
   // 天节小单元中的内容
   content = {} as unknown as {
-    course: Course;
     rooms: Room[];
     weeks: number[];
-    teachers: Teacher[];
-    clazzes: Clazz[]
+    clazzes: Clazz[];
+    schedules: Schedule[]
   }[][];
   // 教室与周的组
   roomsAndWeeks = [] as unknown as {
     rooms: Room[];
     weeks: number[]
-  }[][][];
+  }[][][][];
   // 已经选择的教师
   selectedTeacher: Teacher = new Teacher();
 
@@ -59,7 +58,7 @@ export class TimetableComponent implements OnInit {
     this.scheduleService.getSchedulesInCurrentTerm()
       .subscribe(allSchedulesInCurrentTerm => {
         this.allSchedulesInCurrentTerm = allSchedulesInCurrentTerm;
-        console.log('allSchedulesInCurrentTerm', this.allSchedulesInCurrentTerm);
+        // console.log('allSchedulesInCurrentTerm', this.allSchedulesInCurrentTerm);
       });
     this.termService.getCurrentTerm()
       .subscribe(currentTerm => {
@@ -74,27 +73,28 @@ export class TimetableComponent implements OnInit {
       this.roomsAndWeeks[i] = [];
       for (let j = 0; j < 7; j++) {
         this.roomsAndWeeks[i][j] = [];
-        for (let k = 0; k < 5; k++) {
-          this.roomsAndWeeks[i][j][k] = {
-            rooms: [],
-            weeks: []
-          };
+        for (const schedule of this.allSchedulesInCurrentTerm) {
+          this.roomsAndWeeks[i][j][schedule.id] = [];
+          for (let x = 0; x < 5; x++) {
+            this.roomsAndWeeks[i][j][schedule.id][x] = {
+              rooms: [],
+              weeks: []
+            };
+          }
         }
       }
     }
     console.log('this.roomsAndWeeks', this.roomsAndWeeks);
   }
-
   private initContent(): void {
     for (let i = 0; i < 11; i++) {
       this.content[i] = [];
       for (let j = 0; j < 7; j++) {
         this.content[i][j] = {
-          course: new Course(),
           rooms: [],
           weeks: [],
-          teachers: [],
-          clazzes: []
+          clazzes: [],
+          schedules: []
         };
       }
     }
@@ -109,7 +109,7 @@ export class TimetableComponent implements OnInit {
     // this.isShow[7][4] = 1;
   }
 
-  private onTeacherChange(): void {
+  onTeacherChange(): void {
     // 重新选择教师后,将教室与周的组置空
     this.initRoomsAndWeeks();
     // 重新选择教师后,将内容置空
@@ -121,7 +121,7 @@ export class TimetableComponent implements OnInit {
     if (this.formGroup.get('selectedTeacherId')?.value !== '999') {
       this.getSelectedTeacher();
     } else {
-      console.log('选择全部教师');
+      // console.log('选择全部教师');
       this.setIsShowForAllTeacher();
     }
   }
@@ -130,7 +130,7 @@ export class TimetableComponent implements OnInit {
     this.teacherService.getById(this.formGroup.get('selectedTeacherId')?.value)
       .subscribe(selectedTeacher => {
         this.selectedTeacher = selectedTeacher;
-        console.log('this.selectedTeacher', this.selectedTeacher);
+        // console.log('this.selectedTeacher', this.selectedTeacher);
         this.getSchedulesOfSelectedTeacher();
       });
   }
@@ -141,7 +141,7 @@ export class TimetableComponent implements OnInit {
         this.schedulesOfSelectedTeacher.push(schedule);
       }
     }
-    console.log('schedulesOfSelectedTeacher', this.schedulesOfSelectedTeacher);
+    // console.log('schedulesOfSelectedTeacher', this.schedulesOfSelectedTeacher);
     this.setIsShow();
   }
 
@@ -149,31 +149,43 @@ export class TimetableComponent implements OnInit {
     for (const schedule of this.schedulesOfSelectedTeacher) {
       for (const dispatch of schedule.dispatches) {
         this.isShow[dispatch.lesson][dispatch.day] = 1;
-        this.setContent(schedule, dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms);
-        this.setRoomsAndWeeks(dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms);
+        this.setContent(schedule, dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms, schedule.id);
       }
     }
   }
-
-  private setRoomsAndWeeks(lesson: number, day: number, week: number, rooms: Room[]): void {
-    // 当此个天节未存roomsAndWeeks组时
-    if (this.roomsAndWeeks[lesson][day][0].rooms.length === 0) {
+  private setContent(schedule: Schedule, lesson: number, day: number, week: number, rooms: Room[], scheduleId: number): void {
+    if (!this.whetherSchedulesIncludeSchedule(this.content[lesson][day].schedules, schedule)) {
+      this.content[lesson][day].schedules.push(schedule);
+    }
+    // console.log('this.content', this.content);
+    this.setRoomsAndWeeks(lesson, day, week, rooms, scheduleId);
+  }
+  private setRoomsAndWeeks(lesson: number, day: number, week: number, rooms: Room[], scheduleId: number): void {
+    for (const schedule of this.content[lesson][day].schedules) {
+      if (schedule.id === scheduleId) {
+        this.setRoomsAndWeeksOfSchedules(lesson, day, week, rooms, scheduleId);
+      }
+    }
+  }
+  private setRoomsAndWeeksOfSchedules(lesson: number, day: number, week: number, rooms: Room[], scheduleId: number): void {
+    // 当此个天节的scheduleId键数组未存roomsAndWeeks组时
+    if (this.roomsAndWeeks[lesson][day][scheduleId][0].rooms.length === 0) {
       // 将rooms与week存入第一个元素
       for (const room of rooms) {
-        this.roomsAndWeeks[lesson][day][0].rooms.push(room);
+        this.roomsAndWeeks[lesson][day][scheduleId][0].rooms.push(room);
       }
-      this.roomsAndWeeks[lesson][day][0].weeks.push(week);
+      this.roomsAndWeeks[lesson][day][scheduleId][0].weeks.push(week);
     } else {
-      // 当此个天节原来存有roomsAndWeeks组时
+      // 当此个天节的scheduleId键数组原来存有roomsAndWeeks组时
       // 设置key
       let key = true;
-      // 循环此个天节的所有roomsAndWeeks组
+      // 循环此个天节的scheduleId键数组的所有roomsAndWeeks组
       // tslint:disable-next-line:prefer-for-of
-      for (let i = 0; i < this.roomsAndWeeks[lesson][day].length; i++) {
+      for (let i = 0; i < this.roomsAndWeeks[lesson][day][scheduleId].length; i++) {
         // 如果新存入的rooms与当前已经存有的rooms相等
-        if (this.roomsAndWeeks[lesson][day][i].rooms.toString() === rooms.toString()) {
+        if (this.roomsAndWeeks[lesson][day][scheduleId][i].rooms.toString() === rooms.toString()) {
           // 只将新week存入已存在的对象的weeks中,不再重复存rooms
-          this.roomsAndWeeks[lesson][day][i].weeks.push(week);
+          this.roomsAndWeeks[lesson][day][scheduleId][i].weeks.push(week);
           // 当有当前情况时设置key为false
           key = false;
         }
@@ -183,76 +195,31 @@ export class TimetableComponent implements OnInit {
         // 将新存入的rooms与对应week存入下一个roomsAndWeeks组
         // tslint:disable-next-line:prefer-for-of
         for (let j = 0; j < this.roomsAndWeeks[lesson][day].length; j++) {
-          if (this.roomsAndWeeks[lesson][day][j].rooms.length === 0) {
+          if (this.roomsAndWeeks[lesson][day][scheduleId][j].rooms.length === 0) {
             for (const room of rooms) {
-              this.roomsAndWeeks[lesson][day][j].rooms.push(room);
+              this.roomsAndWeeks[lesson][day][scheduleId][j].rooms.push(room);
             }
-            this.roomsAndWeeks[lesson][day][j].weeks.push(week);
+            this.roomsAndWeeks[lesson][day][scheduleId][j].weeks.push(week);
             break;
           }
         }
       }
     }
-    console.log('this.roomsAndWeeks', this.roomsAndWeeks);
   }
-
-  private setContent(schedule: Schedule, lesson: number, day: number, week: number, rooms: Room[]): void {
-    this.content[lesson][day].course = schedule.course;
-
-    if (!this.whetherTeachersIncludeTeacher(this.content[lesson][day].teachers, schedule.teacher1)) {
-      this.content[lesson][day].teachers.push(schedule.teacher1);
-    }
-    if (!this.whetherTeachersIncludeTeacher(this.content[lesson][day].teachers, schedule.teacher2)) {
-      this.content[lesson][day].teachers.push(schedule.teacher2);
-    }
-
-    for (const clazz of schedule.clazzes) {
-      if (!this.whetherClazzesIncludeClazz(this.content[lesson][day].clazzes, clazz)) {
-        this.content[lesson][day].clazzes.push(clazz);
-      }
-    }
-
-    this.content[lesson][day].weeks.push(week);
-
-    for (const room of rooms) {
-      this.content[lesson][day].rooms.push(room);
-    }
-  }
-
-  private whetherTeachersIncludeTeacher(teachers: Teacher[], newTeacher: Teacher): boolean {
-    for (const teacher of teachers) {
-      if (teacher.id === newTeacher.id) {
+  private whetherSchedulesIncludeSchedule(schedules: Schedule[], newSchedule: Schedule): boolean {
+    for (const schedule of schedules) {
+      if (schedule.id === newSchedule.id) {
         return true;
       }
     }
     return false;
   }
-
-  private whetherClazzesIncludeClazz(clazzes: Clazz[], newClazz: Clazz): boolean {
-    for (const clazz of clazzes) {
-      if (clazz.id === newClazz.id) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   private setIsShowForAllTeacher(): void {
     for (const schedule of this.allSchedulesInCurrentTerm) {
       for (const dispatch of schedule.dispatches) {
         this.isShow[dispatch.lesson][dispatch.day] = 1;
-        this.setContent(schedule, dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms);
-        this.setRoomsAndWeeks(dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms);
+        this.setContent(schedule, dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms, schedule.id);
       }
     }
-  }
-
-  private whetherWeeksIncludeWeek(weeks: number[], newWeek: number): boolean {
-    for (const week of weeks) {
-      if (week === newWeek) {
-        return true;
-      }
-    }
-    return false;
   }
 }
