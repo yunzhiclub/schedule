@@ -18,4 +18,6 @@ public interface ScheduleService {
     Page<Schedule> page(String courseName, String termName, String clazzName, String teacherName, Pageable pageable);
 
     Schedule add(Schedule schedule);
+
+    Schedule getById(Long id);
 }

@@ -1,35 +1,35 @@
-import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Course} from '../../../entity/course';
+import { Component, OnInit } from '@angular/core';
+import {config} from '../../../conf/app.config';
+import {Teacher} from '../../../entity/teacher';
+import {Schedule} from '../../../entity/schedule';
+import {Room} from '../../../entity/room';
 import {Clazz} from '../../../entity/clazz';
+import {Term} from '../../../entity/term';
 import {ClazzService} from '../../../service/clazz.service';
 import {CourseService} from '../../../service/course.service';
-import {Teacher} from '../../../entity/teacher';
 import {TeacherService} from '../../../service/teacher.service';
-import {config} from '../../../conf/app.config';
 import {TermService} from '../../../service/term.service';
-import {Term} from '../../../entity/term';
 import {ScheduleService} from '../../../service/schedule.service';
-import {Schedule} from '../../../entity/schedule';
-import {Dispatch} from '../../../entity/dispatch';
-import {Room} from '../../../entity/room';
 import {RoomService} from '../../../service/room.service';
 import {CommonService} from '../../../service/common.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Dispatch} from '../../../entity/dispatch';
+import {Course} from "../../../entity/course";
 
 @Component({
-  selector: 'app-add',
-  templateUrl: './add.component.html',
-  styleUrls: ['./add.component.scss']
+  selector: 'app-edit',
+  templateUrl: './edit.component.html',
+  styleUrls: ['./edit.component.scss']
 })
-export class AddComponent implements OnInit {
-  formGroup = new FormGroup({
-    courseId: new FormControl(null, Validators.required),
-    clazzIds: new FormControl(null, Validators.required),
-    teacher1Id: new FormControl(null, Validators.required),
-    teacher2Id: new FormControl(null, Validators.required)
-  });
+export class EditComponent implements OnInit {
   weekNumber = config.weekNumber;
+  schedule = {} as Schedule;
+  scheduleId: number | undefined;
+  clazzIds = [] as number[];
+  teacher1 = {} as Teacher;
+  teacher2 = {} as Teacher;
+  course = {} as Course;
+  dispatches = [] as Dispatch[];
 
   // 时间表, 判断是否周可选; true: 可选
   times: boolean[][][] = [];
@@ -42,8 +42,6 @@ export class AddComponent implements OnInit {
   conflictTimesOfTeacher1: {day: number, lesson: number, week: number}[] = [];
   // 教师2冲突时间
   conflictTimesOfTeacher2: {day: number, lesson: number, week: number}[] = [];
-  // 冲突地点, 通过学期所有被占用教室获取
-  conflictSites: {day: number, lesson: number, week: number, roomIds: number[]}[] = [];
   // 选择的时间地点
   selectedData: {day: number, smLesson: number, week: number, roomIds: number[]}[] = [];
   // 临时时间地点
@@ -52,10 +50,6 @@ export class AddComponent implements OnInit {
   smLessonsRecorder = [] as number[][][];
 
 
-  /* 所有课程 */
-  courses =  []  as Course[];
-  // 所有教师
-  teachers =  []  as Teacher[];
   // 所有排课
   schedules =  []  as Schedule[];
   // 所有教室
@@ -71,8 +65,6 @@ export class AddComponent implements OnInit {
 
   // 是否展示模态框
   isShowModel = false;
-  // 两个教师是否相同
-  isTeacherSame = false;
   // 当前学期
   term = {} as Term;
   // 当前天
@@ -98,7 +90,7 @@ export class AddComponent implements OnInit {
   // 不可用的教室
   disabledRooms = [] as number[];
   // 时间选择模式: true 分别选择 | false 同步选择 默认为同步选择
-  pattern = false;
+  pattern = true;
   // 是否小结确定
   isSmLessonsDetermine = false;
 
@@ -110,9 +102,11 @@ export class AddComponent implements OnInit {
               private roomService: RoomService,
               private commonService: CommonService,
               private router: Router,
-              ) { }
+              private route: ActivatedRoute,
+  ) { }
 
   ngOnInit(): void {
+    this.scheduleId = this.route.snapshot.params.id;
     // 初始化时间表
     this.initTimes();
     // 初始化地点表
@@ -121,8 +115,6 @@ export class AddComponent implements OnInit {
     this.initSmLessonsRecorder();
     // 初始化周和教室记录器，同步模式使用
     this.initWeeksAndRoomsRecoder();
-    // 订阅参数
-    this.subscribeFormGroup();
     // 请求数据
     this.getData();
   }
@@ -171,7 +163,6 @@ export class AddComponent implements OnInit {
     }
   }
 
-
   private initWeeksAndRoomsRecoder(): void {
     for (let i = 0; i < 7; i++) {
       this.weeksRecoder[i] = [];
@@ -183,60 +174,23 @@ export class AddComponent implements OnInit {
     }
   }
 
-
-  /**
-   * 订阅参数，各参数改变时修改其后置数据
-   */
-  private subscribeFormGroup(): void {
-    this.formGroup.get('courseId')?.valueChanges.subscribe(() => {
-      this.formGroup.get('clazzIds')?.setValue([]);
-      this.formGroup.get('teacher1Id')?.setValue(null);
-      this.formGroup.get('teacher2Id')?.setValue(null);
-      this.clearScreenedClazzes();
-      this.clearConflictTimes();
-      this.clearSelectedData();
-      this.makeScreenedClazzes();
-      this.makeTimesAndSites();
-    });
-    this.formGroup.get('clazzIds')?.valueChanges.subscribe(() => {
-      this.formGroup.get('teacher1Id')?.setValue(null);
-      this.formGroup.get('teacher2Id')?.setValue(null);
-      this.clearConflictTimes();
-      this.clearSelectedData();
-      this.makeTimesAndSites();
-    });
-    this.formGroup.get('teacher1Id')?.valueChanges.subscribe((teacher1Id: number) => {
-      this.clearSelectedData();
-      this.clearConflictTimes();
-      this.makeConflictTimes();    // 已实现
-      this.makeTimesAndSites();
-      this.isTeacherSame = teacher1Id === this.formGroup.get('teacher2Id')?.value;
-    });
-    this.formGroup.get('teacher2Id')?.valueChanges.subscribe((teacher2Id: number) => {
-      this.clearSelectedData();
-      this.clearConflictTimes();
-      this.makeConflictTimes();
-      this.makeTimesAndSites();
-      this.isTeacherSame = teacher2Id === this.formGroup.get('teacher1Id')?.value;
-    });
-  }
-
   /**
    * 展示model
    * @param day 天
    * @param bigLesson 大节
    */
   showModel(day: number, bigLesson: number): void {
+
+    console.log('showModel1', [...this.weeksRecoder], [...this.roomsRecoder]);
     this.day = day;
     this.bigLesson = bigLesson;
-    console.log(this.selectedData);
     this.initTempData();
     this.makeTempData();
     // 同步模式
     if (!this.pattern) {
       this.selectedWeeks = [...this.weeksRecoder[this.day][this.bigLesson]];
       this.selectedRooms = [...this.roomsRecoder[this.day][this.bigLesson]];
-      this.makeWeeksAndRoomsRecoder();
+      console.log('showModel2', [...this.weeksRecoder], [...this.roomsRecoder]);
     }
     this.isShowModel = true;
   }
@@ -259,13 +213,12 @@ export class AddComponent implements OnInit {
    * 保存数据并关闭model
    */
   save(): void {
-    // 删除掉之前存的
     this.deleteSelectedData();
     if (this.pattern) {
       this.smLessons.forEach(smLesson => {
         for (let week = 0; week < this.tempData.length; week++) {
           if (this.tempData[week].length > 0) {
-            this.selectedData.push({week, day: this.day!, smLesson: this.bigLesson! * 2 + smLesson, roomIds: this.tempData[week]});
+            this.selectedData.push({week, day: this.day!, smLesson, roomIds: this.tempData[week]});
           }
         }
       });
@@ -284,37 +237,40 @@ export class AddComponent implements OnInit {
   }
 
   private getData(): void {
-    this.termService.getCurrentTerm()
-      .subscribe((term: Term) => {
-        this.term = term;
-        const seconds = +term.endTime - +term.startTime;
-        const days = Math.ceil(seconds / (60 * 60 * 24));
-        this.weekNumber = Math.ceil(days / 7);
-        this.initTimes();
-        this.initSites();
-        this.makeWeeks();
+    this.scheduleService.getById(this.scheduleId!)
+      .subscribe((schedule) => {
+        this.schedule = schedule;
+        this.clazzIds = schedule.clazzes.map(clazz => clazz.id);
+        this.teacher1 = schedule.teacher1;
+        this.teacher2 = schedule.teacher2;
+        this.course = schedule.course;
+        this.dispatches = schedule.dispatches;
+        this.makeSelectedData();
+        this.validateData();
+        this.makeWeeksAndRoomsRecoder();
+        this.makeSmLessonsRecorder();
+        console.log('getData', [...this.weeksRecoder], [...this.roomsRecoder]);
+
+        this.termService.getCurrentTerm()
+          .subscribe((term: Term) => {
+            this.term = term;
+            const seconds = +term.endTime - +term.startTime;
+            const days = Math.ceil(seconds / (60 * 60 * 24));
+            this.weekNumber = Math.ceil(days / 7);
+            this.makeWeeks();
+
+            this.scheduleService.getSchedulesInCurrentTerm()
+              .subscribe((schedules: Schedule[]) => {
+                this.schedules = schedules;
+                this.makeTimesAndSites();
+              });
+          });
       });
     this.roomService.getAll()
       .subscribe((rooms: Room[]) => {
         this.rooms = rooms;
       });
-    this.scheduleService.getSchedulesInCurrentTerm()
-      .subscribe((schedules: Schedule[]) => {
-        this.schedules = schedules;
-        this.makeConflictSites();
-      });
-    this.courseService.getAll()
-      .subscribe(allCourse => {
-        this.courses = allCourse;
-      });
-    this.clazzService.getAll()
-      .subscribe(allClazz => {
-        this.clazzes = allClazz;
-      });
-    this.teacherService.getAll()
-      .subscribe(allTeacher => {
-        this.teachers = allTeacher;
-      });
+
   }
 
   /**
@@ -334,25 +290,6 @@ export class AddComponent implements OnInit {
     this.conflictTimesOfTeacher2 = [];
   }
 
-  /**
-   * 获取没有上过已选择课程的班级
-   */
-  private makeScreenedClazzes(): void {
-    const courseId = this.formGroup.get('courseId')?.value;
-    if (courseId === '' || courseId === null || courseId === undefined) {
-      // 没有选择课程， 将clazz_id设为null
-      this.formGroup.get('clazzIds')?.setValue(null);
-    } else {
-      // 选择课程，请求已选择该课程的班级clazzIds, 并在clazzes中筛选掉这些班级
-      this.clazzService.clazzesHaveSelectCourse(this.formGroup.get('courseId')?.value)
-        .subscribe(clazzIds => {
-          // console.log('clazzIds', clazzIds);
-          this.screenedClazzes = this.clazzes.filter(clazz => !clazzIds.includes(clazz.id));
-        }, error => {
-          // console.log('error', error);
-        });
-    }
-  }
   // 需要 schedules clazzIds teacher1 teacher2
   private makeConflictTimes(): void {
     this.makeConflictTimesOfClazzes();
@@ -378,23 +315,17 @@ export class AddComponent implements OnInit {
   private makeTimesAndSites(): void {
     this.initSites();
     this.initTimes();
-    console.log('makeTimesAndSites', this.times, this.sites);
     this.makeSites();
+    this.makeConflictTimes();
     this.makeTimes();
-  }
-
-  isShowTeacher(): boolean {
-    return !!(this.formGroup.get('clazzIds')?.valid
-      && this.formGroup.get('clazzIds')?.value !== null
-      && (this.formGroup.get('clazzIds')?.value?.length === 1 && this.formGroup.get('clazzIds')?.value[0] !== null)
-    );
+    this.updateTimesAndSitesBySchedule();
   }
 
   /**
    *  生成班级冲突时间
    */
   private makeConflictTimesOfClazzes(): void {
-    const clazzIds: number[] = this.formGroup.get('clazzIds')?.value as [];
+    const clazzIds: number[] = this.clazzIds;
     this.schedules.forEach(schedule => {
       let status = false;
       // schedule对应班级是否包含已选中班级
@@ -411,7 +342,7 @@ export class AddComponent implements OnInit {
   }
 
   private makeConflictTimesOfTeacher1(): void {
-    const teacher1Id = +this.formGroup.get('teacher1Id')?.value;
+    const teacher1Id = this.teacher1.id;
     this.schedules.forEach((schedule: Schedule) => {
       if (schedule.teacher1.id === teacher1Id || schedule.teacher2.id === teacher1Id) {
         schedule.dispatches.forEach((dispatch: Dispatch) => {
@@ -423,7 +354,7 @@ export class AddComponent implements OnInit {
   }
 
   private makeConflictTimesOfTeacher2(): void {
-    const teacher2Id = +this.formGroup.get('teacher2Id')?.value;
+    const teacher2Id = this.teacher2.id;
     this.schedules.forEach((schedule: Schedule) => {
       if (schedule.teacher2.id === teacher2Id || schedule.teacher1.id === teacher2Id) {
         schedule.dispatches.forEach((dispatch: Dispatch) => {
@@ -434,14 +365,7 @@ export class AddComponent implements OnInit {
     // console.log('teacher2Id', this.conflictTimesOfTeacher2);
   }
 
-  private makeConflictSites(): void {
-    this.conflictSites.forEach(conflictSite => {
-      this.sites[conflictSite.day][conflictSite.lesson][conflictSite.week].concat(conflictSite.roomIds);
-    });
-  }
-
   private makeTimes(): void {
-    console.log('123123', [...this.conflictTimesOfClazzes], [...this.conflictTimesOfTeacher1], [...this.conflictTimesOfTeacher2]);
     this.conflictTimesOfClazzes.forEach(conflictTime => {
       this.times[conflictTime.day][conflictTime.lesson][conflictTime.week] = false;
     });
@@ -450,6 +374,16 @@ export class AddComponent implements OnInit {
     });
     this.conflictTimesOfTeacher2.forEach(conflictTime => {
       this.times[conflictTime.day][conflictTime.lesson][conflictTime.week] = false;
+    });
+  }
+
+  private updateTimesAndSitesBySchedule(): void {
+    this.selectedData.forEach(data => {
+      this.times[data.day][data.smLesson][data.week] = true;
+      data.roomIds.forEach(roomId => {
+        this.sites[data.day][data.smLesson][data.week]
+          .splice(this.sites[data.day][data.smLesson][data.week].indexOf(roomId), 1);
+      });
     });
   }
 
@@ -478,6 +412,7 @@ export class AddComponent implements OnInit {
     const smLessons = this.bigLesson === 4 ? [0, 1, 2] : [0, 1];
     if (!this.selectedWeeks.includes(week)) {
       this.selectedWeeks.push(week);
+      // console.log('12123132123312', [...this.selectedWeeks]);
       smLessons.forEach(smLesson => {
         console.log('this.sites', this.sites[this.day!][this.bigLesson! * 2 + smLesson][week]);
         this.disabledRooms = this.disabledRooms.concat(this.sites[this.day!][this.bigLesson! * 2 + smLesson][week]);
@@ -556,25 +491,26 @@ export class AddComponent implements OnInit {
   }
 
   private makeTempData(): void {
-    this.smLessons = this.smLessonsRecorder[this.day!][this.bigLesson!];
+    const smLessons = this.smLessonsRecorder[this.day!][this.bigLesson!];
     this.selectedData.forEach((data) => {
       const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
       if (data.day === this.day && bigLesson === this.bigLesson) {
         this.tempData[data.week] = data.roomIds;
-        console.log('makeTempData', [...this.tempData]);
       }
     });
+    this.smLessons = smLessons;
   }
 
   updatePattern(pattern: boolean): void {
     this.pattern = pattern;
     this.initTempData();
     this.selectedData = [];
+    this.makeSelectedData();
     this.selectedRooms = [];
     this.selectedWeeks = [];
     this.week = undefined;
     if (!this.pattern) {
-      this.initWeeksAndRoomsRecoder();
+      this.validateData();
     }
   }
 
@@ -637,39 +573,65 @@ export class AddComponent implements OnInit {
     }
   }
 
-  isShowTimeSelect(): boolean {
-    return !this.formGroup.invalid &&
-      !this.isTeacherSame &&
-      this.formGroup.get('teacher1Id')?.value !== 'null' &&
-      this.formGroup.get('teacher2Id')?.value !== 'null';
-  }
-
   onSubmit(): void {
+    const dispatches = [] as Dispatch[];
     console.log('onSubmit is called');
-    const course = new Course({id: this.formGroup.get('courseId')?.value});
-    const clazzes = this.formGroup.get('clazzIds')?.value.map((clazzId: number) => {
-      return new Clazz({id: clazzId});
-    });
-    const teacher1Id = this.formGroup.get('teacher1Id')?.value;
-    const teacher2Id = this.formGroup.get('teacher2Id')?.value;
-    const schedule = new Schedule();
-    schedule.course = course;
-    schedule.clazzes = clazzes;
-    schedule.term = this.term;
-    schedule.teacher1 = new Teacher({id: teacher1Id});
-    schedule.teacher2 = new Teacher({id: teacher2Id});
     this.selectedData.forEach((data) => {
       const rooms = data.roomIds.map(roomId => {
         return new Room({id: roomId});
       });
-      schedule.dispatches.push(new Dispatch({day: data.day, lesson: data.smLesson, week: data.week, rooms}));
+      dispatches.push(new Dispatch({day: data.day, lesson: data.smLesson, week: data.week, rooms}));
     });
-    this.scheduleService.add(schedule)
+    this.schedule.dispatches = dispatches;
+    this.scheduleService.add(this.schedule)
       .subscribe(() => {
         this.commonService.success(() => this.router.navigateByUrl('../'));
       });
   }
 
+  private makeSelectedData(): void {
+    this.dispatches.forEach(dispatch => {
+      const roomIds = dispatch.rooms.map(room => room.id!);
+      this.selectedData.push({day: dispatch.day!, smLesson: dispatch.lesson!, week: dispatch.week!, roomIds});
+    });
+  }
+
+  // 当前系统在存入时规定同一大节只能上部分小结或者都上，不能不同小节在不同时间，在不同地点
+  private makeSmLessonsRecorder(): void {
+    this.selectedData.forEach((data) => {
+      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+      this.smLessonsRecorder[data.day][bigLesson] = [];
+    });
+    this.selectedData.forEach((data) => {
+      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+      this.smLessonsRecorder[data.day][bigLesson].push(data.smLesson - bigLesson * 2);
+    });
+  }
+
+  /**
+   * 对selectedData进行验证，确保不存在类似于第一周在教室1/2上课，第二周在教室3/4上课的情况
+   */
+  private validateData(): void {
+    // true代表数据正确
+    let status = true;
+    this.selectedData.forEach(data1 => {
+      const bigLesson1 = data1.smLesson === 11 ? 4 : Math.floor(data1.smLesson / 2);
+      this.selectedData.forEach(data2 => {
+        const bigLesson2 = data2.smLesson === 11 ? 4 : Math.floor(data2.smLesson / 2);
+        if (data1.day === data2.day && bigLesson1 === bigLesson2 && data1.week === data2.week) {
+          // 判断数组是否相等
+          const roomIds1 = data1.roomIds;
+          const roomIds2 = data2.roomIds;
+          status = roomIds1.length === roomIds2.length &&
+            roomIds1.filter(t => roomIds2.includes(t)).length === roomIds1.length;
+        }
+      });
+    });
+    if (!status && this.pattern) {
+      this.pattern = false;
+      this.commonService.info(() => {}, '当前数据不支持定制模式，已自动为您切换为同步模式');
+    }
+  }
 
   /**
    * 同步模式使用
@@ -677,18 +639,17 @@ export class AddComponent implements OnInit {
   private makeWeeksAndRoomsRecoder(): void {
     this.selectedData.forEach((data) => {
       const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
-      if (!this.weeksRecoder[data.day][bigLesson].includes(data.week)) {
-        this.weeksRecoder[data.day][bigLesson].push(data.week);
-      }
+      this.weeksRecoder[data.day][bigLesson].push(data.week);
       if (this.roomsRecoder[data.day][bigLesson].length === 0) {
         this.roomsRecoder[data.day][bigLesson] = [...data.roomIds];
       }
     });
   }
 
+
   canSubmit(): boolean {
-    const courseId: number = +this.formGroup.get('courseId')?.value;
-    const course = this.courses.filter(cou => cou.id === courseId)[0];
-    return this.selectedData.length === course.hours;
+    const course = this.course;
+    const status = this.selectedData.length === course.hours;
+    return status;
   }
 }

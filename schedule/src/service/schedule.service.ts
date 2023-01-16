@@ -58,4 +58,8 @@ export class ScheduleService {
     console.log('add', schedule);
     return this.httpClient.post<Schedule>(this.baseUrl, schedule);
   }
+
+  getById(scheduleId: number): Observable<Schedule> {
+    return this.httpClient.get<Schedule>(this.baseUrl + '/' + scheduleId);
+  }
 }

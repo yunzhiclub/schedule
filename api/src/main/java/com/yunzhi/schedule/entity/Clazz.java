@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +34,8 @@ public class Clazz implements SoftDelete {
     @ApiModelProperty("是否已删除")
     private Boolean deleted = false;
 
+
     @ManyToMany
-    @ApiModelProperty("排课")
     private List<Schedule> schedules = new ArrayList<>();
 
     public Long getId() {
@@ -69,14 +68,6 @@ public class Clazz implements SoftDelete {
 
     private void setDeleted(Boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public List<Schedule> getSchedules() {
-        return schedules;
-    }
-
-    public void setSchedules(List<Schedule> schedules) {
-        this.schedules = schedules;
     }
 
     public interface IdJsonView {}

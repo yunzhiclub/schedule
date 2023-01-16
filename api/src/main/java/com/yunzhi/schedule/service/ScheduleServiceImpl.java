@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -35,5 +36,10 @@ public class ScheduleServiceImpl implements ScheduleService{
     @Override
     public Schedule add(Schedule schedule) {
         return this.scheduleRepository.save(schedule);
+    }
+
+    @Override
+    public Schedule getById(Long id) {
+        return this.scheduleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("未找到相关实体"));
     }
 }

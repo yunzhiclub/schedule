@@ -54,6 +54,11 @@ public class ScheduleController {
         return this.scheduleService.add(schedule);
     }
 
+    @GetMapping("{id}")
+    public Schedule getById(@PathVariable Long id) {
+        return this.scheduleService.getById(id);
+    };
+
     public interface getSchedulesInCurrentTerm extends
             Schedule.ClazzJsonView,
             Schedule.CourseJsonView,

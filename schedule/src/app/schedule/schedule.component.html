@@ -35,7 +35,7 @@
       <td>{{getClazzNames(schedule.clazzes)}}</td>
       <td>{{schedule.teacher1.name + '、' + schedule.teacher2.name}}</td>
       <td>
-        <a class="btn btn-sm btn-primary">编辑</a>
+        <a class="btn btn-sm btn-primary" [routerLink]="'edit/' + schedule.id">编辑</a>
         <a class="btn btn-sm btn-danger">删除</a>
       </td>
     </tr>
