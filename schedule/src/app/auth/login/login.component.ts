@@ -56,10 +56,10 @@ export class LoginComponent implements OnInit {
       password: this.loginForm.get('password')!.value as string,
       verificationCode: this.loginForm.get('verificationCode')!.value as string
     };
-    console.log('登录0');
     this.userService.login(user)
       .subscribe((data) => {
         if (data) {
+          window.sessionStorage.setItem('login', 'true');
           this.userService.initCurrentLoginUser(() => {
             this.commonService.success(() => this.router.navigateByUrl('/dashboard').then());
           }).subscribe();
@@ -69,22 +69,5 @@ export class LoginComponent implements OnInit {
       }, () => {
         this.errorInfo = '登录失败，请检查您填写的信息是否正确';
       });
-    //   }, (response) => {
-    //     console.log('登录3');
-    //     const errorCode = +response.headers.get(config.ERROR_RESPONSE_CODE_KEY);
-    //     const errorMessage = response.headers.get(config.ERROR_RESPONSE_MESSAGE_KEY);
-    //     console.log(`发生错误：${errorCode}, ${errorMessage}`);
-    //     if (errorCode === HTTP_STATUS_CODE.REQUIRE_VERIFICATION_CODE.code) {
-    //       console.log('登录4');
-    //       this.showValidateCode = true;
-    //       this.loginForm.patchValue({verificationCode: ''});
-    //     } else {
-    //       console.log('登录5');
-    //       this.showValidateCode = false;
-    //       this.loginForm.patchValue({verificationCode: '0000'});
-    //     }
-    //     this.errorInfo = '登录失败，请检查您填写的信息是否正确, 如若检查无误，可能是您的账号被冻结';
-    //     this.submitting = false;
-    //   });
   }
 }

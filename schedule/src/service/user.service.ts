@@ -128,4 +128,8 @@ export class UserService {
     console.log('update', data);
     return this.httpClient.post<any>(`${this.url}/update/` + userId.toString(), data);
   }
+
+  logout(): Observable<void> {
+    return this.httpClient.get<void>(this.url + '/logout');
+  }
 }

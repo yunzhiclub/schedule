@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {UserService} from '../../../service/user.service';
-import {User} from "../../../entity/user";
+import {CommonService} from '../../../service/common.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -12,21 +13,28 @@ export class HeaderComponent implements OnInit {
   username: string | undefined = '';
   title = environment.title;
 
-  constructor( private userService: UserService ) { }
+  constructor( private userService: UserService,
+               private commonService: CommonService,
+               private router: Router) { }
 
   ngOnInit(): void {
-    this.userService.getCurrentLoginUser()
-      .subscribe(currentLoginUser => {
-        // todo: 更改
-        if (currentLoginUser && currentLoginUser.name) {
-          this.username = currentLoginUser.name;
-          console.log(this.username);
-        } else {
-          this.username = '无';
-        }
+    this.userService.currentLoginUser$
+      .subscribe((user) => {
+        this.username = user?.name;
       });
   }
   a(): void {
     window.location.reload();
+  }
+
+  logout(): void {
+    console.log('logout is called');
+    this.userService.logout()
+      .subscribe(() => {
+        window.sessionStorage.removeItem('login');
+        this.commonService.success(() => {
+          this.router.navigateByUrl('/login');
+        }, '' , '已注销');
+      });
   }
 }
