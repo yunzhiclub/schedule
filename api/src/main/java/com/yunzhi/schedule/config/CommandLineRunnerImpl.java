@@ -98,15 +98,24 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
 //            this.addCourse("课程" + i,  RandomString.make(2));
 //        }
 
-        Term term = this.addTerm("已激活学期", true, 1672502400L, 1688140800L);
+        Term term1 = this.addTerm("已激活学期", true, 1672502400L, 1688140800L);
+        Term term0 = this.addTerm("未激活学期", false, 1672502400L, 1688140800L);
+
         // 添加测试教师
         Teacher teacher1 = this.addTeacher("张三", true, "13100000000");
         Teacher teacher2 = this.addTeacher("李四", false, "13100000001");
+        Teacher teacher3 = this.addTeacher("王五", true, "13100000000");
+        Teacher teacher4 = this.addTeacher("赵六", false, "13100000001");
 
         // 添加测试教室
-        Room room = this.addRoom("A1",  RandomString.make(2));
+        Room room1 = this.addRoom("A1",  RandomString.make(2));
+        Room room2 = this.addRoom("B1",  RandomString.make(2));
+        Room room3 = this.addRoom("C1",  RandomString.make(2));
         List<Room> rooms = new ArrayList<>();
-        rooms.add(room);
+        rooms.add(room1);
+        rooms.add(room2);
+        List<Room> rooms3 = new ArrayList<>();
+        rooms3.add(room3);
 
         // 添加测试班级
         Clazz clazz1 = this.addClazz("计科221", 1672502400L);
@@ -117,14 +126,29 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
 
         // 添加测试课程
         Course course = this.addCourse("计算机组成原理", "48");
+        Course cours0 = this.addCourse("汇编语言", "24");
 
         // 添加测试排课
-        Schedule schedule = this.addSchedule(course, term, teacher1, teacher2, clazzes);
+        Schedule schedule1 = this.addSchedule(course, term1, teacher1, teacher2, clazzes);
+        Schedule schedule2 = this.addSchedule(cours0, term1, teacher2, teacher4, clazzes);
+        Schedule schedule0 = this.addSchedule(cours0, term0, teacher3, teacher4, clazzes);
 
         // 添加测试调度
-        this.addDispatch(schedule, 1L, 1L, 1L, rooms);
-        this.addDispatch(schedule, 2L, 1L, 1L, rooms);
-        this.addDispatch(schedule, 3L, 1L, 1L, rooms);
+        this.addDispatch(schedule1, 1L, 1L, 1L, rooms);
+        this.addDispatch(schedule1, 2L, 1L, 1L, rooms);
+        this.addDispatch(schedule1, 3L, 1L, 1L, rooms);
+
+        this.addDispatch(schedule1, 7L, 1L, 1L, rooms3);
+        this.addDispatch(schedule1, 8L, 1L, 1L, rooms3);
+        this.addDispatch(schedule1, 9L, 1L, 1L, rooms3);
+
+        this.addDispatch(schedule2, 4L, 2L, 2L, rooms);
+        this.addDispatch(schedule2, 5L, 2L, 2L, rooms);
+        this.addDispatch(schedule2, 6L, 2L, 2L, rooms);
+
+        this.addDispatch(schedule0, 1L, 2L, 2L, rooms);
+        this.addDispatch(schedule0, 2L, 2L, 2L, rooms);
+        this.addDispatch(schedule0, 3L, 2L, 2L, rooms);
     }
 
 
