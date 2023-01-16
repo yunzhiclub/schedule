@@ -158,8 +158,8 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         Teacher teacher2 = this.addTeacher("李四", false, "13100000001");
         Teacher teacher3 = this.addTeacher("王五", false, "13100000002");
         Teacher teacher4 = this.addTeacher("赵六", false, "13100000003");
-        Course course1 = this.addCourse("计算机组成原理", "48");
-        Course course2 = this.addCourse("汇编", "48");
+        Course course1 = this.addCourse("计算机组成原理", "6");
+        Course course2 = this.addCourse("汇编", "6");
 
         Clazz clazz1 = this.addClazz("计科221", 1672502400L);
         Clazz clazz2 = this.addClazz("软件221", 1672502400L);

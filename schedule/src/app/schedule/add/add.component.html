@@ -86,7 +86,7 @@
             <th   class="col-sm-1">周{{day}}</th>
             <td  *ngFor="let bigLesson of bigLessons" class="col-sm-1 container-fluid">
               <div class="list-group">
-                <button class="list-group-item" (click)="showModel(d, bigLesson)"><h6>周{{day}}第{{bigLesson! + 1}}节</h6></button>
+                <button class="list-group-item" [ngClass]="{'list-group-item-primary': buttonActive(d, bigLesson)}" (click)="showModel(d, bigLesson)"><h6>周{{day}}第{{bigLesson! + 1}}节</h6></button>
               </div>
             </td>
           </tr>

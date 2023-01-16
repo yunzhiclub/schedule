@@ -22,6 +22,7 @@ public interface ScheduleRepository extends PagingAndSortingRepository<Schedule,
                 .and(ScheduleSpecs.containingName(termName, "term"))
                 .and(ScheduleSpecs.containingName(teacherName, "teacher1")
                     .or(ScheduleSpecs.containingName(teacherName, "teacher2")));
+        System.out.println("-------------------------");
         return this.findAll(specification, pageable);
     }
 

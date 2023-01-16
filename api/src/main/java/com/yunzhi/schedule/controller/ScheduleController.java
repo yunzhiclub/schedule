@@ -2,6 +2,7 @@ package com.yunzhi.schedule.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.*;
+import com.yunzhi.schedule.service.DispatchService;
 import com.yunzhi.schedule.service.ScheduleService;
 import com.yunzhi.schedule.service.TermService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +19,19 @@ import java.util.List;
 public class ScheduleController {
     private ScheduleService scheduleService;
     private TermService termService;
+    private DispatchService dispatchService;
 
     @Autowired
     ScheduleController(ScheduleService scheduleService,
-                       TermService termService) {
+                       TermService termService,
+                       DispatchService dispatchService) {
         this.scheduleService = scheduleService;
         this.termService = termService;
+        this.dispatchService = dispatchService;
     }
 
     @GetMapping("getSchedulesInCurrentTerm")
-    @JsonView(getSchedulesInCurrentTerm.class)
+    @JsonView(GetSchedulesInCurrentTerm.class)
     public List<Schedule> getSchedulesInCurrentTerm() {
         Term term = this.termService.getCurrentTerm();
         return this.scheduleService.getSchedulesInCurrentTerm(term);
@@ -46,20 +50,39 @@ public class ScheduleController {
             @RequestParam(required = false, defaultValue = "") String teacherName,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        return this.scheduleService.page(courseName, termName, clazzName, teacherName, pageable);
+        Page<Schedule> schedulePage = this.scheduleService.page(courseName, termName, clazzName, teacherName, pageable);
+        schedulePage.getContent().forEach(schedule -> {
+            schedule.getDispatches().forEach(dispatch -> {
+                dispatch.setSchedule(null);
+            });
+        });
+        return schedulePage;
     }
 
     @PostMapping
     public Schedule add(@RequestBody Schedule schedule) {
-        return this.scheduleService.add(schedule);
+        this.scheduleService.add(schedule);
+        this.dispatchService.addBySchedule(schedule);
+        return schedule;
     }
 
     @GetMapping("{id}")
+    @JsonView(GetById.class)
     public Schedule getById(@PathVariable Long id) {
         return this.scheduleService.getById(id);
     };
 
-    public interface getSchedulesInCurrentTerm extends
+    @PostMapping("{scheduleId}")
+    public Schedule edit(@PathVariable Long scheduleId,
+                         @RequestBody List<Dispatch> dispatches) {
+        Schedule schedule = this.scheduleService.getById(scheduleId);
+        this.dispatchService.deleteBySchedule(schedule);
+        schedule.setDispatches(dispatches);
+        this.dispatchService.addBySchedule(schedule);
+        return schedule;
+    }
+
+    public interface GetSchedulesInCurrentTerm extends
             Schedule.ClazzJsonView,
             Schedule.CourseJsonView,
             Schedule.IdJsonView,
@@ -81,5 +104,29 @@ public class ScheduleController {
             Room.IdJsonView,
             Room.NameJsonView
     {}
+
+    public interface GetById extends
+            Schedule.ClazzJsonView,
+            Schedule.TermJsonView,
+            Schedule.CourseJsonView,
+            Schedule.IdJsonView,
+            Schedule.Teacher1JsonView,
+            Schedule.Teacher2JsonView,
+            Schedule.DispatchesJsonView,
+            Clazz.NameJsonView,
+            Clazz.IdJsonView,
+            Teacher.NameJsonView,
+            Term.NameJsonView,
+            Course.NameJsonView,
+            Course.IdJsonView,
+            Course.HoursJsonView,
+            Teacher.IdJsonView,
+            Dispatch.RoomsJsonView,
+            Dispatch.LessonJsonView,
+            Dispatch.DayJsonView,
+            Dispatch.WeekJsonView,
+            Room.IdJsonView
+    {}
+
 
 }

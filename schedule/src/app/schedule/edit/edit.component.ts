@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {config} from '../../../conf/app.config';
 import {Teacher} from '../../../entity/teacher';
 import {Schedule} from '../../../entity/schedule';
@@ -90,7 +90,7 @@ export class EditComponent implements OnInit {
   // 不可用的教室
   disabledRooms = [] as number[];
   // 时间选择模式: true 分别选择 | false 同步选择 默认为同步选择
-  pattern = true;
+  pattern = false;
   // 是否小结确定
   isSmLessonsDetermine = false;
 
@@ -214,6 +214,7 @@ export class EditComponent implements OnInit {
    */
   save(): void {
     this.deleteSelectedData();
+    console.log('save1', [...this.selectedData]);
     if (this.pattern) {
       this.smLessons.forEach(smLesson => {
         for (let week = 0; week < this.tempData.length; week++) {
@@ -225,15 +226,16 @@ export class EditComponent implements OnInit {
     } else {
       this.weeksRecoder[this.day!][this.bigLesson!] = [...this.selectedWeeks];
       this.roomsRecoder[this.day!][this.bigLesson!] = [...this.selectedRooms];
+      console.log('save2', [...this.smLessons], [...this.selectedWeeks], [...this.selectedData]);
       this.smLessons.forEach(smLesson => {
         this.selectedWeeks.forEach(week => {
-          this.selectedData.push({week, day: this.day!, smLesson, roomIds: this.selectedRooms});
+          this.selectedData.push({week, day: this.day!, smLesson: this.bigLesson! * 2 + smLesson, roomIds: this.selectedRooms});
         });
       });
     }
     this.smLessonsRecorder[this.day!][this.bigLesson!] = Array.from(this.smLessons);
     this.close();
-    console.log('save', this.selectedData);
+    console.log('save3', [...this.selectedData], [...this.smLessons]);
   }
 
   private getData(): void {
@@ -575,7 +577,6 @@ export class EditComponent implements OnInit {
 
   onSubmit(): void {
     const dispatches = [] as Dispatch[];
-    console.log('onSubmit is called');
     this.selectedData.forEach((data) => {
       const rooms = data.roomIds.map(roomId => {
         return new Room({id: roomId});
@@ -583,8 +584,9 @@ export class EditComponent implements OnInit {
       dispatches.push(new Dispatch({day: data.day, lesson: data.smLesson, week: data.week, rooms}));
     });
     this.schedule.dispatches = dispatches;
-    this.scheduleService.add(this.schedule)
-      .subscribe(() => {
+    this.scheduleService.edit(this.schedule.id, dispatches)
+      .subscribe((schedule) => {
+        console.log('edit submit', schedule);
         this.commonService.success(() => this.router.navigateByUrl('../'));
       });
   }
@@ -604,7 +606,10 @@ export class EditComponent implements OnInit {
     });
     this.selectedData.forEach((data) => {
       const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
-      this.smLessonsRecorder[data.day][bigLesson].push(data.smLesson - bigLesson * 2);
+      const smLesson = data.smLesson - bigLesson * 2;
+      if (!this.smLessonsRecorder[data.day][bigLesson].includes(smLesson)) {
+        this.smLessonsRecorder[data.day][bigLesson].push(smLesson);
+      }
     });
   }
 
@@ -649,7 +654,21 @@ export class EditComponent implements OnInit {
 
   canSubmit(): boolean {
     const course = this.course;
-    const status = this.selectedData.length === course.hours;
-    return status;
+    return this.selectedData.length === +course.hours!;
+  }
+
+  buttonActive(day: number, bigLesson: number): boolean {
+    if (this.pattern) {
+      let status = false;
+      this.selectedData.forEach(data => {
+        const bigLessonOfData = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+        if (data.day === day && bigLesson === bigLessonOfData) {
+          status = true;
+        }
+      });
+      return status;
+    } else {
+      return this.weeksRecoder[day][bigLesson].length !== 0;
+    }
   }
 }

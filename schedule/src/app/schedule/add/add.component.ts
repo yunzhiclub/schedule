@@ -274,7 +274,7 @@ export class AddComponent implements OnInit {
       this.roomsRecoder[this.day!][this.bigLesson!] = [...this.selectedRooms];
       this.smLessons.forEach(smLesson => {
         this.selectedWeeks.forEach(week => {
-          this.selectedData.push({week, day: this.day!, smLesson, roomIds: this.selectedRooms});
+          this.selectedData.push({week, day: this.day!, smLesson: this.bigLesson! * 2 + smLesson, roomIds: this.selectedRooms});
         });
       });
     }
@@ -561,7 +561,6 @@ export class AddComponent implements OnInit {
       const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
       if (data.day === this.day && bigLesson === this.bigLesson) {
         this.tempData[data.week] = data.roomIds;
-        console.log('makeTempData', [...this.tempData]);
       }
     });
   }
@@ -666,7 +665,7 @@ export class AddComponent implements OnInit {
     });
     this.scheduleService.add(schedule)
       .subscribe(() => {
-        this.commonService.success(() => this.router.navigateByUrl('../'));
+        this.commonService.success(() => this.router.navigateByUrl('/schedule'));
       });
   }
 
@@ -689,6 +688,21 @@ export class AddComponent implements OnInit {
   canSubmit(): boolean {
     const courseId: number = +this.formGroup.get('courseId')?.value;
     const course = this.courses.filter(cou => cou.id === courseId)[0];
-    return this.selectedData.length === course.hours;
+    return this.selectedData.length === +course.hours!;
+  }
+
+  buttonActive(day: number, bigLesson: number): boolean {
+    if (this.pattern) {
+      let status = false;
+      this.selectedData.forEach(data => {
+        const bigLessonOfData = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+        if (data.day === day && bigLesson === bigLessonOfData) {
+          status = true;
+        }
+      });
+      return status;
+    } else {
+      return this.weeksRecoder[day][bigLesson].length !== 0;
+    }
   }
 }
