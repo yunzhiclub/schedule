@@ -125,4 +125,12 @@ public class UserServiceImpl implements UserService {
     public User getById(Long id) {
         return this.userRepository.findById(id).get();
     }
+
+    @Override
+    public void logout() {
+        // 获取auth-token
+        String XAuthToken = this.request.getHeader(TokenFilter.TOKEN_KEY);
+        // 删除hashMap中对应auth-token的映射
+        this.xAuthTokenUserIdHashMap.remove(XAuthToken);
+    }
 }

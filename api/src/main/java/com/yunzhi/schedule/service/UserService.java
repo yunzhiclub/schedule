@@ -28,4 +28,6 @@ public interface UserService {
     User update(Long userId, User user);
 
     User getById(Long id);
+
+    void logout();
 }

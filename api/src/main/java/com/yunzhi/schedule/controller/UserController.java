@@ -52,6 +52,12 @@ public class UserController {
         return this.userService.login();
     }
 
+    @RequestMapping("logout")
+    public void logout() {
+        System.out.println("---------------------");
+        this.userService.logout();
+    }
+
     /**
      * 更新用户
      * @param userId   用户id
