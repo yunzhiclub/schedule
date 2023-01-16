@@ -25,10 +25,6 @@ public class Room implements SoftDelete {
     @JsonView(CapacityJsonView.class)
     private String capacity;
 
-//    @ApiModelProperty("对应时间")
-//    @ManyToMany
-//    private List<Dispatch> dispatches = new ArrayList<>();
-
     @ApiModelProperty("是否已删除")
     private Boolean deleted = false;
     public Long getId() {
@@ -63,13 +59,6 @@ public class Room implements SoftDelete {
         this.deleted = deleted;
     }
 
-//    public List<Dispatch> getDispatches() {
-//        return dispatches;
-//    }
-//
-//    public void setDispatches(List<Dispatch> dispatches) {
-//        this.dispatches = dispatches;
-//    }
 
     public interface IdJsonView {}
     public interface NameJsonView {}

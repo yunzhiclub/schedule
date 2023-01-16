@@ -18,4 +18,9 @@ public class DispatchServiceImpl implements DispatchService{
             this.dispatchRepository.save(dispatch);
         });
     }
+
+    @Override
+    public void deleteBySchedule(Schedule schedule) {
+        this.dispatchRepository.deleteAll(schedule.getDispatches());
+    }
 }

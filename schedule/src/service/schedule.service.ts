@@ -4,6 +4,7 @@ import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {Page} from '../common/page';
 import {Schedule} from '../entity/schedule';
+import {Dispatch} from '../entity/dispatch';
 
 @Injectable({
   providedIn: 'root'
@@ -61,5 +62,9 @@ export class ScheduleService {
 
   getById(scheduleId: number): Observable<Schedule> {
     return this.httpClient.get<Schedule>(this.baseUrl + '/' + scheduleId);
+  }
+
+  edit(scheduleId: number, dispatches: Dispatch[]): Observable<Schedule> {
+    return this.httpClient.post<Schedule>(this.baseUrl + '/' + scheduleId, dispatches);
   }
 }

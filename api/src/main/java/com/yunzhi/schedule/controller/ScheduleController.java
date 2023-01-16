@@ -31,7 +31,7 @@ public class ScheduleController {
     }
 
     @GetMapping("getSchedulesInCurrentTerm")
-    @JsonView(getSchedulesInCurrentTerm.class)
+    @JsonView(GetSchedulesInCurrentTerm.class)
     public List<Schedule> getSchedulesInCurrentTerm() {
         Term term = this.termService.getCurrentTerm();
         return this.scheduleService.getSchedulesInCurrentTerm(term);
@@ -43,7 +43,6 @@ public class ScheduleController {
      * @return 分页排课
      */
     @GetMapping("page")
-    @JsonView(pageJsonView.class)
     public Page<Schedule> page(
             @RequestParam(required = false, defaultValue = "") String courseName,
             @RequestParam(required = false, defaultValue = "") String termName,
@@ -51,8 +50,13 @@ public class ScheduleController {
             @RequestParam(required = false, defaultValue = "") String teacherName,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        System.out.println("-------------------------");
-        return this.scheduleService.page(courseName, termName, clazzName, teacherName, pageable);
+        Page<Schedule> schedulePage = this.scheduleService.page(courseName, termName, clazzName, teacherName, pageable);
+        schedulePage.getContent().forEach(schedule -> {
+            schedule.getDispatches().forEach(dispatch -> {
+                dispatch.setSchedule(null);
+            });
+        });
+        return schedulePage;
     }
 
     @PostMapping
@@ -63,11 +67,22 @@ public class ScheduleController {
     }
 
     @GetMapping("{id}")
+    @JsonView(GetById.class)
     public Schedule getById(@PathVariable Long id) {
         return this.scheduleService.getById(id);
     };
 
-    public interface getSchedulesInCurrentTerm extends
+    @PostMapping("{scheduleId}")
+    public Schedule edit(@PathVariable Long scheduleId,
+                         @RequestBody List<Dispatch> dispatches) {
+        Schedule schedule = this.scheduleService.getById(scheduleId);
+        this.dispatchService.deleteBySchedule(schedule);
+        schedule.setDispatches(dispatches);
+        this.dispatchService.addBySchedule(schedule);
+        return schedule;
+    }
+
+    public interface GetSchedulesInCurrentTerm extends
             Schedule.ClazzJsonView,
             Schedule.CourseJsonView,
             Schedule.IdJsonView,
@@ -90,17 +105,27 @@ public class ScheduleController {
             Room.NameJsonView
     {}
 
-    public interface pageJsonView extends
+    public interface GetById extends
             Schedule.ClazzJsonView,
             Schedule.TermJsonView,
             Schedule.CourseJsonView,
             Schedule.IdJsonView,
             Schedule.Teacher1JsonView,
             Schedule.Teacher2JsonView,
+            Schedule.DispatchesJsonView,
             Clazz.NameJsonView,
+            Clazz.IdJsonView,
             Teacher.NameJsonView,
             Term.NameJsonView,
-            Course.NameJsonView
+            Course.NameJsonView,
+            Course.IdJsonView,
+            Course.HoursJsonView,
+            Teacher.IdJsonView,
+            Dispatch.RoomsJsonView,
+            Dispatch.LessonJsonView,
+            Dispatch.DayJsonView,
+            Dispatch.WeekJsonView,
+            Room.IdJsonView
     {}
 
 
