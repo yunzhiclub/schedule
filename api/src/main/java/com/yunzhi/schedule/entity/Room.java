@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @SQLDelete(sql = "update `room` set deleted = 1 where id = ?")
@@ -25,6 +24,10 @@ public class Room implements SoftDelete {
     @ApiModelProperty("容量")
     @JsonView(CapacityJsonView.class)
     private String capacity;
+
+//    @ApiModelProperty("对应时间")
+//    @ManyToMany
+//    private List<Dispatch> dispatches = new ArrayList<>();
 
     @ApiModelProperty("是否已删除")
     private Boolean deleted = false;
@@ -59,6 +62,15 @@ public class Room implements SoftDelete {
     private void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
+
+//    public List<Dispatch> getDispatches() {
+//        return dispatches;
+//    }
+//
+//    public void setDispatches(List<Dispatch> dispatches) {
+//        this.dispatches = dispatches;
+//    }
+
     public interface IdJsonView {}
     public interface NameJsonView {}
     public interface CapacityJsonView {}

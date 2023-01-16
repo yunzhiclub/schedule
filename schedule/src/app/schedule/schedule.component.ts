@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import {Page} from "../../common/page";
-import {ActivatedRoute, Params} from "@angular/router";
-import {FormControl, FormGroup} from "@angular/forms";
-import {Schedule} from "../../entity/schedule";
-import {CommonService} from "../../service/common.service";
-import {Assert, stringToIntegerNumber} from "../../common/utils";
-import {config} from "../../conf/app.config";
-import {ScheduleService} from "../../service/schedule.service";
-import {Clazz} from "../../entity/clazz";
+import {Page} from '../../common/page';
+import {ActivatedRoute, Params} from '@angular/router';
+import {FormControl, FormGroup} from '@angular/forms';
+import {Schedule} from '../../entity/schedule';
+import {CommonService} from '../../service/common.service';
+import {Assert, stringToIntegerNumber} from '../../common/utils';
+import {config} from '../../conf/app.config';
+import {ScheduleService} from '../../service/schedule.service';
+import {Clazz} from '../../entity/clazz';
 
 @Component({
   selector: 'app-schedule',
@@ -49,6 +49,7 @@ export class ScheduleComponent implements OnInit {
         teacherName: params[this.keys.teacherName],
       }).subscribe(data => {
           this.setData(data);
+          console.log(data);
         });
     });
   }

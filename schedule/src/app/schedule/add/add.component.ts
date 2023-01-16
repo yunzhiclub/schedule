@@ -561,7 +561,6 @@ export class AddComponent implements OnInit {
       const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
       if (data.day === this.day && bigLesson === this.bigLesson) {
         this.tempData[data.week] = data.roomIds;
-        console.log('makeTempData', [...this.tempData]);
       }
     });
   }
@@ -689,6 +688,7 @@ export class AddComponent implements OnInit {
   canSubmit(): boolean {
     const courseId: number = +this.formGroup.get('courseId')?.value;
     const course = this.courses.filter(cou => cou.id === courseId)[0];
-    return this.selectedData.length === course.hours;
+    const status = this.selectedData.length === +course.hours!;
+    return status;
   }
 }

@@ -20,7 +20,7 @@ public class Dispatch implements SoftDelete {
 
     @ManyToOne
     @ApiModelProperty("对应排课")
-    @JsonIgnoreProperties({"dispatches"})
+    @JoinColumn(name = "schedule_id")
     @JsonView(ScheduleJsonView.class)
     private Schedule schedule = new Schedule();
 

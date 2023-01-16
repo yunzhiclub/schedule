@@ -2,6 +2,7 @@ package com.yunzhi.schedule.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.*;
+import com.yunzhi.schedule.service.DispatchService;
 import com.yunzhi.schedule.service.ScheduleService;
 import com.yunzhi.schedule.service.TermService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,15 @@ import java.util.List;
 public class ScheduleController {
     private ScheduleService scheduleService;
     private TermService termService;
+    private DispatchService dispatchService;
 
     @Autowired
     ScheduleController(ScheduleService scheduleService,
-                       TermService termService) {
+                       TermService termService,
+                       DispatchService dispatchService) {
         this.scheduleService = scheduleService;
         this.termService = termService;
+        this.dispatchService = dispatchService;
     }
 
     @GetMapping("getSchedulesInCurrentTerm")
@@ -39,6 +43,7 @@ public class ScheduleController {
      * @return 分页排课
      */
     @GetMapping("page")
+    @JsonView(pageJsonView.class)
     public Page<Schedule> page(
             @RequestParam(required = false, defaultValue = "") String courseName,
             @RequestParam(required = false, defaultValue = "") String termName,
@@ -46,12 +51,15 @@ public class ScheduleController {
             @RequestParam(required = false, defaultValue = "") String teacherName,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
+        System.out.println("-------------------------");
         return this.scheduleService.page(courseName, termName, clazzName, teacherName, pageable);
     }
 
     @PostMapping
     public Schedule add(@RequestBody Schedule schedule) {
-        return this.scheduleService.add(schedule);
+        this.scheduleService.add(schedule);
+        this.dispatchService.addBySchedule(schedule);
+        return schedule;
     }
 
     @GetMapping("{id}")
@@ -81,5 +89,19 @@ public class ScheduleController {
             Room.IdJsonView,
             Room.NameJsonView
     {}
+
+    public interface pageJsonView extends
+            Schedule.ClazzJsonView,
+            Schedule.TermJsonView,
+            Schedule.CourseJsonView,
+            Schedule.IdJsonView,
+            Schedule.Teacher1JsonView,
+            Schedule.Teacher2JsonView,
+            Clazz.NameJsonView,
+            Teacher.NameJsonView,
+            Term.NameJsonView,
+            Course.NameJsonView
+    {}
+
 
 }

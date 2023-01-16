@@ -35,7 +35,7 @@ public class Clazz implements SoftDelete {
     private Boolean deleted = false;
 
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "clazzes")
     private List<Schedule> schedules = new ArrayList<>();
 
     public Long getId() {
