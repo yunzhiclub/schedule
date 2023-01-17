@@ -8,18 +8,21 @@ import { AddComponent } from './add/add.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import { EditComponent } from './edit/edit.component';
 import {PipeModule} from '../pipe/pipe.module';
+import {ImportComponent} from './import/import.component';
+import {YzUploaderModule} from '../../common/yz-uploader/yz-uploader.module';
 
 
 
 @NgModule({
-  declarations: [TeacherComponent, AddComponent, EditComponent],
-    imports: [
-        CommonModule,
-        TeacherRoutingModule,
-        SizeModule,
-        PageModule,
-        ReactiveFormsModule,
-        PipeModule
-    ]
+  declarations: [TeacherComponent, AddComponent, EditComponent, ImportComponent],
+  imports: [
+    CommonModule,
+    TeacherRoutingModule,
+    SizeModule,
+    PageModule,
+    ReactiveFormsModule,
+    PipeModule,
+    YzUploaderModule
+  ]
 })
 export class TeacherModule { }

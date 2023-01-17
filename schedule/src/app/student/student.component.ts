@@ -15,6 +15,7 @@ import {config} from '../../conf/app.config';
 })
 export class StudentComponent implements OnInit {
   pageData = new Page<Student>();
+  showImportComponent = false;
   params: Params = [];
   queryForm = new FormGroup({});
   keys = {
@@ -134,4 +135,35 @@ export class StudentComponent implements OnInit {
       }
     }, '');
   }
+  /**
+   * 导入按钮被按下.
+   */
+  onImportButtonClick(): void {
+    this.commonService.confirm(confirm => {
+      if (confirm) {
+        this.showImportComponent = true;
+      } else {
+        this.studentService.downloadImportTemplate('学生导入模板' + new Date().toLocaleDateString());
+      }
+    }, '系统仅支持固定模板的excel文档', '请选择', '我已下载', '下载模板');
+  }
+
+  /**
+   * 取消导入
+   */
+  onImportCancel(): void {
+    this.showImportComponent = false;
+  }
+
+  /**
+   * 导入完成
+   */
+  onImported(): void {
+    this.showImportComponent = false;
+    this.commonService.success(() => {
+      setTimeout(() => this.commonService.reloadByParam(this.params, {forceReload: true}).then(),
+        3000);
+    }, '', '上传成功');
+  }
+
 }

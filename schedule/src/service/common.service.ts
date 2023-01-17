@@ -6,6 +6,7 @@ import {BaseMenu} from '../common/base-menu';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {DomSanitizer} from '@angular/platform-browser';
 import {filter} from 'rxjs/operators';
+import * as FileSaver from 'file-saver';
 
 @Injectable({
   providedIn: 'root'
@@ -262,5 +263,13 @@ export class CommonService {
    */
   clearCurrentRoute(): void {
     this.routeStates.pop();
+  }
+  /**
+   * 保存文件
+   * @param blob 文件
+   * @param fileName 文件名
+   */
+  saveFile(blob: Blob, fileName: string): void {
+    FileSaver.saveAs(blob, fileName);
   }
 }

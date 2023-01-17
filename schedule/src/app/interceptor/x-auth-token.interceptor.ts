@@ -8,7 +8,9 @@ import {
 import { Observable } from 'rxjs';
 import {tap} from 'rxjs/operators';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class XAuthTokenInterceptor implements HttpInterceptor {
   /**
    * 由缓存中获取token，防止页面刷新后失效
@@ -43,5 +45,9 @@ export class XAuthTokenInterceptor implements HttpInterceptor {
        this.token = xAuthToken;
        window.sessionStorage.setItem('x-auth-token', this.token);
     }
+  }
+
+  public getToken(): string {
+    return this.token!;
   }
 }

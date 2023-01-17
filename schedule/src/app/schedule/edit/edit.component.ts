@@ -224,8 +224,13 @@ export class EditComponent implements OnInit {
         }
       });
     } else {
-      this.weeksRecoder[this.day!][this.bigLesson!] = [...this.selectedWeeks];
-      this.roomsRecoder[this.day!][this.bigLesson!] = [...this.selectedRooms];
+      if (this.smLessons.length !== 0) {
+        this.weeksRecoder[this.day!][this.bigLesson!] = [...this.selectedWeeks];
+        this.roomsRecoder[this.day!][this.bigLesson!] = [...this.selectedRooms];
+      } else {
+        this.weeksRecoder[this.day!][this.bigLesson!] = [];
+        this.roomsRecoder[this.day!][this.bigLesson!] = [];
+      }
       console.log('save2', [...this.smLessons], [...this.selectedWeeks], [...this.selectedData]);
       this.smLessons.forEach(smLesson => {
         this.selectedWeeks.forEach(week => {
@@ -632,9 +637,9 @@ export class EditComponent implements OnInit {
         }
       });
     });
-    if (!status && this.pattern) {
-      this.pattern = false;
-      this.commonService.info(() => {}, '当前数据不支持定制模式，已自动为您切换为同步模式');
+    if (!status && !this.pattern) {
+      this.pattern = true;
+      this.commonService.info(() => {}, '当前数据不支持同步模式，已自动为您切换为定制模式');
     }
   }
 

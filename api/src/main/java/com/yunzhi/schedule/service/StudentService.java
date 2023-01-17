@@ -4,6 +4,11 @@ import com.yunzhi.schedule.entity.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import javax.servlet.ServletOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public interface StudentService {
 
     /**
@@ -44,4 +49,10 @@ public interface StudentService {
     Student getById(Long studentId);
 
     Student update(Long id, Student student);
+
+
+
+    void downloadImportTemplate(OutputStream outputStream) throws IOException;
+
+    void importExcel(InputStream inputStream, OutputStream outputStream) throws IOException;
 }

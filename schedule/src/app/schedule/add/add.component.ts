@@ -270,8 +270,13 @@ export class AddComponent implements OnInit {
         }
       });
     } else {
-      this.weeksRecoder[this.day!][this.bigLesson!] = [...this.selectedWeeks];
-      this.roomsRecoder[this.day!][this.bigLesson!] = [...this.selectedRooms];
+      if (this.smLessons.length !== 0) {
+        this.weeksRecoder[this.day!][this.bigLesson!] = [...this.selectedWeeks];
+        this.roomsRecoder[this.day!][this.bigLesson!] = [...this.selectedRooms];
+      } else {
+        this.weeksRecoder[this.day!][this.bigLesson!] = [];
+        this.roomsRecoder[this.day!][this.bigLesson!] = [];
+      }
       this.smLessons.forEach(smLesson => {
         this.selectedWeeks.forEach(week => {
           this.selectedData.push({week, day: this.day!, smLesson: this.bigLesson! * 2 + smLesson, roomIds: this.selectedRooms});

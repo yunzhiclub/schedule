@@ -5,6 +5,10 @@ import com.yunzhi.schedule.entity.Teacher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import javax.servlet.ServletOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 public interface TeacherService {
@@ -21,4 +25,9 @@ public interface TeacherService {
     List<Teacher> getAll();
 
     Boolean phoneUnique(String phone, Long teacherId);
+
+    void downloadImportTemplate(OutputStream outputStream) throws IOException;
+
+
+    void importExcel(InputStream inputStream, OutputStream outputStream) throws IOException;
 }

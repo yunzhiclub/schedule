@@ -8,7 +8,12 @@
     </form>
   </div>
   <div class="col-md-2">
-    <a class="btn btn-primary mr-2" style="float: right" routerLink="add"><i class="fas fa-plus"></i>新增</a>
+    <button class="btn btn-info"
+            type="button"
+            (click)="onImportButtonClick()">
+      <i class="fas fa-file-import"></i>导入
+    </button>
+    <a class="btn btn-primary mr-2" routerLink="add"><i class="fas fa-plus"></i>新增</a>
   </div>
 </div>
 <hr/>
@@ -22,8 +27,8 @@
   <tr class="info">
     <th>序号</th>
     <th>姓名</th>
-    <th>性别</th>
     <th>手机号</th>
+    <th>性别</th>
     <th>操作</th>
   </tr>
   </thead>
@@ -31,8 +36,8 @@
   <tr *ngFor="let teacher of pageData.content, index as index">
     <td>{{ index + 1 }}</td>
     <td>{{ teacher.name }}</td>
-    <td>{{ teacher.sex | sex}}</td>
     <td>{{ teacher.phone }}</td>
+    <td>{{ teacher.sex | sex}}</td>
     <td>
       <a class="btn btn-sm btn-primary" [routerLink]="'/teacher/edit/' + teacher.id">编辑</a>
       <a class="btn btn-sm btn-danger" (click)="onDelete(teacher.id)">删除</a>
@@ -44,3 +49,6 @@
           [size]="pageData.size"
           [totalElements]="pageData.totalElements"
           (changePage)="onPageChange($event)"></app-page>
+<app-teacher-import *ngIf="showImportComponent"
+                    (beCancel)="onImportCancel()"
+                    (beImported)="onImported()"></app-teacher-import>
