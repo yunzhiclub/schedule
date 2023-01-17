@@ -7,7 +7,12 @@
     </form>
   </div>
   <div class="col-md-2">
-    <a class="btn btn-primary mr-2" style="float: right" routerLink="add"><i class="fas fa-plus"></i>新增</a>
+    <button class="btn btn-info"
+            type="button"
+            (click)="onImportButtonClick()">
+      <i class="fas fa-file-import"></i>导入
+    </button>
+    <a class="btn btn-primary mr-2" routerLink="add"><i class="fas fa-plus"></i>新增</a>
   </div>
 </div>
 <hr>
@@ -21,8 +26,8 @@
   <tr class="info">
     <th>序号</th>
     <th>姓名</th>
-    <th>性别</th>
     <th>学号</th>
+    <th>性别</th>
     <th>班级</th>
     <th>操作</th>
   </tr>
@@ -31,8 +36,8 @@
   <tr *ngFor="let student of pageData.content, index as index">
     <td>{{ index + 1 }}</td>
     <td>{{ student.name }}</td>
-    <td>{{ student.sex | sex}}</td>
     <td>{{ student.sno }}</td>
+    <td>{{ student.sex | sex}}</td>
     <td>{{ student.clazz?.name }}</td>
     <td>
       <a class="btn btn-sm btn-primary" [routerLink]="'edit/' + student.id">编辑</a>
@@ -45,3 +50,6 @@
           [size]="pageData.size"
           [totalElements]="pageData.totalElements"
           (changePage)="onPageChange($event)"></app-page>
+<app-student-import *ngIf="showImportComponent"
+                    (beCancel)="onImportCancel()"
+                    (beImported)="onImported()"></app-student-import>

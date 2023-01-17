@@ -1,18 +1,20 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpEvent, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Page} from '../common/page';
 import {map} from 'rxjs/operators';
 import {Assert} from '../common/utils';
 import {Student} from '../entity/student';
 import {Clazz} from '../entity/clazz';
+import {CommonService} from './common.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StudentService {
   url = 'student';
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient,
+              private commonService: CommonService) { }
 
   /**
    * 分页
@@ -97,5 +99,28 @@ export class StudentService {
    */
   update(id: number, student: Student): Observable<any> {
     return this.httpClient.post<any>(`${this.url}/update/` + id.toString(), student);
+  }
+
+  /**
+   * 导入学生
+   * @param file 文件
+   */
+  import(file: File): Observable<HttpEvent<object>> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    return this.httpClient.post(`${this.url}/importExcel`,
+      formData, {reportProgress: true, observe: 'events', responseType: 'blob'});
+  }
+  /**
+   * 下载导入模板.
+   * @param filename 文件名
+   */
+  downloadImportTemplate(filename: string): void {
+    this.httpClient.get(`${this.url}/downloadImportTemplate`, {responseType: 'blob'})
+      .subscribe(blob => this.commonService.saveFile(blob, filename + '.xlsx'),
+        error => {
+          throw new Error(error);
+        },
+        () => console.log('complete'));
   }
 }

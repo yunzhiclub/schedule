@@ -12,8 +12,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -109,5 +112,22 @@ public class TeacherController {
         } catch (EntityNotFoundException e) {
             return false;
         }
+    }
+
+    /**
+     * 下载导入模板
+     *
+     * @param response 响应
+     * @throws IOException
+     */
+    @GetMapping("downloadImportTemplate")
+    public void downloadImportTemplate(HttpServletResponse response) throws IOException {
+        this.teacherService.downloadImportTemplate(response.getOutputStream());
+    }
+
+    @PostMapping("importExcel")
+    public void importExcel(@RequestParam("file") MultipartFile multipartFile, HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        this.teacherService.importExcel(multipartFile.getInputStream(), response.getOutputStream());
     }
 }

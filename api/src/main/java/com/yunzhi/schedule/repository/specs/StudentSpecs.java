@@ -30,7 +30,7 @@ public class StudentSpecs {
     public static Specification<Student> containingClazzId(Long clazzId) {
         if (clazzId != null) {
             return (root, criteriaQuery, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.join("clazz").get("id"), clazzId);
+                    criteriaBuilder.equal(root.join("excel").get("id"), clazzId);
         } else {
             return Specification.where(null);
         }

@@ -9,8 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("student")
@@ -89,6 +92,24 @@ public class StudentController {
     public Student update(@PathVariable Long id,
                         @RequestBody Student student) {
         return this.studentService.update(id, student);
+    }
+
+
+    /**
+     * 下载导入模板
+     *
+     * @param response 响应
+     * @throws IOException
+     */
+    @GetMapping("downloadImportTemplate")
+    public void downloadImportTemplate(HttpServletResponse response) throws IOException {
+        this.studentService.downloadImportTemplate(response.getOutputStream());
+    }
+
+    @PostMapping("importExcel")
+    public void importExcel(@RequestParam("file") MultipartFile multipartFile, HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        this.studentService.importExcel(multipartFile.getInputStream(), response.getOutputStream());
     }
 
 }
