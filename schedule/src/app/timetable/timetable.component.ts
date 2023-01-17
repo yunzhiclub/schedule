@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {Teacher} from '../../entity/teacher';
 import {Schedule} from '../../entity/schedule';
-import {Dispatch} from '../../entity/dispatch';
 import {TeacherService} from '../../service/teacher.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ScheduleService} from '../../service/schedule.service';
-import {Course} from '../../entity/course';
 import {Room} from '../../entity/room';
 import {Clazz} from '../../entity/clazz';
 import {Term} from '../../entity/term';
@@ -220,23 +218,25 @@ export class TimetableComponent implements OnInit {
       for (let d = 0; d < 7; d++) {
         if (content[l][d].schedules.length !== 0) {
           if (l === 0 || l === 1) {
-            this.bigModelContent[0][d].schedules = content[l][d].schedules;
+            this.mergeSchedules(this.bigModelContent[0][d].schedules, content[l][d].schedules, 0, d);
           }
           if (l === 2 || l === 3) {
-            this.bigModelContent[1][d].schedules = content[l][d].schedules;
+            this.mergeSchedules(this.bigModelContent[1][d].schedules, content[l][d].schedules, 1, d);
           }
           if (l === 4 || l === 5) {
-            this.bigModelContent[2][d].schedules = content[l][d].schedules;
+            this.mergeSchedules(this.bigModelContent[2][d].schedules, content[l][d].schedules, 2, d);
           }
           if (l === 6 || l === 7) {
-            this.bigModelContent[3][d].schedules = content[l][d].schedules;
+            this.mergeSchedules(this.bigModelContent[3][d].schedules, content[l][d].schedules, 3, d);
           }
           if (l === 8 || l === 9 || l === 10) {
-            this.bigModelContent[4][d].schedules = content[l][d].schedules;
+            this.mergeSchedules(this.bigModelContent[4][d].schedules, content[l][d].schedules, 4, d);
           }
         }
       }
     }
+    console.log('this.content', this.content);
+    console.log('this.bigModelContent', this.bigModelContent);
   }
   private setRoomsAndWeeksOfSchedules(lesson: number, day: number, week: number, rooms: Room[], scheduleId: number): void {
     // 当此个天节的scheduleId键数组未存roomsAndWeeks组时
@@ -367,10 +367,16 @@ export class TimetableComponent implements OnInit {
         }
       }
     }
-    console.log('roomsAndWeeks[2][2][2]', roomsAndWeeks[2][2][2]);
-    // this.bigModelRoomsAndWeeks[1][2][2] = roomsAndWeeks[2][2][2];
-    console.log('this.bigModelRoomsAndWeeks[1][2][2]', this.bigModelRoomsAndWeeks[1][2][2]);
-    console.log('this.roomsAndWeeks', this.roomsAndWeeks);
-    console.log('setBigModelRoomsAndWeeks', this.bigModelRoomsAndWeeks);
+    // console.log('roomsAndWeeks[2][2][2]', roomsAndWeeks[2][2][2]);
+    // console.log('this.bigModelRoomsAndWeeks[1][2][2]', this.bigModelRoomsAndWeeks[1][2][2]);
+    // console.log('this.roomsAndWeeks', this.roomsAndWeeks);
+    // console.log('setBigModelRoomsAndWeeks', this.bigModelRoomsAndWeeks);
+  }
+  private mergeSchedules(schedules: Schedule[], schedules2: Schedule[], l: number, d: number): void {
+    for (const schedule of schedules2) {
+      if (!this.whetherSchedulesIncludeSchedule(schedules, schedule)) {
+        this.bigModelContent[l][d].schedules.push(schedule);
+      }
+    }
   }
 }

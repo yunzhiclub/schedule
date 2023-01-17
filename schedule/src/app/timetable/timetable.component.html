@@ -1,6 +1,6 @@
 <div class="row" [formGroup]="formGroup" *ngIf="term">
   <div class="col-md-2 mt-1">
-    <h4 class="text-right">学期：{{ term.name }}</h4>
+    <h4 class="text-left">学期：{{ term.name }}</h4>
   </div>
   <label class="col-form-label text-right ml-2"><code>*</code>教师</label>
   <select class=" selectpicker form-control col-sm-1 ml-3" formControlName="selectedTeacherId" (change)="onTeacherChange()" >
@@ -40,7 +40,7 @@
             <div *ngFor="let schedule of this.content[l][d].schedules">
               <div>{{ schedule.course.name }}</div>
               <div *ngFor="let roomsAndWeeks of this.roomsAndWeeks[l][d][schedule.id]">
-                <div *ngIf="roomsAndWeeks.rooms.length !== 0">第<label *ngFor="let week of roomsAndWeeks.weeks">{{ week + 1 }}&nbsp;</label>周在教室<label *ngFor="let room of roomsAndWeeks.rooms">{{ room.name }}</label>&nbsp;</div>
+                <div *ngIf="roomsAndWeeks.rooms.length !== 0">第<label *ngFor="let week of roomsAndWeeks.weeks">{{ week + 1 }}&nbsp;</label>周在教室<label *ngFor="let room of roomsAndWeeks.rooms">{{ room.name }}&nbsp;</label></div>
               </div>
               <div>班级：<label *ngFor="let clazz of schedule.clazzes">{{ clazz.name }}&nbsp;</label></div>
               <div>教师：<label>{{ schedule.teacher1.name }}&nbsp;</label>
@@ -79,7 +79,7 @@
             <div *ngFor="let schedule of this.bigModelContent[l][d].schedules">
               <div>{{ schedule.course.name }}</div>
               <div *ngFor="let bigModelRoomsAndWeek of this.bigModelRoomsAndWeeks[l][d][schedule.id]">
-                <div *ngIf="bigModelRoomsAndWeek.rooms.length !== 0">第<label *ngFor="let week of bigModelRoomsAndWeek.weeks">{{ week + 1 }}&nbsp;</label>周在教室<label *ngFor="let room of bigModelRoomsAndWeek.rooms">{{ room.name }}</label>&nbsp;</div>
+                <div *ngIf="bigModelRoomsAndWeek.rooms.length !== 0">第<label *ngFor="let week of bigModelRoomsAndWeek.weeks">{{ week + 1 }}&nbsp;</label>周在教室<label *ngFor="let room of bigModelRoomsAndWeek.rooms">{{ room.name }}&nbsp;</label></div>
               </div>
               <div>班级：<label *ngFor="let clazz of schedule.clazzes">{{ clazz.name }}&nbsp;</label></div>
               <div>教师：<label>{{ schedule.teacher1.name }}&nbsp;</label>
