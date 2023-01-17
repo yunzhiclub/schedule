@@ -20,7 +20,7 @@ export class AddComponent implements OnInit {
               private yzAsyncValidators: YzAsyncValidators) { }
 
   formGroup = new FormGroup({
-    name: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.studentNameUnique()),
+    name: new FormControl('', [Validators.required, YzValidator.notEmpty]),
     sno: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.snoUnique()),
     clazzId: new FormControl('', [Validators.required, YzValidator.notEmpty]),
     sex: new FormControl(true, [Validators.required]),

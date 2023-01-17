@@ -41,7 +41,6 @@ export class EditComponent implements OnInit {
       this.id = +param.id;
       const id = +param.id;
       Assert.isNotNullOrUndefined(id, 'ID类型不正确');
-      this.formGroup.get(this.keys.name)!.setAsyncValidators(this.yzAsyncValidators.studentNameUnique(id));
       this.formGroup.get(this.keys.sno)!.setAsyncValidators(this.yzAsyncValidators.snoUnique(id));
       this.loadById(id);
     });

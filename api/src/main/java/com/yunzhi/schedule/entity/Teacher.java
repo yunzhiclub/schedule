@@ -1,13 +1,15 @@
 package com.yunzhi.schedule.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 教师实体
@@ -36,6 +38,16 @@ public class Teacher implements SoftDelete {
 
     @ApiModelProperty("是否已删除")
     private Boolean deleted = false;
+
+    @OneToMany(mappedBy = "teacher1")
+    @ApiModelProperty("该教师作为教师1的对应排课")
+    @JsonView(Schedules1JsonView.class)
+    private List<Schedule> schedules1 = new ArrayList<>();
+
+    @OneToMany(mappedBy = "teacher2")
+    @ApiModelProperty("该教师作为教师1的对应排课")
+    @JsonView(Schedules2JsonView.class)
+    private List<Schedule> schedules2 = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -77,9 +89,42 @@ public class Teacher implements SoftDelete {
         this.deleted = deleted;
     }
 
+    public List<Schedule> getSchedules() {
+        List<Schedule> arr = new ArrayList<>();
+        schedules1.forEach((schedule -> {
+            if (!arr.contains(schedule)) {
+                arr.add(schedule);
+            }
+        }));
+        schedules2.forEach((schedule -> {
+            if (!arr.contains(schedule)) {
+                arr.add(schedule);
+            }
+        }));
+        return arr;
+    }
+
+    public List<Schedule> getSchedules1() {
+        return schedules1;
+    }
+
+    public void setSchedules1(List<Schedule> schedules1) {
+        this.schedules1 = schedules1;
+    }
+
+    public List<Schedule> getSchedules2() {
+        return schedules2;
+    }
+
+    public void setSchedules2(List<Schedule> schedules2) {
+        this.schedules2 = schedules2;
+    }
+
 
     public interface IdJsonView {}
     public interface NameJsonView {}
     public interface SexJsonView {}
     public interface PhoneJsonView {}
+    public interface Schedules1JsonView {}
+    public interface Schedules2JsonView {}
 }

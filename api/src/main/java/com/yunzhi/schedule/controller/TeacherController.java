@@ -43,6 +43,14 @@ public class TeacherController {
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
         Page<Teacher> page = this.teacherService.page(name, phone, pageable);
+        page.getContent().forEach(teacher -> {
+            teacher.getSchedules().forEach(schedule -> {
+                schedule.setTeacher1(null); schedule.setTeacher2(null);
+                schedule.getDispatches().forEach(dispatch -> {
+                    dispatch.setSchedule(null);
+                });
+            });
+        });
         return page;
     }
 
