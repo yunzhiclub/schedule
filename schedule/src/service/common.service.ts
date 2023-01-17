@@ -3,7 +3,7 @@ import {randomNumber} from '../common/utils';
 import {Router} from '@angular/router';
 import swal, {SweetAlertIcon, SweetAlertResult} from 'sweetalert2';
 import {BaseMenu} from '../common/base-menu';
-import {Observable} from "rxjs";
+import * as FileSaver from 'file-saver';
 
 @Injectable({
   providedIn: 'root'
@@ -198,5 +198,14 @@ export class CommonService {
 
   getMenus(): BaseMenu[] {
     return this.menus;
+  }
+
+  /**
+   * 保存文件
+   * @param blob 文件
+   * @param fileName 文件名
+   */
+  saveFile(blob: Blob, fileName: string): void {
+    FileSaver.saveAs(blob, fileName);
   }
 }

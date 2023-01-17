@@ -17,6 +17,7 @@ import {TeacherService} from '../../service/teacher.service';
 export class TeacherComponent implements OnInit {
   pageData = new Page<Teacher>();
   params: Params = [];
+  showImportComponent = false;
   queryForm = new FormGroup({});
   keys = {
     page: 'page',
@@ -135,4 +136,37 @@ export class TeacherComponent implements OnInit {
   onSubmit(queryForm: FormGroup): void {
     this.reload({...this.params, ...queryForm.value});
   }
+
+
+  /**
+   * 导入按钮被按下.
+   */
+  onImportButtonClick(): void {
+    this.commonService.confirm(confirm => {
+      if (confirm) {
+        this.showImportComponent = true;
+      } else {
+        this.teacherService.downloadImportTemplate('教师导入模板' + new Date().toLocaleDateString());
+      }
+    }, '系统仅支持固定模板的excel文档', '请选择', '我已下载', '下载模板');
+  }
+
+  /**
+   * 取消导入
+   */
+  onImportCancel(): void {
+    this.showImportComponent = false;
+  }
+
+  /**
+   * 导入完成
+   */
+  onImported(): void {
+    this.showImportComponent = false;
+    this.commonService.success(() => {
+      setTimeout(() => this.commonService.reloadByParam(this.params, {forceReload: true}).then(),
+        3000);
+    }, '', '上传成功');
+  }
+
 }

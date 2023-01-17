@@ -2,6 +2,8 @@ package com.yunzhi.schedule.service;
 
 import com.yunzhi.schedule.entity.User;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.security.Principal;
 
 public interface UserService {
@@ -30,4 +32,5 @@ public interface UserService {
     User getById(Long id);
 
     void logout();
+
 }
