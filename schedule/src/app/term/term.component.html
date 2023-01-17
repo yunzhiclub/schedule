@@ -34,9 +34,9 @@
     <td>{{ +term.endTime * 1000 | date: 'yyyy-MM-dd'}}</td>
     <td><span class="badge" [ngClass]="{ 'badge-primary': term.state, 'badge-secondary': !term.state }">{{ term.state | termState }}</span></td>
     <td>
-      <a class="btn btn-sm btn-primary" [routerLink]="'edit/' + term.id">编辑</a>
-      <a class="btn btn-sm btn-danger" (click)="onDelete(term)">删除</a>
-      <button class="btn btn-sm btn-success col-md-2" (click)="active(term)" [disabled]="term.state">激活</button>
+      <a class="btn btn-sm btn-primary" [routerLink]="'edit/' + term.id"><i class="fas fa-edit"></i>编辑</a>
+      <a class="btn btn-sm btn-danger" (click)="onDelete(term)"><i class="fas fa-trash"></i>删除</a>
+      <button class="btn btn-sm btn-success col-md-3" (click)="active(term)" [disabled]="term.state"><i class="fas fa-hourglass-half"></i>激活</button>
     </td>
   </tr>
   </tbody>

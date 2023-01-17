@@ -165,6 +165,8 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         Clazz clazz2 = this.addClazz("软件221", 1672502400L);
         Clazz clazz3 = this.addClazz("物联网221", 1672502400L);
 
+        Student student1 = this.addStudent("学生1", true, "123123", clazz1);
+
         Schedule schedule1 = this.addSchedule(course1, term, teacher1, teacher3, Collections.singletonList(clazz1));
         Schedule schedule2 = this.addSchedule(course2, term, teacher2, teacher3, Collections.singletonList(clazz2));
 

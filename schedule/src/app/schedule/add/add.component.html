@@ -146,7 +146,8 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="close()" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary" [disabled]="!canSave()" (click)="save()">保存修改</button>
+          <button type="button" class="btn btn-primary" [disabled]="!canSave()" (click)="save()">
+            <i class="fas fa-save"></i>保存</button>
         </div>
       </div>
     </div>

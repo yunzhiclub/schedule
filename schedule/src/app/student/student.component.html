@@ -1,12 +1,12 @@
 <div class="row">
-  <div class="col-md-10">
+  <div class="col-md-8">
     <form class="form-inline" (submit)="onSubmit(queryForm)" [formGroup]="queryForm">
       <input type="text" class="form-control mr-3" placeholder="学生姓名" formControlName="name">
       <input type="text" class="form-control mr-3" placeholder="学号" formControlName="sno">
       <button type="submit" class="btn btn-info"><i class="fas fa-search"></i>查询</button>
     </form>
   </div>
-  <div class="col-md-2">
+  <div class="col-md-4 text-right">
     <button class="btn btn-info"
             type="button"
             (click)="onImportButtonClick()">
@@ -40,8 +40,8 @@
     <td>{{ student.sex | sex}}</td>
     <td>{{ student.clazz?.name }}</td>
     <td>
-      <a class="btn btn-sm btn-primary" [routerLink]="'edit/' + student.id">编辑</a>
-      <a class="btn btn-sm btn-danger" (click)="onDelete(student)">删除</a>
+      <a class="btn btn-sm btn-primary" [routerLink]="'edit/' + student.id"><i class="fas fa-edit"></i>编辑</a>
+      <a class="btn btn-sm btn-danger" (click)="onDelete(student)"><i class="fas fa-trash"></i>删除</a>
     </td>
   </tr>
   </tbody>

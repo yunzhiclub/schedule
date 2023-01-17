@@ -28,8 +28,8 @@
     <td>{{ course.name }}</td>
     <td>{{ course.hours }}</td>
     <td>
-      <a class="btn btn-sm btn-primary" [routerLink]="'/course/edit/' + course.id">编辑</a>
-      <a class="btn btn-sm btn-danger" (click)="onDelete(course.id)">删除</a>
+      <a class="btn btn-sm btn-primary" [routerLink]="'/course/edit/' + course.id"><i class="fas fa-edit"></i>编辑</a>
+      <a class="btn btn-sm btn-danger" (click)="onDelete(course.id)"><i class="fas fa-trash"></i>删除</a>
     </td>
   </tr>
   </tbody>
