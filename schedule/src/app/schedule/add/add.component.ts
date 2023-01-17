@@ -54,6 +54,8 @@ export class AddComponent implements OnInit {
 
   /* 所有课程 */
   courses =  []  as Course[];
+  /* 当前课程 */
+  course: Course | undefined;
   // 所有教师
   teachers =  []  as Teacher[];
   // 所有排课
@@ -90,9 +92,9 @@ export class AddComponent implements OnInit {
   // 选择的教室
   selectedRooms = [] as number[];
   // 周记录器 同步模式使用
-  weeksRecoder = [] as number[][][];
+  weeksRecorder = [] as number[][][];
   // 教室记录器 同步模式使用
-  roomsRecoder = [] as number[][][];
+  roomsRecorder = [] as number[][][];
   // 不可用的周
   disabledWeeks = [] as number[];
   // 不可用的教室
@@ -101,6 +103,8 @@ export class AddComponent implements OnInit {
   pattern = false;
   // 是否小结确定
   isSmLessonsDetermine = false;
+  // 定制模式下非空的周
+  notEmptyWeeks = [] as number[];
 
   constructor(private clazzService: ClazzService,
               private courseService: CourseService,
@@ -174,21 +178,21 @@ export class AddComponent implements OnInit {
 
   private initWeeksAndRoomsRecoder(): void {
     for (let i = 0; i < 7; i++) {
-      this.weeksRecoder[i] = [];
-      this.roomsRecoder[i] = [];
+      this.weeksRecorder[i] = [];
+      this.roomsRecorder[i] = [];
       for (let j = 0; j < 5; j++) {
-        this.weeksRecoder[i][j] = [];
-        this.roomsRecoder[i][j] = [];
+        this.weeksRecorder[i][j] = [];
+        this.roomsRecorder[i][j] = [];
       }
     }
   }
-
 
   /**
    * 订阅参数，各参数改变时修改其后置数据
    */
   private subscribeFormGroup(): void {
     this.formGroup.get('courseId')?.valueChanges.subscribe(() => {
+      this.course = this.courses.filter(course => course.id === +this.formGroup.get('courseId')?.value)[0];
       this.formGroup.get('clazzIds')?.setValue([]);
       this.formGroup.get('teacher1Id')?.setValue(null);
       this.formGroup.get('teacher2Id')?.setValue(null);
@@ -234,9 +238,12 @@ export class AddComponent implements OnInit {
     this.makeTempData();
     // 同步模式
     if (!this.pattern) {
-      this.selectedWeeks = [...this.weeksRecoder[this.day][this.bigLesson]];
-      this.selectedRooms = [...this.roomsRecoder[this.day][this.bigLesson]];
+      this.selectedWeeks = [...this.weeksRecorder[this.day][this.bigLesson]];
+      this.selectedRooms = [...this.roomsRecorder[this.day][this.bigLesson]];
       this.makeWeeksAndRoomsRecoder();
+    } else {
+      this.notEmptyWeeks = [];
+      this.makeNotEmptyWeeks();
     }
     this.isShowModel = true;
   }
@@ -251,6 +258,7 @@ export class AddComponent implements OnInit {
     this.week = undefined;
     this.selectedRooms = [];
     this.selectedWeeks = [];
+    this.notEmptyWeeks = [];
     this.initTempData();
   }
 
@@ -271,11 +279,11 @@ export class AddComponent implements OnInit {
       });
     } else {
       if (this.smLessons.length !== 0) {
-        this.weeksRecoder[this.day!][this.bigLesson!] = [...this.selectedWeeks];
-        this.roomsRecoder[this.day!][this.bigLesson!] = [...this.selectedRooms];
+        this.weeksRecorder[this.day!][this.bigLesson!] = [...this.selectedWeeks];
+        this.roomsRecorder[this.day!][this.bigLesson!] = [...this.selectedRooms];
       } else {
-        this.weeksRecoder[this.day!][this.bigLesson!] = [];
-        this.roomsRecoder[this.day!][this.bigLesson!] = [];
+        this.weeksRecorder[this.day!][this.bigLesson!] = [];
+        this.roomsRecorder[this.day!][this.bigLesson!] = [];
       }
       this.smLessons.forEach(smLesson => {
         this.selectedWeeks.forEach(week => {
@@ -299,6 +307,7 @@ export class AddComponent implements OnInit {
         this.initSites();
         this.makeWeeks();
       });
+
     this.roomService.getAll()
       .subscribe((rooms: Room[]) => {
         this.rooms = rooms;
@@ -519,6 +528,8 @@ export class AddComponent implements OnInit {
         this.selectedRooms.splice(this.selectedRooms.indexOf(roomId), 1);
       }
       this.updateTempData();
+      this.notEmptyWeeks = [];
+      this.makeNotEmptyWeeks();
     } else {
       if (!this.selectedRooms.includes(roomId)) {
         this.selectedRooms.push(roomId);
@@ -681,11 +692,11 @@ export class AddComponent implements OnInit {
   private makeWeeksAndRoomsRecoder(): void {
     this.selectedData.forEach((data) => {
       const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
-      if (!this.weeksRecoder[data.day][bigLesson].includes(data.week)) {
-        this.weeksRecoder[data.day][bigLesson].push(data.week);
+      if (!this.weeksRecorder[data.day][bigLesson].includes(data.week)) {
+        this.weeksRecorder[data.day][bigLesson].push(data.week);
       }
-      if (this.roomsRecoder[data.day][bigLesson].length === 0) {
-        this.roomsRecoder[data.day][bigLesson] = [...data.roomIds];
+      if (this.roomsRecorder[data.day][bigLesson].length === 0) {
+        this.roomsRecorder[data.day][bigLesson] = [...data.roomIds];
       }
     });
   }
@@ -707,7 +718,21 @@ export class AddComponent implements OnInit {
       });
       return status;
     } else {
-      return this.weeksRecoder[day][bigLesson].length !== 0;
+      return this.weeksRecorder[day][bigLesson].length !== 0;
     }
+  }
+
+  private makeNotEmptyWeeks(): void {
+    for (let i = 0; i < this.weekNumber; i++) {
+      if (this.tempData[i].length !== 0) {
+        if (!this.notEmptyWeeks.includes(i)) {
+          this.notEmptyWeeks.push(i);
+        }
+      }
+    }
+  }
+
+  getNotEmptyWeeks(): string {
+    return this.notEmptyWeeks.map(week => (week + 1)).join('、');
   }
 }

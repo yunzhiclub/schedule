@@ -68,10 +68,11 @@
           <button class="dropdown-item" type="button" (click)="updatePattern(false)">同步选择</button>
           <button class="dropdown-item" type="button" (click)="updatePattern(true)">定制选择</button>
         </div>
+        <span class="ml-5 mr-5 font-weight-bold">当前学时:&nbsp;&nbsp;{{ selectedData.length}}</span>
+        <span class="font-weight-bold">课程学时:&nbsp;&nbsp;{{ course?.hours}}</span>
       </div>
     </div>
 
-    <input disabled class="col col-3" value="当前学时: {{ selectedData.length}}">
 
     <div class="col-sm" style="float: right">
       <table class="table  table-bordered">
@@ -119,8 +120,8 @@
         </div>
         <div class="modal-body">
           <div class=" row ">
-            <span class="col-4">选择周:&nbsp;
-              <span class="text-muted" style="font-size: 0.7em">(选择某个周再选择对应教室)</span>
+            <span class="col-12">选择周:&nbsp;
+              <span class="text-muted" *ngIf="pattern" style="font-size: 0.7em">(选择某个周再选择对应教室，已占用周:&nbsp;{{getNotEmptyWeeks()}})</span>
             </span>
           </div>
           <ul class="list-group list-group-horizontal">
@@ -130,7 +131,7 @@
           </ul><br>
 
           <div *ngIf="week !== undefined || !pattern">
-            <h6>选择教室<span class="text-muted" style="font-size: 0.7em">(当前周:{{week! + 1}})</span>:</h6>
+            <h6>选择教室<span class="text-muted" *ngIf="pattern" style="font-size: 0.7em">(周:{{week! + 1}})</span>:</h6>
             <ul class="list-group list-group-horizontal">
               <ng-container *ngFor="let room of rooms" class="list-group-item">
                 <button [disabled]="isRoomDisabled(room.id!)" (click)="onRoomChange(room.id!)" [ngClass]="{'bg-primary': isRoomChecked(room.id!)}"  class="mr-1 border-white" [value]="room.id" style="font-size: 0.8em">{{ room.name }}</button>

@@ -88,22 +88,6 @@ public class Teacher implements SoftDelete {
     private void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
-
-    public List<Schedule> getSchedules() {
-        List<Schedule> arr = new ArrayList<>();
-        schedules1.forEach((schedule -> {
-            if (!arr.contains(schedule)) {
-                arr.add(schedule);
-            }
-        }));
-        schedules2.forEach((schedule -> {
-            if (!arr.contains(schedule)) {
-                arr.add(schedule);
-            }
-        }));
-        return arr;
-    }
-
     public List<Schedule> getSchedules1() {
         return schedules1;
     }

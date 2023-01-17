@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.Course;
 import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.entity.Term;
@@ -44,7 +45,13 @@ public class TeacherController {
             Pageable pageable) {
         Page<Teacher> page = this.teacherService.page(name, phone, pageable);
         page.getContent().forEach(teacher -> {
-            teacher.getSchedules().forEach(schedule -> {
+            teacher.getSchedules1().forEach(schedule -> {
+                schedule.setTeacher1(null); schedule.setTeacher2(null);
+                schedule.getDispatches().forEach(dispatch -> {
+                    dispatch.setSchedule(null);
+                });
+            });
+            teacher.getSchedules2().forEach(schedule -> {
                 schedule.setTeacher1(null); schedule.setTeacher2(null);
                 schedule.getDispatches().forEach(dispatch -> {
                     dispatch.setSchedule(null);
@@ -102,6 +109,7 @@ public class TeacherController {
      * @return     教师
      */
     @GetMapping("getAll")
+    @JsonView(GetAll.class)
     public List<Teacher> getAll() {
         return this.teacherService.getAll();
     }
@@ -138,4 +146,9 @@ public class TeacherController {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         this.teacherService.importExcel(multipartFile.getInputStream(), response.getOutputStream());
     }
+
+    public interface GetAll extends
+            Teacher.NameJsonView,
+            Teacher.IdJsonView
+    {}
 }

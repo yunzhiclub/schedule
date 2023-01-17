@@ -18,7 +18,6 @@ export class Teacher {
     phone?: string
     schedules1?: Schedule[]
     schedules2?: Schedule[]
-    schedules?: Schedule[]
   }) {
     this.id = (data.id as number);
     this.name = data.name;
@@ -26,8 +25,7 @@ export class Teacher {
     this.phone = data.phone;
     this.schedules1 = data.schedules1 ? data.schedules1 : [];
     this.schedules2 = data.schedules2 ? data.schedules2 : [];
-    this.schedules = data.schedules ? data.schedules :
-      Array.from(new Set([...this.schedules1, ...this.schedules2]));
+    this.schedules = Array.from(new Set([...this.schedules1, ...this.schedules2]));
   }
 
   getHours(): number {

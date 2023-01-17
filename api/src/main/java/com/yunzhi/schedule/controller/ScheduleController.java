@@ -55,6 +55,8 @@ public class ScheduleController {
             schedule.getDispatches().forEach(dispatch -> {
                 dispatch.setSchedule(null);
             });
+            schedule.getTeacher1().setSchedules1(null); schedule.getTeacher1().setSchedules2(null);
+            schedule.getTeacher2().setSchedules1(null); schedule.getTeacher2().setSchedules2(null);
         });
         return schedulePage;
     }
