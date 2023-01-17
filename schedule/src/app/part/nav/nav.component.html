@@ -1,7 +1,8 @@
-<div class="nav">
-<!--  <a href="javascript:void(0);" (click)=Back()><< 后退</a>-->
-  <a href="./../"><< 后退</a>
-  <p>
-    当前位置：<span>{{ this.title }}</span>
-  </p>
-</div>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <a class="btn btn-outline-secondary" href="javascript:void(0);" *ngIf="show" (click)="back()"><< 后退</a>
+    <div class="mt-2">
+      当前位置：<span class="font-weight-lighter">{{ title }}</span>
+    </div>
+  </ol>
+</nav>
