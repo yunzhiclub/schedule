@@ -19,6 +19,7 @@ import {TermService} from '../../service/term.service';
 export class TimetableComponent implements OnInit {
   formGroup = new FormGroup({
     selectedTeacherId: new FormControl(null, Validators.required),
+    displayMode: new FormControl(null, Validators.required)
   });
   term: Term | undefined;
   lessons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -45,6 +46,18 @@ export class TimetableComponent implements OnInit {
   }[][][][];
   // 已经选择的教师
   selectedTeacher: Teacher = new Teacher();
+  bigLessons = [1, 2, 3, 4, 5];
+  bigModelContent = {} as unknown as {
+    rooms: Room[];
+    weeks: number[];
+    clazzes: Clazz[];
+    schedules: Schedule[]
+  }[][];
+  bigModelRoomsAndWeeks = [] as unknown as {
+    rooms: Room[];
+    weeks: number[]
+  }[][][][];
+  isShowForBigModel = [] as number[][];
 
   constructor(private  teacherService: TeacherService,
               private scheduleService: ScheduleService,
@@ -84,13 +97,39 @@ export class TimetableComponent implements OnInit {
         }
       }
     }
-    console.log('this.roomsAndWeeks', this.roomsAndWeeks);
+    // console.log('this.roomsAndWeeks', this.roomsAndWeeks);
+    for (let i = 0; i < 5; i++) {
+      this.bigModelRoomsAndWeeks[i] = [];
+      for (let j = 0; j < 7; j++) {
+        this.bigModelRoomsAndWeeks[i][j] = [];
+        for (const schedule of this.allSchedulesInCurrentTerm) {
+          this.bigModelRoomsAndWeeks[i][j][schedule.id] = [];
+          for (let x = 0; x < 5; x++) {
+            this.bigModelRoomsAndWeeks[i][j][schedule.id][x] = {
+              rooms: [],
+              weeks: []
+            };
+          }
+        }
+      }
+    }
   }
   private initContent(): void {
     for (let i = 0; i < 11; i++) {
       this.content[i] = [];
       for (let j = 0; j < 7; j++) {
         this.content[i][j] = {
+          rooms: [],
+          weeks: [],
+          clazzes: [],
+          schedules: []
+        };
+      }
+    }
+    for (let i = 0; i < 5; i++) {
+      this.bigModelContent[i] = [];
+      for (let j = 0; j < 7; j++) {
+        this.bigModelContent[i][j] = {
           rooms: [],
           weeks: [],
           clazzes: [],
@@ -107,6 +146,12 @@ export class TimetableComponent implements OnInit {
       }
     }
     // this.isShow[7][4] = 1;
+    for (let i = 0; i < 5; i++) {
+      this.isShowForBigModel[i] = [];
+      for (let j = 0; j < 7; j++) {
+        this.isShowForBigModel[i][j] = 0;
+      }
+    }
   }
 
   onTeacherChange(): void {
@@ -118,7 +163,7 @@ export class TimetableComponent implements OnInit {
     this.initIsShow();
     // 重新选择教师后,将已经选择的教师的排课置空
     this.schedulesOfSelectedTeacher = [];
-    if (this.formGroup.get('selectedTeacherId')?.value !== '999') {
+    if (this.formGroup.get('selectedTeacherId')?.value !== 'all') {
       this.getSelectedTeacher();
     } else {
       // console.log('选择全部教师');
@@ -152,6 +197,9 @@ export class TimetableComponent implements OnInit {
         this.setContent(schedule, dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms, schedule.id);
       }
     }
+    this.setIsShowForBigModel();
+    this.setBigModelContent(this.content);
+    this.setBigModelRoomsAndWeeks(this.roomsAndWeeks);
   }
   private setContent(schedule: Schedule, lesson: number, day: number, week: number, rooms: Room[], scheduleId: number): void {
     if (!this.whetherSchedulesIncludeSchedule(this.content[lesson][day].schedules, schedule)) {
@@ -167,6 +215,29 @@ export class TimetableComponent implements OnInit {
       }
     }
   }
+  private setBigModelContent(content: { rooms: Room[]; weeks: number[]; clazzes: Clazz[]; schedules: Schedule[] }[][]): void {
+    for (let l = 0; l < 11; l++) {
+      for (let d = 0; d < 7; d++) {
+        if (content[l][d].schedules.length !== 0) {
+          if (l === 0 || l === 1) {
+            this.bigModelContent[0][d].schedules = content[l][d].schedules;
+          }
+          if (l === 2 || l === 3) {
+            this.bigModelContent[1][d].schedules = content[l][d].schedules;
+          }
+          if (l === 4 || l === 5) {
+            this.bigModelContent[2][d].schedules = content[l][d].schedules;
+          }
+          if (l === 6 || l === 7) {
+            this.bigModelContent[3][d].schedules = content[l][d].schedules;
+          }
+          if (l === 8 || l === 9 || l === 10) {
+            this.bigModelContent[4][d].schedules = content[l][d].schedules;
+          }
+        }
+      }
+    }
+  }
   private setRoomsAndWeeksOfSchedules(lesson: number, day: number, week: number, rooms: Room[], scheduleId: number): void {
     // 当此个天节的scheduleId键数组未存roomsAndWeeks组时
     if (this.roomsAndWeeks[lesson][day][scheduleId][0].rooms.length === 0) {
@@ -174,7 +245,9 @@ export class TimetableComponent implements OnInit {
       for (const room of rooms) {
         this.roomsAndWeeks[lesson][day][scheduleId][0].rooms.push(room);
       }
-      this.roomsAndWeeks[lesson][day][scheduleId][0].weeks.push(week);
+      if (!this.whetherWeeksIncludeWeek(this.roomsAndWeeks[lesson][day][scheduleId][0].weeks, week)) {
+        this.roomsAndWeeks[lesson][day][scheduleId][0].weeks.push(week);
+      }
     } else {
       // 当此个天节的scheduleId键数组原来存有roomsAndWeeks组时
       // 设置key
@@ -185,7 +258,9 @@ export class TimetableComponent implements OnInit {
         // 如果新存入的rooms与当前已经存有的rooms相等
         if (this.roomsAndWeeks[lesson][day][scheduleId][i].rooms.toString() === rooms.toString()) {
           // 只将新week存入已存在的对象的weeks中,不再重复存rooms
-          this.roomsAndWeeks[lesson][day][scheduleId][i].weeks.push(week);
+          if (!this.whetherWeeksIncludeWeek(this.roomsAndWeeks[lesson][day][scheduleId][0].weeks, week)) {
+            this.roomsAndWeeks[lesson][day][scheduleId][i].weeks.push(week);
+          }
           // 当有当前情况时设置key为false
           key = false;
         }
@@ -221,5 +296,81 @@ export class TimetableComponent implements OnInit {
         this.setContent(schedule, dispatch.lesson, dispatch.day, dispatch.week, dispatch.rooms, schedule.id);
       }
     }
+    this.setIsShowForBigModel();
+    this.setBigModelContent(this.content);
+    this.setBigModelRoomsAndWeeks(this.roomsAndWeeks);
+  }
+
+  private whetherWeeksIncludeWeek(weeks: number[], newWeek: number): boolean {
+    for (const week of weeks) {
+      if (week === newWeek) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  onModelChange(): void {
+    console.log('onModelChange');
+    this.onTeacherChange();
+  }
+
+  private setIsShowForBigModel(): void {
+    for (let l = 0; l < 11; l++) {
+      for (let d = 0; d < 7; d++) {
+        if (this.isShow[l][d] === 1) {
+          if (l === 0 || l === 1) {
+            this.isShowForBigModel[0][d] = 1;
+          }
+          if (l === 2 || l === 3) {
+            this.isShowForBigModel[1][d] = 1;
+          }
+          if (l === 4 || l === 5) {
+            this.isShowForBigModel[2][d] = 1;
+          }
+          if (l === 6 || l === 7) {
+            this.isShowForBigModel[3][d] = 1;
+          }
+          if (l === 8 || l === 9 || l === 10) {
+            this.isShowForBigModel[4][d] = 1;
+          }
+        }
+      }
+    }
+  }
+
+  private setBigModelRoomsAndWeeks(roomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][]): void {
+    for (let l = 0; l < 11; l++) {
+      for (let d = 0; d < 7; d++) {
+        // tslint:disable-next-line:prefer-for-of
+        for (const schedule of this.allSchedulesInCurrentTerm) {
+          // tslint:disable-next-line:prefer-for-of
+          for (let x = 0; x < roomsAndWeeks[l][d][schedule.id].length; x++) {
+            if (roomsAndWeeks[l][d][schedule.id][x].rooms.length !== 0) {
+              if (l === 0 || l === 1) {
+                this.bigModelRoomsAndWeeks[0][d][schedule.id] = roomsAndWeeks[l][d][schedule.id];
+              }
+              if (l === 2 || l === 3) {
+                this.bigModelRoomsAndWeeks[1][d][schedule.id] = roomsAndWeeks[l][d][schedule.id];
+              }
+              if (l === 4 || l === 5) {
+                this.bigModelRoomsAndWeeks[2][d][schedule.id] = roomsAndWeeks[l][d][schedule.id];
+              }
+              if (l === 6 || l === 7) {
+                this.bigModelRoomsAndWeeks[3][d][schedule.id] = roomsAndWeeks[l][d][schedule.id];
+              }
+              if (l === 8 || l === 9 || l === 10) {
+                this.bigModelRoomsAndWeeks[4][d][schedule.id] = roomsAndWeeks[l][d][schedule.id];
+              }
+            }
+          }
+        }
+      }
+    }
+    console.log('roomsAndWeeks[2][2][2]', roomsAndWeeks[2][2][2]);
+    // this.bigModelRoomsAndWeeks[1][2][2] = roomsAndWeeks[2][2][2];
+    console.log('this.bigModelRoomsAndWeeks[1][2][2]', this.bigModelRoomsAndWeeks[1][2][2]);
+    console.log('this.roomsAndWeeks', this.roomsAndWeeks);
+    console.log('setBigModelRoomsAndWeeks', this.bigModelRoomsAndWeeks);
   }
 }
