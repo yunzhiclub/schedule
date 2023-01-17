@@ -10,16 +10,16 @@ import * as FileSaver from 'file-saver';
 })
 export class CommonService {
   private menus = [
-    { name: '首页',      url: 'dashboard' } as BaseMenu,
-    { name: '学期管理',   url: 'term' } as BaseMenu,
-    { name: '教师管理',   url: 'teacher' } as BaseMenu,
-    { name: '班级管理',   url: 'clazz' } as BaseMenu,
-    { name: '学生管理',   url: 'student' } as BaseMenu,
-    { name: '教室管理',   url: 'room' } as BaseMenu,
-    { name: '课程管理',   url: 'course' } as BaseMenu,
-    { name: '排课管理',   url: 'schedule' } as BaseMenu,
-    { name: '课程表',     url: 'timetable' } as BaseMenu,
-    { name: '个人中心',   url: 'personal' } as BaseMenu,
+    { name: '首页',      url: 'dashboard',  icon: 'fas fa-paper-plane'} as BaseMenu,
+    { name: '学期管理',   url: 'term',       icon: 'fas fa-school' } as BaseMenu,
+    { name: '教师管理',   url: 'teacher',    icon: 'fas fa-chalkboard-teacher' } as BaseMenu,
+    { name: '班级管理',   url: 'clazz',      icon: 'fas fa-university' } as BaseMenu,
+    { name: '学生管理',   url: 'student',    icon: 'fas fa-user-graduate' } as BaseMenu,
+    { name: '教室管理',   url: 'room',       icon: 'fas fa-warehouse' } as BaseMenu,
+    { name: '课程管理',   url: 'course',     icon: 'fas fa-book' } as BaseMenu,
+    { name: '排课管理',   url: 'schedule',   icon: 'fas fa-clock' } as BaseMenu,
+    { name: '课程表',     url: 'timetable',  icon: 'fas fa-table' } as BaseMenu,
+    { name: '个人中心',   url: 'personal',   icon: 'fas fa-user' } as BaseMenu,
   ];
 
   constructor(private router: Router) { }

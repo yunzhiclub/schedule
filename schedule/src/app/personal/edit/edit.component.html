@@ -18,7 +18,8 @@
   <div class="form-group row">
     <div class="offset-4">
       <a style="float: right" [routerLink]="'../'" class="btn btn-primary">返回</a>
-      <button style="float: right" type="submit" class="btn btn-primary" [disabled]="formGroup.invalid" (click)="onSubmit()">保存</button>&nbsp;&nbsp;
+      <button style="float: right" type="submit" class="btn btn-primary" [disabled]="formGroup.invalid" (click)="onSubmit()">
+        <i class="fas fa-save"></i>保存</button>&nbsp;&nbsp;
     </div>
   </div>
 </form>

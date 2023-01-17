@@ -2,6 +2,7 @@
   <li *ngFor="let menu of menus" class="border-bottom">
     <a routerLink="{{ menu.url }}">
       <div class="inner" [style.background-color]="getBackgroundColor(menu)" [style.color]="getTextColor(menu)">
+        <i [class]="menu.icon"></i>
         &nbsp;&nbsp;&nbsp;&nbsp;<span>{{ menu.name }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
     </a>
