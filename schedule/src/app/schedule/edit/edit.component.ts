@@ -195,7 +195,6 @@ export class EditComponent implements OnInit {
     if (!this.pattern) {
       this.selectedWeeks = [...this.weeksRecorder[this.day][this.bigLesson]];
       this.selectedRooms = [...this.roomsRecorder[this.day][this.bigLesson]];
-      console.log('showModel2', [...this.weeksRecorder], [...this.roomsRecorder]);
     } else {
       this.notEmptyWeeks = [];
       this.makeNotEmptyWeeks();
@@ -278,7 +277,6 @@ export class EditComponent implements OnInit {
             this.overtimeWeekNumber = Math.floor(days / 7);
 
             this.makeWeeks();
-            console.error('调用+1');
             this.scheduleService.getSchedulesInCurrentTerm()
               .subscribe((schedules: Schedule[]) => {
                 this.schedules = schedules;
@@ -515,7 +513,7 @@ export class EditComponent implements OnInit {
   private makeTempData(): void {
     const smLessons = this.smLessonsRecorder[this.day!][this.bigLesson!];
     this.selectedData.forEach((data) => {
-      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+      const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
       if (data.day === this.day && bigLesson === this.bigLesson) {
         this.tempData[data.week] = data.roomIds;
       }
@@ -538,7 +536,7 @@ export class EditComponent implements OnInit {
 
   private deleteSelectedData(): void {
     this.selectedData = this.selectedData.filter(data => {
-      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+      const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
       return !(data.day === this.day && bigLesson === this.bigLesson);
     });
   }
@@ -626,11 +624,11 @@ export class EditComponent implements OnInit {
   // 当前系统在存入时规定同一大节只能上部分小结或者都上，不能不同小节在不同时间，在不同地点
   private makeSmLessonsRecorder(): void {
     this.selectedData.forEach((data) => {
-      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+      const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
       this.smLessonsRecorder[data.day][bigLesson] = [];
     });
     this.selectedData.forEach((data) => {
-      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+      const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
       const smLesson = data.smLesson - bigLesson * 2;
       if (!this.smLessonsRecorder[data.day][bigLesson].includes(smLesson)) {
         this.smLessonsRecorder[data.day][bigLesson].push(smLesson);
@@ -645,9 +643,9 @@ export class EditComponent implements OnInit {
     // true代表数据正确
     let status = true;
     this.selectedData.forEach(data1 => {
-      const bigLesson1 = data1.smLesson === 11 ? 4 : Math.floor(data1.smLesson / 2);
+      const bigLesson1 = data1.smLesson === 10 ? 4 : Math.floor(data1.smLesson / 2);
       this.selectedData.forEach(data2 => {
-        const bigLesson2 = data2.smLesson === 11 ? 4 : Math.floor(data2.smLesson / 2);
+        const bigLesson2 = data2.smLesson === 10 ? 4 : Math.floor(data2.smLesson / 2);
         if (status && (data1.day === data2.day) && (bigLesson1 === bigLesson2)) {
           // 判断数组是否相等
           const roomIds1 = data1.roomIds;
@@ -668,8 +666,10 @@ export class EditComponent implements OnInit {
    */
   private makeWeeksAndRoomsRecoder(): void {
     this.selectedData.forEach((data) => {
-      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
-      this.weeksRecorder[data.day][bigLesson].push(data.week);
+      const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
+      if (!this.weeksRecorder[data.day][bigLesson].includes(data.week)) {
+        this.weeksRecorder[data.day][bigLesson].push(data.week);
+      }
       if (this.roomsRecorder[data.day][bigLesson].length === 0) {
         this.roomsRecorder[data.day][bigLesson] = [...data.roomIds];
       }
@@ -686,7 +686,7 @@ export class EditComponent implements OnInit {
     if (this.pattern) {
       let status = false;
       this.selectedData.forEach(data => {
-        const bigLessonOfData = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+        const bigLessonOfData = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
         if (data.day === day && bigLesson === bigLessonOfData) {
           status = true;
         }

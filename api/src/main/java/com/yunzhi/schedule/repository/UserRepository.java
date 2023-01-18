@@ -7,5 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<User, Long>, JpaSpecificationExecutor<User> {
 
-    User findByPhoneAndDeletedFalse(String name);
+    User findByPhoneAndDeletedFalse(String phone);
 }
