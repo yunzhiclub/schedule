@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CommonService} from '../../../service/common.service';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-layout',
@@ -13,11 +13,11 @@ export class LayoutComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit(): void {
-    // if (window.sessionStorage.getItem('login') !== 'true') {
-    //   this.commonService.error(() => {
-    //     this.router.navigateByUrl('/login');
-    //   }, '请重新登录', '已登出');
-    // }
+    if (window.sessionStorage.getItem('login') !== 'true') {
+      this.commonService.error(() => {
+        this.router.navigateByUrl('/login');
+      }, '请重新登录', '已登出');
+    }
   }
 
 }

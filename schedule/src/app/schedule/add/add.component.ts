@@ -618,9 +618,10 @@ export class AddComponent implements OnInit {
       });
       return isHave;
     } else {
-      let status = true;
-      if (this.selectedWeeks.length === 0 || this.selectedRooms.length === 0) {
-        status = false;
+      let status = false;
+      if ((this.selectedWeeks.length === 0 && this.selectedRooms.length === 0) ||
+        (this.selectedWeeks.length !== 0 && this.selectedRooms.length !== 0)) {
+        status = true;
       }
       return status;
     }
@@ -746,4 +747,40 @@ export class AddComponent implements OnInit {
   getNotEmptyWeeks(): string {
     return this.notEmptyWeeks.map(week => (week + 1)).join('、');
   }
+
+  // isAllWeekChecked(): boolean {
+  //   // 除去过期周
+  //   return this.selectedWeeks.length === (this.weeks.length - this.overtimeWeekNumber!
+  //       - this.disabledWeeks.filter(w => w >= this.overtimeWeekNumber!).length);
+  // }
+  //
+  // isAllRoomChecked(): boolean {
+  //   return this.selectedRooms.length === this.rooms.length;
+  // }
+  //
+  // checkAllWeek(): void {
+  //   if (this.selectedWeeks.length !== (this.weeks.length - this.overtimeWeekNumber!
+  //     - this.disabledWeeks.filter(w => w >= this.overtimeWeekNumber!).length)) {
+  //     if (!this.pattern) {
+  //      this.weeks.filter(week => {
+  //         console.log('checkAllWeek', [...this.disabledWeeks]);
+  //         return (week >= this.overtimeWeekNumber!) && (!this.disabledWeeks.includes(week));
+  //       }).forEach(w => {
+  //         this.onWeekChange(w);
+  //      });
+  //     }
+  //   } else {
+  //     this.selectedWeeks = [];
+  //   }
+  // }
+  //
+  // checkAllRoom(): void {
+  //   if (this.selectedRooms.length !== this.rooms.length) {
+  //     if (!this.pattern) {
+  //       this.selectedRooms = this.rooms.map(room => room.id!);
+  //     }
+  //   } else {
+  //     this.selectedRooms = [];
+  //   }
+  // }
 }

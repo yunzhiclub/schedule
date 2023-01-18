@@ -18,12 +18,11 @@ import {HttpErrorInterceptor} from '../app/interceptor/http-error.interceptor';
         useClass: XAuthTokenInterceptor,
         multi: true
       },
-    //  暂时不检查 interceptor(前后) loginsession(前)
-    //   {
-    //     provide: HTTP_INTERCEPTORS,
-    //     useClass: HttpErrorInterceptor,
-    //     multi: true
-    //   }
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: HttpErrorInterceptor,
+        multi: true
+      }
     ]
 })
 export class ApiProModule { }
