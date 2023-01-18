@@ -123,4 +123,13 @@ export class ScheduleComponent implements OnInit {
   onSubmit(queryForm: FormGroup): void {
     this.reload({...this.params, ...queryForm.value});
   }
+
+  onDelete(id: number): void {
+    this.scheduleService.delete(id)
+      .subscribe(() => {
+        this.commonService.success(() => {
+          this.pageData.content.splice(this.pageData.content.map(schedule => schedule.id).indexOf(id), 1);
+        });
+      });
+  }
 }

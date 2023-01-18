@@ -43,4 +43,9 @@ public class ScheduleServiceImpl implements ScheduleService{
     public Schedule getById(Long id) {
         return this.scheduleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("未找到相关实体"));
     }
+
+    @Override
+    public void deleteById(Long scheduleId) {
+        this.scheduleRepository.deleteById(scheduleId);
+    }
 }

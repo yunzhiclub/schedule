@@ -84,6 +84,11 @@ public class ScheduleController {
         return schedule;
     }
 
+    @DeleteMapping("{scheduleId}")
+    public void deleteById(@PathVariable Long scheduleId) {
+        this.scheduleService.deleteById(scheduleId);
+    }
+
     public interface GetSchedulesInCurrentTerm extends
             Schedule.ClazzJsonView,
             Schedule.CourseJsonView,
