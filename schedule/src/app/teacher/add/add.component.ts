@@ -18,11 +18,10 @@ export class AddComponent implements OnInit {
               private router: Router,
               private route: ActivatedRoute,
               private commonService: CommonService,
-              private yzAsyncValidators: YzAsyncValidators,
-              private httpClient: HttpClient) {
+              private yzAsyncValidators: YzAsyncValidators) {
     this.formGroup = new FormGroup({
       name: new FormControl('', [Validators.required, YzValidator.notEmpty]),
-      sex: new FormControl('', [Validators.required]),
+      sex: new FormControl(true, [Validators.required]),
       phone: new FormControl('', [Validators.required, YzValidator.phone], this.yzAsyncValidators.phoneUnique())
     });
   }
