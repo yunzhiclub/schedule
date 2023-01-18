@@ -89,6 +89,8 @@ export class AddComponent implements OnInit {
   weeks: number[] = [];
   // 选择的周
   selectedWeeks = [] as number[];
+  // 已经过去的周
+  overtimeWeekNumber: number | undefined;
   // 选择的教室
   selectedRooms = [] as number[];
   // 周记录器 同步模式使用
@@ -300,9 +302,13 @@ export class AddComponent implements OnInit {
     this.termService.getCurrentTerm()
       .subscribe((term: Term) => {
         this.term = term;
-        const seconds = +term.endTime - +term.startTime;
-        const days = Math.ceil(seconds / (60 * 60 * 24));
+        let seconds = +term.endTime - +term.startTime;
+        let days = Math.ceil(seconds / (60 * 60 * 24));
         this.weekNumber = Math.ceil(days / 7);
+        const timestamp = Date.parse(new Date().toString()) / 1000;
+        seconds = timestamp - +term.startTime;
+        days = Math.floor(seconds / (60 * 60 * 24));
+        this.overtimeWeekNumber = Math.floor(days / 7);
         this.initTimes();
         this.initSites();
         this.makeWeeks();
@@ -621,6 +627,10 @@ export class AddComponent implements OnInit {
   }
 
   isWeekDisabled(week: number): boolean {
+    if (week < this.overtimeWeekNumber!) {
+      return true;
+    }
+
     let status = false;
     // 不支持小节1选教室1/2， 小节2选教室3/4
     const smLessons = this.bigLesson === 4 ? [0, 1, 2] : [0, 1];

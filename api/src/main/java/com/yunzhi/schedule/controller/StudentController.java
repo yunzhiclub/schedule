@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.Clazz;
 import com.yunzhi.schedule.entity.Student;
 import com.yunzhi.schedule.service.StudentService;
@@ -82,6 +83,7 @@ public class StudentController {
     }
 
     @GetMapping("{studentId}")
+    @JsonView(GetById.class)
     public Student getById(@PathVariable Long studentId) {
         return this.studentService.getById(studentId);
     }
@@ -114,5 +116,15 @@ public class StudentController {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         this.studentService.importExcel(multipartFile.getInputStream(), response.getOutputStream());
     }
+
+    public class GetById implements
+            Student.IdJsonView,
+            Student.NameJsonView,
+            Student.SexJsonView,
+            Student.ClazzJsonView,
+            Student.SnoJsonView,
+            Clazz.IdJsonView,
+            Clazz.NameJsonView
+    {}
 
 }
