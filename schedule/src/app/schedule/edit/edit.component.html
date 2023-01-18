@@ -68,6 +68,7 @@
             <button class="btn border list-group-item mr-3"
                     [ngClass]="{'bg-primary': isAllRoomChecked(), 'text-white': isAllRoomChecked()}"
                     (click)="checkAllRoom()"
+                    *ngIf="!pattern || (pattern && this.week)"
             >教室全选</button>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button class="btn border list-group-item" [ngClass]="{'bg-primary': smLessons.includes(0), 'text-white': smLessons.includes(0)}" (click)="onSmLessonsChange(0)" [disabled]="isSmLessonsDetermine">小节1</button>

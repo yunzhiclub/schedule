@@ -430,9 +430,7 @@ export class EditComponent implements OnInit {
     const smLessons = this.bigLesson === 4 ? [0, 1, 2] : [0, 1];
     if (!this.selectedWeeks.includes(week)) {
       this.selectedWeeks.push(week);
-      // console.log('12123132123312', [...this.selectedWeeks]);
       smLessons.forEach(smLesson => {
-        console.log('this.sites', this.sites[this.day!][this.bigLesson! * 2 + smLesson][week]);
         this.disabledRooms = this.disabledRooms.concat(this.sites[this.day!][this.bigLesson! * 2 + smLesson][week]);
       });
     } else {
@@ -443,6 +441,8 @@ export class EditComponent implements OnInit {
         });
       });
     }
+
+    console.log('12123132123312', [...this.selectedWeeks], [...this.disabledRooms]);
   }
 
   onSmLessonsChange(smLesson: number): void {
@@ -590,7 +590,7 @@ export class EditComponent implements OnInit {
       // todo: this.week尚未选择便渲染 全选按钮 见 593:45
       // @ts-ignore
       smLessons.forEach(smLesson => {
-        if (this.sites[this.day!][smLesson][this.week!].includes(roomId)) {
+        if (this.sites[this.day!][this.bigLesson! * 2 + smLesson][this.week!].includes(roomId)) {
           status = true;
         }
       });
@@ -733,8 +733,8 @@ export class EditComponent implements OnInit {
         });
       }
     } else {
-      this.selectedWeeks = this.selectedWeeks.filter(w => {
-        this.onWeekChange(w);
+      effectiveWeeks.forEach(week => {
+        this.onWeekChange(week);
       });
     }
   }
@@ -742,16 +742,14 @@ export class EditComponent implements OnInit {
   checkAllRoom(): void {
     const effectiveRooms = this.getEffectiveRooms();
 
-    if (this.selectedRooms.length !== this.rooms.length) {
-      if (!this.pattern) {
-        effectiveRooms.forEach(roomId => {
-          if (!this.selectedRooms.includes(roomId)) {
-            this.onRoomChange(roomId);
-          }
-        });
-      }
+    if (Array.from(new Set(this.selectedRooms)).length !== effectiveRooms.length) {
+      console.log('checkAllRoom2', Array.from(new Set(this.selectedRooms)), effectiveRooms);
+      effectiveRooms.forEach(roomId => {
+        if (!this.selectedRooms.includes(roomId)) {
+          this.onRoomChange(roomId);
+        }
+      });
     } else {
-      console.log('checkAllRoom', [...this.selectedRooms!]);
       [...this.selectedRooms].forEach(roomId => {
         this.onRoomChange(roomId);
       });
