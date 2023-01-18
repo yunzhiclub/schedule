@@ -1,7 +1,5 @@
 package com.yunzhi.schedule.service;
 
-import com.yunzhi.schedule.Utils;
-import com.yunzhi.schedule.entity.Clazz;
 import com.yunzhi.schedule.entity.Student;
 import com.yunzhi.schedule.excel.Excel;
 import com.yunzhi.schedule.excel.ExcelCellValue;
@@ -36,11 +34,6 @@ public class StudentServiceImpl implements StudentService {
                        ClazzRepository clazzRepository) {
         this.studentRepository = studentRepository;
         this.clazzRepository = clazzRepository;
-    }
-
-    @Override
-    public Page<Student> page(String name, String sno, Long clazzId,  Pageable pageable) {
-        return this.studentRepository.findAllByNameAndSnoAndClazzId(name, sno, clazzId, pageable);
     }
 
     @Override
@@ -165,6 +158,11 @@ public class StudentServiceImpl implements StudentService {
 
         this.logger.debug("输出EXCEL");
         workbook.write(outputStream);
+    }
+
+    @Override
+    public Page<Student> page(Long clazzId, String clazzName, String name, String sno, Pageable pageable) {
+        return this.studentRepository.findAllByNameAndSnoAndClazzId(clazzId, clazzName, name, sno, pageable);
     }
 
     public Student getStudentByRow(Row row) throws javax.validation.ValidationException {

@@ -24,6 +24,7 @@ export class StudentService {
     page: number,
     size: number,
     clazzId?: number,
+    clazzName?: string,
     name?: string,
     sno?: string,
   }): Observable<Page<Student>> {
@@ -32,6 +33,9 @@ export class StudentService {
       .append('size', param.size.toString());
     if (param.clazzId) {
       httpParams = httpParams.append('clazzId', param.clazzId.toString());
+    }
+    if (param.clazzName) {
+      httpParams = httpParams.append('clazzName', param.clazzName);
     }
     if (param.name) {
       httpParams = httpParams.append('name', param.name);

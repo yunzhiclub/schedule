@@ -26,8 +26,16 @@ public class StudentSpecs {
             return Specification.where(null);
         }
     }
+    public static Specification<Student> containingClazzName(String clazzName) {
+        if (clazzName != null) {
+            return (root, criteriaQuery, criteriaBuilder) ->
+                    criteriaBuilder.like(root.join("clazz").get("name").as(String.class), String.format("%%%s%%", clazzName));
+        } else {
+            return Specification.where(null);
+        }
+    }
 
-    public static Specification<Student> containingClazzId(Long clazzId) {
+    public static Specification<Student> equalClazzId(Long clazzId) {
         if (clazzId != null) {
             return (root, criteriaQuery, criteriaBuilder) ->
                     criteriaBuilder.equal(root.join("clazz").get("id"), clazzId);
