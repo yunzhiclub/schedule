@@ -3,6 +3,7 @@ package com.yunzhi.schedule.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.Clazz;
 import com.yunzhi.schedule.entity.Schedule;
+import com.yunzhi.schedule.entity.Student;
 import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.service.ClazzService;
 import com.yunzhi.schedule.service.ScheduleService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("clazz")
@@ -50,6 +52,7 @@ public class ClazzController {
             clazz.getStudents().forEach(student -> {
                 student.setClazz(null);
             });
+            clazz.setStudents(clazz.getStudents().stream().filter(student -> !student.getDeleted()).collect(Collectors.toList()));
         });
         return page;
     }
