@@ -25,14 +25,15 @@ export class EditComponent implements OnInit {
               private httpClient: HttpClient) {
     this.id = +this.route.snapshot.params.id;
     this.formGroup = new FormGroup({
-      name: new FormControl(''),
-      sex: new FormControl(0),
-      phone: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.phoneUnique(this.id))
+      name: new FormControl('', [Validators.required, YzValidator.notEmpty]),
+      sex: new FormControl('', [Validators.required]),
+      phone: new FormControl('', [Validators.required, YzValidator.phone])
     });
   }
 
   ngOnInit(): void {
     Assert.isNumber(this.id, 'id类型错误');
+    this.formGroup.get('phone')?.setAsyncValidators(this.yzAsyncValidators.phoneUnique(this.id));
     this.teacherService.getById(this.id as number)
       .subscribe(teacher => {
         console.log('api教师获取成功', teacher);

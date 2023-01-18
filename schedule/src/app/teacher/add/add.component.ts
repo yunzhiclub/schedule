@@ -21,9 +21,9 @@ export class AddComponent implements OnInit {
               private yzAsyncValidators: YzAsyncValidators,
               private httpClient: HttpClient) {
     this.formGroup = new FormGroup({
-      name: new FormControl(''),
-      sex: new FormControl(0),
-      phone: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.phoneUnique())
+      name: new FormControl('', [Validators.required, YzValidator.notEmpty]),
+      sex: new FormControl('', [Validators.required]),
+      phone: new FormControl('', [Validators.required, YzValidator.phone], this.yzAsyncValidators.phoneUnique())
     });
   }
 

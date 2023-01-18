@@ -133,9 +133,9 @@ public class TeacherServiceImpl implements TeacherService{
             }
 
             this.logger.debug("将最终的结果添加到最后一列");
-            Cell cell = row.getCell(3);
+            Cell cell = row.getCell(4);
             if (cell == null) {
-                cell = row.createCell(3);
+                cell = row.createCell(4);
             }
             cell.setCellValue(result);
         }

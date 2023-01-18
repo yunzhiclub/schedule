@@ -581,7 +581,7 @@ export class AddComponent implements OnInit {
   private makeTempData(): void {
     this.smLessons = this.smLessonsRecorder[this.day!][this.bigLesson!];
     this.selectedData.forEach((data) => {
-      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+      const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
       if (data.day === this.day && bigLesson === this.bigLesson) {
         this.tempData[data.week] = data.roomIds;
       }
@@ -602,7 +602,7 @@ export class AddComponent implements OnInit {
 
   private deleteSelectedData(): void {
     this.selectedData = this.selectedData.filter(data => {
-      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+      const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
       return !(data.day === this.day && bigLesson === this.bigLesson);
     });
   }
@@ -703,7 +703,7 @@ export class AddComponent implements OnInit {
    */
   private makeWeeksAndRoomsRecoder(): void {
     this.selectedData.forEach((data) => {
-      const bigLesson = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+      const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
       if (!this.weeksRecorder[data.day][bigLesson].includes(data.week)) {
         this.weeksRecorder[data.day][bigLesson].push(data.week);
       }
@@ -723,7 +723,7 @@ export class AddComponent implements OnInit {
     if (this.pattern) {
       let status = false;
       this.selectedData.forEach(data => {
-        const bigLessonOfData = data.smLesson === 11 ? 4 : Math.floor(data.smLesson / 2);
+        const bigLessonOfData = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
         if (data.day === day && bigLesson === bigLessonOfData) {
           status = true;
         }
