@@ -67,4 +67,8 @@ export class ScheduleService {
   edit(scheduleId: number, dispatches: Dispatch[]): Observable<Schedule> {
     return this.httpClient.post<Schedule>(this.baseUrl + '/' + scheduleId, dispatches);
   }
+
+  delete(id: number): Observable<void> {
+    return this.httpClient.delete<void>(this.baseUrl + '/' + id);
+  }
 }

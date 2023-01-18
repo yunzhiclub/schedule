@@ -20,4 +20,6 @@ public interface ScheduleService {
     Schedule add(Schedule schedule);
 
     Schedule getById(Long id);
+
+    void deleteById(Long scheduleId);
 }

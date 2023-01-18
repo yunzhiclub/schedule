@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 班级实体
@@ -32,8 +34,18 @@ public class Clazz implements SoftDelete {
     @ApiModelProperty("是否已删除")
     private Boolean deleted = false;
 
+    @OneToMany(mappedBy = "clazz")
+    @JsonView(StudentsJsonView.class)
+    private List<Student> students = new ArrayList<>();
 
 
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
     public Long getId() {
         return id;
     }
@@ -69,4 +81,5 @@ public class Clazz implements SoftDelete {
     public interface IdJsonView {}
     public interface NameJsonView {}
     public interface EntranceDateJsonView {}
+    public interface StudentsJsonView {}
 }

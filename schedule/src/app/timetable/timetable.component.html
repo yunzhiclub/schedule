@@ -1,17 +1,25 @@
 <div class="row" [formGroup]="formGroup" *ngIf="term">
-  <div class="col-md-2 mt-1">
+  <div class="col-md-3 mt-1">
     <h4 class="text-left">学期：{{ term.name }}</h4>
   </div>
-  <label class="col-form-label text-right ml-2"><code>*</code>教师</label>
-  <select class=" selectpicker form-control col-sm-1 ml-3" formControlName="selectedTeacherId" (change)="onTeacherChange()" >
-    <option [value]="'all'">全部教师</option>
-    <option *ngFor="let teacher of allTeachers;" [value]="teacher.id">{{ teacher.name }}</option>
-  </select>
-  <label *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null" class="col-form-label text-right ml-2"><code>*</code>课程表显示模式</label>
-  <select *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null" class=" selectpicker form-control col-sm-1 ml-3" formControlName="displayMode" (change)="onModelChange()">
-    <option [value]="'big'">大节显示</option>
-    <option [value]="'small'">小节显示</option>
-  </select>
+  <div class="col-md-3">
+    <div class="row">
+      <label class="col-form-label text-right col-md-4"><code>*</code>教师</label>
+      <select class="selectpicker form-control col-md-8" formControlName="selectedTeacherId" (change)="onTeacherChange()" >
+        <option [value]="'all'">全部教师</option>
+        <option *ngFor="let teacher of allTeachers;" [value]="teacher.id">{{ teacher.name }}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div class="row">
+      <label class="col-form-label text-right col-sm-4" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null"><code>*</code>课程表显示模式</label>
+      <select  class=" selectpicker form-control col-sm-5" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null" formControlName="displayMode" (change)="onModelChange()">
+        <option [value]="'big'">大节显示</option>
+        <option [value]="'small'">小节显示</option>
+      </select>
+    </div>
+  </div>
 </div>
 <hr/>
 <h1 class="text-center mb-5 title-pt" style="margin-top: 90px" *ngIf="!term">

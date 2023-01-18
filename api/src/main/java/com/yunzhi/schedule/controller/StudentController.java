@@ -40,6 +40,9 @@ public class StudentController {
             Pageable pageable) {
 
         Page<Student> page = this.studentService.page(name, sno, clazzId, pageable);
+        page.getContent().forEach(student -> {
+            student.getClazz().setStudents(null);
+        });
         return page;
     }
 

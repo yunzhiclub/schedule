@@ -29,6 +29,7 @@
     <th>姓名</th>
     <th>手机号</th>
     <th>性别</th>
+    <th>学时数</th>
     <th>操作</th>
   </tr>
   </thead>
@@ -38,6 +39,7 @@
     <td>{{ teacher.name }}</td>
     <td>{{ teacher.phone }}</td>
     <td>{{ teacher.sex | sex}}</td>
+    <td>{{ teacher.getHours()}}</td>
     <td>
       <a class="btn btn-sm btn-primary" [routerLink]="'/teacher/edit/' + teacher.id"><i class="fas fa-edit"></i>编辑</a>
       <a class="btn btn-sm btn-danger" (click)="onDelete(teacher.id)"><i class="fas fa-trash"></i>删除</a>

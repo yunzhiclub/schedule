@@ -1,10 +1,8 @@
 package com.yunzhi.schedule.controller;
 
-import com.yunzhi.schedule.entity.Course;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.Teacher;
-import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.service.TeacherService;
-import com.yunzhi.schedule.service.TermService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("teacher")
 public class TeacherController {
-    private TeacherService teacherService;
+    private final TeacherService teacherService;
 
     @Autowired
     TeacherController(TeacherService teacherService) {
@@ -43,6 +41,30 @@ public class TeacherController {
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
         Page<Teacher> page = this.teacherService.page(name, phone, pageable);
+        page.getContent().forEach(teacher -> {
+            teacher.getSchedules1().forEach(schedule -> {
+                schedule.setTeacher1(null); schedule.setTeacher2(null);
+                schedule.setClazzes(null);
+                if (schedule.getDeleted()) {
+                    schedule.setDispatches(null);
+                } else {
+                    schedule.getDispatches().forEach(dispatch -> {
+                        dispatch.setSchedule(null);
+                    });
+                }
+            });
+            teacher.getSchedules2().forEach(schedule -> {
+                schedule.setTeacher1(null); schedule.setTeacher2(null);
+                schedule.setClazzes(null);
+                if (schedule.getDeleted()) {
+                    schedule.setDispatches(null);
+                } else {
+                    schedule.getDispatches().forEach(dispatch -> {
+                        dispatch.setSchedule(null);
+                    });
+                }
+            });
+        });
         return page;
     }
 
@@ -94,6 +116,7 @@ public class TeacherController {
      * @return     教师
      */
     @GetMapping("getAll")
+    @JsonView(GetAll.class)
     public List<Teacher> getAll() {
         return this.teacherService.getAll();
     }
@@ -130,4 +153,9 @@ public class TeacherController {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         this.teacherService.importExcel(multipartFile.getInputStream(), response.getOutputStream());
     }
+
+    public interface GetAll extends
+            Teacher.NameJsonView,
+            Teacher.IdJsonView
+    {}
 }

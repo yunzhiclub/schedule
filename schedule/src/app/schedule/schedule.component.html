@@ -8,7 +8,6 @@
       <input type="text" formControlName="teacherName" class="form-control col-2 mr-3" placeholder="教师名称">
       <button type="submit" class="btn btn-info"><i class="fas fa-search"></i>查询</button>
     </form>
-    {{queryForm.value | json}}
   </div>
   <div class="col-md-2">
     <a class="btn btn-primary mr-2" style="float: right" routerLink="add"><i class="fas fa-plus"></i>新增</a>
@@ -29,14 +28,14 @@
   </thead>
   <tbody>
     <tr *ngFor="let schedule of pageData.content, index as index">
-      <td>{{schedule.id}}</td>
+      <td>{{index + 1}}</td>
       <td>{{schedule.course.name}}</td>
       <td>{{schedule.term.name}}</td>
       <td>{{getClazzNames(schedule.clazzes)}}</td>
       <td>{{schedule.teacher1.name + '、' + schedule.teacher2.name}}</td>
       <td>
         <a class="btn btn-sm btn-primary" [routerLink]="'edit/' + schedule.id"><i class="fas fa-edit"></i>编辑</a>
-        <a class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>删除</a>
+        <a class="btn btn-sm btn-danger" (click)="onDelete(schedule.id)"><i class="fas fa-trash"></i>删除</a>
       </td>
     </tr>
   </tbody>

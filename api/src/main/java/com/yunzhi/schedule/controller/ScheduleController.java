@@ -13,6 +13,7 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("schedule")
@@ -34,7 +35,8 @@ public class ScheduleController {
     @JsonView(GetSchedulesInCurrentTerm.class)
     public List<Schedule> getSchedulesInCurrentTerm() {
         Term term = this.termService.getCurrentTerm();
-        return this.scheduleService.getSchedulesInCurrentTerm(term);
+        List<Schedule> schedules = this.scheduleService.getSchedulesInCurrentTerm(term);
+        return schedules;
     }
 
     /**
@@ -55,6 +57,13 @@ public class ScheduleController {
             schedule.getDispatches().forEach(dispatch -> {
                 dispatch.setSchedule(null);
             });
+            schedule.getClazzes().forEach(clazz -> {
+                clazz.getStudents().forEach(student -> {
+                    student.setClazz(null);
+                });
+            });
+            schedule.getTeacher1().setSchedules1(null); schedule.getTeacher1().setSchedules2(null);
+            schedule.getTeacher2().setSchedules1(null); schedule.getTeacher2().setSchedules2(null);
         });
         return schedulePage;
     }
@@ -69,10 +78,14 @@ public class ScheduleController {
     @GetMapping("{id}")
     @JsonView(GetById.class)
     public Schedule getById(@PathVariable Long id) {
-        return this.scheduleService.getById(id);
+        Schedule schedule = this.scheduleService.getById(id);
+        schedule.setDispatches(schedule.getDispatches()
+                .stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
+        return schedule;
     };
 
     @PostMapping("{scheduleId}")
+    @JsonView(GetById.class)
     public Schedule edit(@PathVariable Long scheduleId,
                          @RequestBody List<Dispatch> dispatches) {
         Schedule schedule = this.scheduleService.getById(scheduleId);
@@ -80,6 +93,13 @@ public class ScheduleController {
         schedule.setDispatches(dispatches);
         this.dispatchService.addBySchedule(schedule);
         return schedule;
+    }
+
+    @DeleteMapping("{scheduleId}")
+    public void deleteById(@PathVariable Long scheduleId) {
+        Schedule schedule = this.scheduleService.getById(scheduleId);
+        this.dispatchService.deleteBySchedule(schedule);
+        this.scheduleService.deleteById(scheduleId);
     }
 
     public interface GetSchedulesInCurrentTerm extends
