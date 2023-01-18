@@ -78,6 +78,9 @@ export class TimetableComponent implements OnInit {
     this.initIsShow();
     this.initContent();
     this.initRoomsAndWeeks();
+    this.formGroup?.get('selectedTeacherId')?.setValue('please');
+    this.formGroup?.get('displayMode')?.setValue('big');
+    this.onTeacherChange();
   }
   private initRoomsAndWeeks(): void {
     for (let i = 0; i < 11; i++) {
@@ -161,21 +164,24 @@ export class TimetableComponent implements OnInit {
     this.initIsShow();
     // 重新选择教师后,将已经选择的教师的排课置空
     this.schedulesOfSelectedTeacher = [];
-    if (this.formGroup.get('selectedTeacherId')?.value !== 'all') {
+    if (this.formGroup.get('selectedTeacherId')?.value !== 'all' && this.formGroup.get('selectedTeacherId')?.value !== 'please') {
       this.getSelectedTeacher();
     } else {
-      // console.log('选择全部教师');
-      this.setIsShowForAllTeacher();
+      if (this.formGroup.get('selectedTeacherId')?.value === 'all') {
+        // console.log('选择全部教师');
+        this.setIsShowForAllTeacher();
+      }
     }
   }
 
   private getSelectedTeacher(): void {
-    this.teacherService.getById(this.formGroup.get('selectedTeacherId')?.value)
-      .subscribe(selectedTeacher => {
-        this.selectedTeacher = selectedTeacher;
-        // console.log('this.selectedTeacher', this.selectedTeacher);
-        this.getSchedulesOfSelectedTeacher();
-      });
+    for (const teacher of this.allTeachers) {
+      if (teacher.id.toString() === this.formGroup.get('selectedTeacherId')?.value) {
+        this.selectedTeacher = teacher;
+        break;
+      }
+    }
+    this.getSchedulesOfSelectedTeacher();
   }
 
   private getSchedulesOfSelectedTeacher(): void {
@@ -235,8 +241,6 @@ export class TimetableComponent implements OnInit {
         }
       }
     }
-    console.log('this.content', this.content);
-    console.log('this.bigModelContent', this.bigModelContent);
   }
   private setRoomsAndWeeksOfSchedules(lesson: number, day: number, week: number, rooms: Room[], scheduleId: number): void {
     if (rooms.length > 0) {
@@ -313,7 +317,6 @@ export class TimetableComponent implements OnInit {
   }
 
   onModelChange(): void {
-    console.log('onModelChange');
     this.onTeacherChange();
   }
 
