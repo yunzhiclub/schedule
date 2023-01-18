@@ -400,7 +400,8 @@ export class AddComponent implements OnInit {
   isShowTeacher(): boolean {
     return !!(this.formGroup.get('clazzIds')?.valid
       && this.formGroup.get('clazzIds')?.value !== null
-      && (this.formGroup.get('clazzIds')?.value?.length === 1 && this.formGroup.get('clazzIds')?.value[0] !== null)
+      && (this.formGroup.get('clazzIds')?.value?.length !== 0 && this.formGroup.get('clazzIds')?.value[0] !== null
+      )
     );
   }
 
