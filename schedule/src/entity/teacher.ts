@@ -31,7 +31,9 @@ export class Teacher {
   getHours(): number {
     let counter = 0;
     this.schedules?.forEach(schedule => {
-      counter = schedule.dispatches.length + counter;
+      if (schedule.dispatches) {
+        counter = schedule.dispatches.length + counter;
+      }
     });
     return counter;
   }

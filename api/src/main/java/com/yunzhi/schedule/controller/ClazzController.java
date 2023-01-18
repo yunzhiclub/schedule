@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.Clazz;
 import com.yunzhi.schedule.entity.Schedule;
 import com.yunzhi.schedule.entity.Term;
@@ -19,10 +20,10 @@ import java.util.List;
 @RestController
 @RequestMapping("clazz")
 public class ClazzController {
-    private ClazzService clazzService;
-    private TermService termService;
+    private final ClazzService clazzService;
+    private final TermService termService;
 
-    private ScheduleService scheduleService;
+    private final ScheduleService scheduleService;
 
     @Autowired
     ClazzController(ClazzService clazzService,
@@ -45,7 +46,11 @@ public class ClazzController {
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
         Page<Clazz> page = this.clazzService.page(name, pageable);
-        System.out.println(name);
+        page.getContent().forEach(clazz -> {
+            clazz.getStudents().forEach(student -> {
+                student.setClazz(null);
+            });
+        });
         return page;
     }
 
@@ -104,5 +109,4 @@ public class ClazzController {
                        @RequestBody Clazz clazz) {
         return this.clazzService.update(id, clazz);
     }
-
 }

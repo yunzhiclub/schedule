@@ -21,6 +21,7 @@
     <th>序号</th>
     <th>名称</th>
     <th>入学日期</th>
+    <th>班级人数</th>
     <th>操作</th>
   </tr>
   </thead>
@@ -29,6 +30,7 @@
     <td>{{ index + 1 }}</td>
     <td>{{ clazz.name }}</td>
     <td>{{ +clazz.entranceDate * 1000 | date: 'yyyy-MM-dd'}}</td>
+    <td>{{ clazz.getStudentNumber()}}</td>
     <td>
       <a class="btn btn-sm btn-success" [routerLink]="'members/' + clazz.id"><i class="fas fa-users"></i>查看班级成员</a>
       <a class="btn btn-sm btn-primary" [routerLink]="'edit/' + clazz.id"><i class="fas fa-edit"></i>编辑</a>

@@ -55,6 +55,11 @@ public class ScheduleController {
             schedule.getDispatches().forEach(dispatch -> {
                 dispatch.setSchedule(null);
             });
+            schedule.getClazzes().forEach(clazz -> {
+                clazz.getStudents().forEach(student -> {
+                    student.setClazz(null);
+                });
+            });
             schedule.getTeacher1().setSchedules1(null); schedule.getTeacher1().setSchedules2(null);
             schedule.getTeacher2().setSchedules1(null); schedule.getTeacher2().setSchedules2(null);
         });
@@ -86,6 +91,8 @@ public class ScheduleController {
 
     @DeleteMapping("{scheduleId}")
     public void deleteById(@PathVariable Long scheduleId) {
+        Schedule schedule = this.scheduleService.getById(scheduleId);
+        this.dispatchService.deleteBySchedule(schedule);
         this.scheduleService.deleteById(scheduleId);
     }
 
