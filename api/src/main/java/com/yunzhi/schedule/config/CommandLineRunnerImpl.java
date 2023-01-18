@@ -61,8 +61,8 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         user.setPassword(Encoder.getMD5Result(password));
         this.userRepository.save(user);
 
-//        this.forHePanTest();
-        this.chen();
+        this.forHePanTest();
+//        this.chen();
     }
 
 
@@ -125,30 +125,30 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         clazzes.add(clazz2);
 
         // 添加测试课程
-        Course course = this.addCourse("计算机组成原理", "48");
-        Course cours0 = this.addCourse("汇编语言", "24");
+        Course course = this.addCourse("计算机组成原理", "6");
+        Course cours0 = this.addCourse("汇编语言", "6");
 
         // 添加测试排课
-        Schedule schedule1 = this.addSchedule(course, term1, teacher1, teacher2, clazzes);
-        Schedule schedule2 = this.addSchedule(cours0, term1, teacher2, teacher4, clazzes);
-        Schedule schedule0 = this.addSchedule(cours0, term0, teacher3, teacher4, clazzes);
+//        Schedule schedule1 = this.addSchedule(course, term1, teacher1, teacher2, clazzes);
+//        Schedule schedule2 = this.addSchedule(cours0, term1, teacher2, teacher4, clazzes);
+//        Schedule schedule0 = this.addSchedule(cours0, term0, teacher3, teacher4, clazzes);
 
         // 添加测试调度
-        this.addDispatch(schedule1, 1L, 1L, 1L, rooms);
-        this.addDispatch(schedule1, 2L, 1L, 1L, rooms);
-        this.addDispatch(schedule1, 3L, 1L, 1L, rooms);
-
-        this.addDispatch(schedule1, 7L, 1L, 1L, rooms3);
-        this.addDispatch(schedule1, 8L, 1L, 1L, rooms3);
-        this.addDispatch(schedule1, 9L, 1L, 1L, rooms3);
-
-        this.addDispatch(schedule2, 4L, 2L, 2L, rooms);
-        this.addDispatch(schedule2, 5L, 2L, 2L, rooms);
-        this.addDispatch(schedule2, 6L, 2L, 2L, rooms);
-
-        this.addDispatch(schedule0, 1L, 2L, 2L, rooms);
-        this.addDispatch(schedule0, 2L, 2L, 2L, rooms);
-        this.addDispatch(schedule0, 3L, 2L, 2L, rooms);
+//        this.addDispatch(schedule1, 1L, 1L, 1L, rooms);
+//        this.addDispatch(schedule1, 2L, 1L, 1L, rooms);
+//        this.addDispatch(schedule1, 3L, 1L, 1L, rooms);
+//
+//        this.addDispatch(schedule1, 7L, 1L, 1L, rooms3);
+//        this.addDispatch(schedule1, 8L, 1L, 1L, rooms3);
+//        this.addDispatch(schedule1, 9L, 1L, 1L, rooms3);
+//
+//        this.addDispatch(schedule2, 4L, 2L, 2L, rooms);
+//        this.addDispatch(schedule2, 5L, 2L, 2L, rooms);
+//        this.addDispatch(schedule2, 6L, 2L, 2L, rooms);
+//
+//        this.addDispatch(schedule0, 1L, 2L, 2L, rooms);
+//        this.addDispatch(schedule0, 2L, 2L, 2L, rooms);
+//        this.addDispatch(schedule0, 3L, 2L, 2L, rooms);
     }
 
 
