@@ -85,6 +85,7 @@ public class ClazzController {
     }
 
     @GetMapping("getAll")
+    @JsonView(GetAllJsonView.class)
     public List<Clazz> getAll() {
         return this.clazzService.getAll();
     }
@@ -109,4 +110,9 @@ public class ClazzController {
                        @RequestBody Clazz clazz) {
         return this.clazzService.update(id, clazz);
     }
+
+    private class GetAllJsonView implements
+            Clazz.NameJsonView,
+            Clazz.IdJsonView
+    {}
 }

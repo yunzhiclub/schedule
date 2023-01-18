@@ -14,7 +14,7 @@ import {RoomService} from '../../../service/room.service';
 import {CommonService} from '../../../service/common.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Dispatch} from '../../../entity/dispatch';
-import {Course} from "../../../entity/course";
+import {Course} from '../../../entity/course';
 
 @Component({
   selector: 'app-edit',
@@ -271,7 +271,7 @@ export class EditComponent implements OnInit {
             const days = Math.ceil(seconds / (60 * 60 * 24));
             this.weekNumber = Math.ceil(days / 7);
             this.makeWeeks();
-
+            console.error('调用+1');
             this.scheduleService.getSchedulesInCurrentTerm()
               .subscribe((schedules: Schedule[]) => {
                 this.schedules = schedules;
@@ -600,7 +600,7 @@ export class EditComponent implements OnInit {
     this.scheduleService.edit(this.schedule.id, dispatches)
       .subscribe((schedule) => {
         console.log('edit submit', schedule);
-        this.commonService.success(() => this.router.navigateByUrl('../'));
+        this.commonService.success(() => this.router.navigateByUrl('/schedule'));
       });
   }
 
@@ -636,12 +636,12 @@ export class EditComponent implements OnInit {
       const bigLesson1 = data1.smLesson === 11 ? 4 : Math.floor(data1.smLesson / 2);
       this.selectedData.forEach(data2 => {
         const bigLesson2 = data2.smLesson === 11 ? 4 : Math.floor(data2.smLesson / 2);
-        if (data1.day === data2.day && bigLesson1 === bigLesson2 && data1.week === data2.week) {
+        if (status && (data1.day === data2.day) && (bigLesson1 === bigLesson2)) {
           // 判断数组是否相等
           const roomIds1 = data1.roomIds;
           const roomIds2 = data2.roomIds;
-          status = roomIds1.length === roomIds2.length &&
-            roomIds1.filter(t => roomIds2.includes(t)).length === roomIds1.length;
+          status = (roomIds1.length === roomIds2.length) &&
+            (roomIds1.filter(t => roomIds2.includes(t)).length === roomIds1.length);
         }
       });
     });
