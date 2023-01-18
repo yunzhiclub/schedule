@@ -22,7 +22,8 @@ export class StudentComponent implements OnInit {
     page: 'page',
     size: 'size',
     name: 'name',
-    sno: 'sno'
+    sno: 'sno',
+    clazzName: 'clazzName'
   };
   clazzId: number | undefined;
   constructor(private route: ActivatedRoute,
@@ -34,6 +35,7 @@ export class StudentComponent implements OnInit {
   ngOnInit(): void {
     this.queryForm.addControl(this.keys.name, new FormControl());
     this.queryForm.addControl(this.keys.sno, new FormControl());
+    this.queryForm.addControl(this.keys.clazzName, new FormControl());
     // 订阅参数变化
     this.route.params.subscribe(params => {
       this.params = params;
@@ -41,10 +43,12 @@ export class StudentComponent implements OnInit {
       console.log(params);
       this.queryForm.get(this.keys.name)!.setValue(params[this.keys.name]);
       this.queryForm.get(this.keys.sno)!.setValue(params[this.keys.sno]);
+      this.queryForm.get(this.keys.clazzName)!.setValue(params[this.keys.clazzName]);
       this.studentService.page({
         page: stringToIntegerNumber(params[this.keys.page], 0) as number,
         size: stringToIntegerNumber(params[this.keys.size], config.size) as number,
         clazzId: this.clazzId,
+        clazzName: params[this.keys.clazzName],
         name: params[this.keys.name],
         sno: params[this.keys.sno],
       })

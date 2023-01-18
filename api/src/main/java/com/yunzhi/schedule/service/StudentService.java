@@ -4,22 +4,11 @@ import com.yunzhi.schedule.entity.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.servlet.ServletOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 public interface StudentService {
-
-    /**
-     * 分页.
-     * @param name 名称
-     * @param sno 学号
-     * @param pageable 分页信息
-     * @return 分页数据
-     */
-    Page<Student> page(String name, String sno, Long clazzId, Pageable pageable);
-
 
     /**
      * 增加学生
@@ -55,4 +44,6 @@ public interface StudentService {
     void downloadImportTemplate(OutputStream outputStream) throws IOException;
 
     void importExcel(InputStream inputStream, OutputStream outputStream) throws IOException;
+
+    Page<Student> page(Long clazzId, String clazzName, String name, String sno, Pageable pageable);
 }

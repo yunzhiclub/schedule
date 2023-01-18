@@ -35,12 +35,13 @@ public class StudentController {
     @GetMapping("/page")
     public Page<Student> page(
             @RequestParam(required = false, defaultValue = "") Long clazzId,
+            @RequestParam(required = false, defaultValue = "") String clazzName,
             @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(required = false, defaultValue = "") String sno,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
 
-        Page<Student> page = this.studentService.page(name, sno, clazzId, pageable);
+        Page<Student> page = this.studentService.page(clazzId, clazzName, name, sno, pageable);
         page.getContent().forEach(student -> {
             student.getClazz().setStudents(null);
         });

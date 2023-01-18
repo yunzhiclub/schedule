@@ -11,24 +11,18 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.Optional;
 
 public interface StudentRepository extends PagingAndSortingRepository<Student, Long>, JpaSpecificationExecutor<Student> {
-
-    /**
-     * 根据student中name和sno查询学生信息(模糊查询)
-     * @param name          学生名称
-     * @param sno           学生学号
-     * @param pageable      分页信息
-     * @return              学生数据
-     */
-    default Page<Student> findAllByNameAndSnoAndClazzId(String name, String sno, Long clazzId, Pageable pageable) {
-        Specification<Student> specification = StudentSpecs.containingName(name)
-                .and(StudentSpecs.containingSno(sno));
-        if (clazzId != null) {
-            specification = specification.and(StudentSpecs.containingClazzId(clazzId));
-        }
-        return this.findAll(specification, pageable);
-    }
-
     Optional<Student> findByNameAndDeletedFalse(String name);
 
     Optional<Student> findBySnoAndDeletedFalse(String sno);
+
+    default Page<Student> findAllByNameAndSnoAndClazzId(Long clazzId, String clazzName, String name, String sno, Pageable pageable) {
+        Specification<Student> specification = StudentSpecs.containingName(name)
+                .and(StudentSpecs.containingSno(sno))
+                .and(StudentSpecs.containingClazzName(clazzName));
+        if (clazzId != null) {
+            specification = specification.and(StudentSpecs.equalClazzId(clazzId));
+        }
+
+        return this.findAll(specification, pageable);
+    };
 }
