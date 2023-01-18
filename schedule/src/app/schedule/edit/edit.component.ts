@@ -554,9 +554,10 @@ export class EditComponent implements OnInit {
       });
       return isHave;
     } else {
-      let status = true;
-      if (this.selectedWeeks.length === 0 || this.selectedRooms.length === 0) {
-        status = false;
+      let status = false;
+      if ((this.selectedWeeks.length === 0 && this.selectedRooms.length === 0) ||
+        (this.selectedWeeks.length !== 0 && this.selectedRooms.length !== 0)) {
+        status = true;
       }
       return status;
     }
@@ -709,4 +710,39 @@ export class EditComponent implements OnInit {
   getNotEmptyWeeks(): string {
     return this.notEmptyWeeks.map(week => (week + 1)).join('、');
   }
+
+  // isAllWeekChecked(): boolean {
+  //   return this.selectedWeeks.length === (this.weeks.length - this.overtimeWeekNumber!);
+  // }
+  //
+  // isAllRoomChecked(): boolean {
+  //   return this.selectedRooms.length === this.rooms.length;
+  // }
+  //
+  // checkAllWeek(): void {
+  //   const arr = this.weeks.filter(w => this.overtimeWeekNumber! <= w)
+  //     .filter(w => !this.isWeekDisabled(w))
+  //     .filter(w => !this.disabledWeeks.includes(w));
+  //   if (this.selectedWeeks.length !== arr.length) {
+  //     if (!this.pattern) {
+  //       arr.forEach(w => {
+  //         this.onWeekChange(w);
+  //       });
+  //     }
+  //   } else {
+  //     this.selectedWeeks = this.selectedWeeks.filter(w => {
+  //       return w < this.overtimeWeekNumber!;
+  //     });
+  //   }
+  // }
+  //
+  // checkAllRoom(): void {
+  //   if (this.selectedRooms.length !== this.rooms.length) {
+  //     if (!this.pattern) {
+  //       this.selectedRooms = this.rooms.map(room => room.id!);
+  //     }
+  //   } else {
+  //     this.selectedRooms = [];
+  //   }
+  // }
 }

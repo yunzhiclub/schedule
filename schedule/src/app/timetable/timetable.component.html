@@ -14,7 +14,7 @@
   </div>
   <div class="col-md-5">
     <div class="row">
-      <label class="col-form-label text-right col-sm-4" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null"><code>*</code>课程表显示模式</label>
+      <label class="col-form-label text-right col-sm-5" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null"><code>*</code>课程表显示模式</label>
       <select  class=" selectpicker form-control col-sm-5" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null" formControlName="displayMode" (change)="onModelChange()">
         <option [value]="'big'">大节显示</option>
         <option [value]="'small'">小节显示</option>

@@ -8,7 +8,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,10 +44,9 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         // 为响应加入提示：用户未登录
-//        response.setStatus(401);
-//        return false;
-//         todo: 暂时不检查是否登录
-        return true;
+        response.setStatus(401);
+        return false;
+//        return true;
     }
 
     @Override
