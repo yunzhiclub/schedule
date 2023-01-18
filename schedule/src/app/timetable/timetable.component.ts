@@ -239,43 +239,45 @@ export class TimetableComponent implements OnInit {
     console.log('this.bigModelContent', this.bigModelContent);
   }
   private setRoomsAndWeeksOfSchedules(lesson: number, day: number, week: number, rooms: Room[], scheduleId: number): void {
-    // 当此个天节的scheduleId键数组未存roomsAndWeeks组时
-    if (this.roomsAndWeeks[lesson][day][scheduleId][0].rooms.length === 0) {
-      // 将rooms与week存入第一个元素
-      for (const room of rooms) {
-        this.roomsAndWeeks[lesson][day][scheduleId][0].rooms.push(room);
-      }
-      if (!this.whetherWeeksIncludeWeek(this.roomsAndWeeks[lesson][day][scheduleId][0].weeks, week)) {
-        this.roomsAndWeeks[lesson][day][scheduleId][0].weeks.push(week);
-      }
-    } else {
-      // 当此个天节的scheduleId键数组原来存有roomsAndWeeks组时
-      // 设置key
-      let key = true;
-      // 循环此个天节的scheduleId键数组的所有roomsAndWeeks组
-      // tslint:disable-next-line:prefer-for-of
-      for (let i = 0; i < this.roomsAndWeeks[lesson][day][scheduleId].length; i++) {
-        // 如果新存入的rooms与当前已经存有的rooms相等
-        if (this.roomsAndWeeks[lesson][day][scheduleId][i].rooms.toString() === rooms.toString()) {
-          // 只将新week存入已存在的对象的weeks中,不再重复存rooms
-          if (!this.whetherWeeksIncludeWeek(this.roomsAndWeeks[lesson][day][scheduleId][0].weeks, week)) {
-            this.roomsAndWeeks[lesson][day][scheduleId][i].weeks.push(week);
-          }
-          // 当有当前情况时设置key为false
-          key = false;
+    if (rooms.length > 0) {
+      // 当此个天节的scheduleId键数组未存roomsAndWeeks组时
+      if (this.roomsAndWeeks[lesson][day][scheduleId][0].rooms.length === 0) {
+        // 将rooms与week存入第一个元素
+        for (const room of rooms) {
+          this.roomsAndWeeks[lesson][day][scheduleId][0].rooms.push(room);
         }
-      }
-      // key为true时，即如果新存入的rooms与当前已经存有的所有rooms都不相等
-      if (key) {
-        // 将新存入的rooms与对应week存入下一个roomsAndWeeks组
+        if (!this.whetherWeeksIncludeWeek(this.roomsAndWeeks[lesson][day][scheduleId][0].weeks, week)) {
+          this.roomsAndWeeks[lesson][day][scheduleId][0].weeks.push(week);
+        }
+      } else {
+        // 当此个天节的scheduleId键数组原来存有roomsAndWeeks组时
+        // 设置key
+        let key = true;
+        // 循环此个天节的scheduleId键数组的所有roomsAndWeeks组
         // tslint:disable-next-line:prefer-for-of
-        for (let j = 0; j < this.roomsAndWeeks[lesson][day].length; j++) {
-          if (this.roomsAndWeeks[lesson][day][scheduleId][j].rooms.length === 0) {
-            for (const room of rooms) {
-              this.roomsAndWeeks[lesson][day][scheduleId][j].rooms.push(room);
+        for (let i = 0; i < this.roomsAndWeeks[lesson][day][scheduleId].length; i++) {
+          // 如果新存入的rooms与当前已经存有的rooms相等
+          if (JSON.stringify(this.roomsAndWeeks[lesson][day][scheduleId][i].rooms) === JSON.stringify(rooms)) {
+            // 只将新week存入已存在的对象的weeks中,不再重复存rooms
+            if (!this.whetherWeeksIncludeWeek(this.roomsAndWeeks[lesson][day][scheduleId][0].weeks, week)) {
+              this.roomsAndWeeks[lesson][day][scheduleId][i].weeks.push(week);
             }
-            this.roomsAndWeeks[lesson][day][scheduleId][j].weeks.push(week);
-            break;
+            // 当有当前情况时设置key为false
+            key = false;
+          }
+        }
+        // key为true时，即如果新存入的rooms与当前已经存有的所有rooms都不相等
+        if (key) {
+          // 将新存入的rooms与对应week存入下一个roomsAndWeeks组
+          // tslint:disable-next-line:prefer-for-of
+          for (let j = 0; j < this.roomsAndWeeks[lesson][day][scheduleId].length; j++) {
+            if (this.roomsAndWeeks[lesson][day][scheduleId][j].rooms.length === 0) {
+              for (const room of rooms) {
+                this.roomsAndWeeks[lesson][day][scheduleId][j].rooms.push(room);
+              }
+              this.roomsAndWeeks[lesson][day][scheduleId][j].weeks.push(week);
+              break;
+            }
           }
         }
       }
