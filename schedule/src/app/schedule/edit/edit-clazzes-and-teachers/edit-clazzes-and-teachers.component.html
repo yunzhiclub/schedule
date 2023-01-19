@@ -26,13 +26,13 @@
     <div class="col-sm-2">
       <select class="select picker form-control col-sm-12" style="width: 200px" formControlName="teacher1Id" id="teacher1Id" required>
         <option [value]="null">请选择教师1</option>
-        <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>
+        <option *ngFor="let teacher of selectableTeachers" [value]="+teacher.id">{{teacher.name}}</option>
       </select>
     </div>
     <div class="col-sm-2">
       <select class="select picker form-control col-sm-12" style="width: 200px; margin-top: 2px" formControlName="teacher2Id" id="teacher2Id" required>
         <option [value]="null">请选择教师2</option>
-        <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>
+        <option *ngFor="let teacher of selectableTeachers" [value]="+teacher.id">{{teacher.name}}</option>
       </select>
     </div>
     <div class="offset-2 col-sm-12">

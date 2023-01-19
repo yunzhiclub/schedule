@@ -9,7 +9,6 @@ import {CommonService} from '../../../../service/common.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Teacher} from '../../../../entity/teacher';
 import {TeacherService} from '../../../../service/teacher.service';
-
 @Component({
   selector: 'app-edit-clazzes-and-teachers',
   templateUrl: './edit-clazzes-and-teachers.component.html',
@@ -36,7 +35,10 @@ export class EditClazzesAndTeachersComponent implements OnInit {
   scheduleIdOfDispatchConflictClazzes = [] as number[];
   // 通过冲突的scheduleId获取到对应的班级，用于第三次筛选
   dispatchConflictClazzes = [] as Clazz[];
-
+  // 时间冲突的教师
+  conflictTeachers = [] as Teacher[];
+  // 可选择的教师
+  selectableTeachers = [] as Teacher[];
   constructor(private route: ActivatedRoute,
               private scheduleService: ScheduleService,
               private clazzService: ClazzService,
@@ -48,7 +50,6 @@ export class EditClazzesAndTeachersComponent implements OnInit {
     teacher1Id: new FormControl(null, Validators.required),
     teacher2Id: new FormControl(null, Validators.required)
   });
-
   ngOnInit(): void {
     this.teacherService.getAll()
       .subscribe(allTeacher => {
@@ -66,7 +67,6 @@ export class EditClazzesAndTeachersComponent implements OnInit {
     // 订阅参数
     this.subscribeFormGroup();
   }
-
   /**
    * 订阅参数，各参数改变时修改其后置数据
    */
@@ -78,7 +78,6 @@ export class EditClazzesAndTeachersComponent implements OnInit {
       this.isTeacherSame = teacher2Id === this.formGroup.get('teacher1Id')?.value;
     });
   }
-
   // 为新增班级获取可选班级
   private getClazzesForAddClazzes(): void {
     this.getAllClazzes();
@@ -118,6 +117,7 @@ export class EditClazzesAndTeachersComponent implements OnInit {
         this.secondFilerClazzes = this.firstFilerClazzes.filter((x) => !willFilteredClazzes.some(item => x.id === item.id));
         console.log('this.secondFilerClazzes', this.secondFilerClazzes);
         this.getThirdFilerClazzes();
+        this.getSelectableTeachers();
       });
   }
   //  从secondFilerClazzes中除去已经选择该课程的班级得到thirdFilerClazzes
@@ -169,7 +169,6 @@ export class EditClazzesAndTeachersComponent implements OnInit {
       },
     );
   }
-
   private setTeachers(): void {
     this.formGroup.get('teacher1Id')!.setValue(this.schedule.teacher1.id);
     this.formGroup.get('teacher2Id')!.setValue(this.schedule.teacher2.id);
@@ -179,7 +178,6 @@ export class EditClazzesAndTeachersComponent implements OnInit {
       this.formGroup.get('teacher1Id')?.value !== 'null' &&
       this.formGroup.get('teacher2Id')?.value !== 'null');
   }
-
   onSubmit(formGroup: FormGroup): void {
     const updateClazzesAndTeachers = {
       teacher1Id: formGroup.get('teacher1Id')?.value,
@@ -191,5 +189,41 @@ export class EditClazzesAndTeachersComponent implements OnInit {
       .subscribe(() => {
         this.commonService.success(() => this.router.navigate(['../'], {relativeTo: this.route}));
       });
+  }
+  private getSelectableTeachers(): void {
+    this.getConflictTeachers();
+    console.log('this.teachers', this.teachers);
+    console.log('this.conflictTeachers', this.conflictTeachers);
+    this.selectableTeachers = this.teachers
+      .filter((x) => !this.conflictTeachers.some((item) => x.id === item.id));
+  }
+  private getConflictTeachers(): void {
+    for (const schedule of this.allSchedulesInCurrentTerm) {
+      if (schedule.id !== this.scheduleId) {
+        for (const dispatch of schedule.dispatches) {
+          for (const alreadyExitDispatch of this.dispatches) {
+            if ( dispatch.day === dispatch.day
+              && dispatch.lesson === dispatch.lesson
+              && dispatch.week === dispatch.week
+              && schedule.id !== this.schedule.id) {
+              if (!this.whetherTeachersIncludeTeacher(this.conflictTeachers, schedule.teacher1)) {
+                this.conflictTeachers.push(schedule.teacher1);
+              }
+              if (!this.whetherTeachersIncludeTeacher(this.conflictTeachers, schedule.teacher2)) {
+                this.conflictTeachers.push(schedule.teacher2);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  private whetherTeachersIncludeTeacher(teachers: Teacher[], newTeacher: Teacher): boolean {
+    for (const teacher of teachers) {
+      if (teacher.id === newTeacher.id) {
+        return true;
+      }
+    }
+    return false;
   }
 }
