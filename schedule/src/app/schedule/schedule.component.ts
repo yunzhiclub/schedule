@@ -125,11 +125,20 @@ export class ScheduleComponent implements OnInit {
   }
 
   onDelete(id: number): void {
-    this.scheduleService.delete(id)
-      .subscribe(() => {
-        this.commonService.success(() => {
-          this.pageData.content.splice(this.pageData.content.map(schedule => schedule.id).indexOf(id), 1);
-        });
-      });
+    Assert.isNotNullOrUndefined(id, 'id未定义');
+    this.commonService.confirm(confirm => {
+        if (confirm) {
+          this.scheduleService.delete(id)
+            .subscribe(success => {
+              this.commonService.success(() => {
+                this.pageData.content.splice(this.pageData.content.map(schedule => schedule.id).indexOf(id), 1);
+              });
+            }, error => {
+              console.log('删除失败', error);
+              this.commonService.error();
+            });
+        }
+      },
+    );
   }
 }

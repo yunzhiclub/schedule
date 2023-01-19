@@ -125,7 +125,7 @@ export class RoomComponent implements OnInit {
               this.ngOnInit();
             }, error => {
               console.log('删除失败', error);
-              this.commonService.success();
+              this.commonService.error();
             });
         }
       },
