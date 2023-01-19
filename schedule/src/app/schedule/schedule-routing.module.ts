@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {ScheduleComponent} from './schedule.component';
 import {AddComponent} from './add/add.component';
 import {EditComponent} from './edit/edit.component';
+import {TableComponent} from './table/table.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,13 @@ const routes: Routes = [
       title: '编辑时间'
     }
   },
+  {
+    path: 'timetable/:id',
+    component: TableComponent,
+    data: {
+      title: '课表'
+    }
+  }
 ];
 
 @NgModule({
