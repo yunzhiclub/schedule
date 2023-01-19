@@ -2,6 +2,7 @@ package com.yunzhi.schedule.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.*;
+import com.yunzhi.schedule.entity.forType.ForUpdateClazzesAndTeachers;
 import com.yunzhi.schedule.service.DispatchService;
 import com.yunzhi.schedule.service.ScheduleService;
 import com.yunzhi.schedule.service.TermService;
@@ -88,6 +89,21 @@ public class ScheduleController {
         Schedule schedule = this.scheduleService.getById(scheduleId);
         this.dispatchService.deleteBySchedule(schedule);
         this.scheduleService.deleteById(scheduleId);
+    }
+
+    @PostMapping("removeClazzFromSchedule")
+    public void removeClazzFromSchedule(@RequestBody List<Long> scheduleIdAndClazzId) {
+        this.scheduleService
+                .removeClazzFromSchedule(scheduleIdAndClazzId.get(0), scheduleIdAndClazzId.get(1));
+    }
+
+    /**
+     * 为排课添加班级关联
+     */
+    @PostMapping("updateClazzesAndTeachers")
+    public void updateClazzesAndTeachers(@RequestBody ForUpdateClazzesAndTeachers ForUpdateClazzesAndTeachers) {
+        this.scheduleService
+                .updateClazzesAndTeachers(ForUpdateClazzesAndTeachers);
     }
 
     public interface GetSchedulesInCurrentTerm extends

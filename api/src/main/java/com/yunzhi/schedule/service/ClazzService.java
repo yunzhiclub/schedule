@@ -47,4 +47,6 @@ public interface ClazzService {
     List<Long> getClazzIdsBySchedules(List<Schedule> schedules);
 
     Clazz update(Long id, Clazz clazz);
+
+    Clazz findById(Long id);
 }

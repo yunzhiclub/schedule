@@ -71,4 +71,10 @@ export class ScheduleService {
   delete(id: number): Observable<void> {
     return this.httpClient.delete<void>(this.baseUrl + '/' + id);
   }
+
+  // tslint:disable-next-line:max-line-length
+  updateClazzesAndTeachers(scheduleId: number | undefined, teacher1Id: number, teacher2Id: number, clazzIds: number[]): Observable<boolean> {
+    const data = {scheduleId, teacher1Id, teacher2Id, clazzIds};
+    return this.httpClient.post<boolean>(`${this.baseUrl}/updateClazzesAndTeachers/`, data);
+  }
 }

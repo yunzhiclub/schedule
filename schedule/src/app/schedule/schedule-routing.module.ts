@@ -4,6 +4,7 @@ import {ScheduleComponent} from './schedule.component';
 import {AddComponent} from './add/add.component';
 import {EditComponent} from './edit/edit.component';
 import {TableComponent} from './table/table.component';
+import {EditClazzesAndTeachersComponent} from './edit/edit-clazzes-and-teachers/edit-clazzes-and-teachers.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
     data: {
       title: '课表'
     }
+  },
+  {
+    path: 'edit/:id/editClazzesAndTeachers',
+    component: EditClazzesAndTeachersComponent
   }
 ];
 
