@@ -6,11 +6,12 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {YzMaskModule} from "../../common/yz-mask/yz-mask.module";
 import {YzModalModule} from "../../common/yz-modal/yz-modal.module";
 import { EditComponent } from './edit/edit.component';
+import { EditClazzesAndTeachersComponent } from './edit/edit-clazzes-and-teachers/edit-clazzes-and-teachers.component';
 
 
 
 @NgModule({
-  declarations: [AddComponent, EditComponent],
+  declarations: [AddComponent, EditComponent, EditClazzesAndTeachersComponent],
     imports: [
         CommonModule,
         ScheduleRoutingModule,

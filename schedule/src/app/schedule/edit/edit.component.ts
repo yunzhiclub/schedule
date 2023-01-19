@@ -15,7 +15,6 @@ import {CommonService} from '../../../service/common.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Dispatch} from '../../../entity/dispatch';
 import {Course} from '../../../entity/course';
-
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
@@ -30,7 +29,6 @@ export class EditComponent implements OnInit {
   teacher2 = {} as Teacher;
   course = {} as Course;
   dispatches = [] as Dispatch[];
-
   // 时间表, 判断是否周可选; true: 可选
   times: boolean[][][] = [];
   // 地点表（教室), 判断是否教室可选
@@ -48,8 +46,6 @@ export class EditComponent implements OnInit {
   tempData: number[][] = [];
   // 记录每个天节的smLessons
   smLessonsRecorder = [] as number[][][];
-
-
   // 所有排课
   schedules =  []  as Schedule[];
   // 所有教室
@@ -58,11 +54,9 @@ export class EditComponent implements OnInit {
   clazzes = [] as Clazz[];
   /* 可选班级，clazzes筛选过后的班级 */
   screenedClazzes: Clazz[] = [];
-
   // v层循环用
   bigLessons = [0, 1, 2, 3, 4];
   days = ['一', '二', '三', '四', '五', '六', '日'];
-
   // 是否展示模态框
   isShowModel = false;
   // 当前学期
@@ -97,7 +91,7 @@ export class EditComponent implements OnInit {
   isSmLessonsDetermine = false;
   // 定制模式下非空的周
   notEmptyWeeks = [] as number[];
-
+  // 所有班级
   constructor(private clazzService: ClazzService,
               private courseService: CourseService,
               private teacherService: TeacherService,
@@ -108,7 +102,6 @@ export class EditComponent implements OnInit {
               private router: Router,
               private route: ActivatedRoute,
   ) { }
-
   ngOnInit(): void {
     this.scheduleId = this.route.snapshot.params.id;
     // 初始化时间表
@@ -122,7 +115,6 @@ export class EditComponent implements OnInit {
     // 请求数据
     this.getData();
   }
-
   // 依赖本学期周数
   private initTimes(): void {
     // 天
@@ -166,7 +158,6 @@ export class EditComponent implements OnInit {
       this.tempData[i] = [] as number[];
     }
   }
-
   private initWeeksAndRoomsRecoder(): void {
     for (let i = 0; i < 7; i++) {
       this.weeksRecorder[i] = [];
@@ -177,14 +168,12 @@ export class EditComponent implements OnInit {
       }
     }
   }
-
   /**
    * 展示model
    * @param day 天
    * @param bigLesson 大节
    */
   showModel(day: number, bigLesson: number): void {
-
     console.log('showModel1', [...this.weeksRecorder], [...this.roomsRecorder]);
     this.day = day;
     this.bigLesson = bigLesson;
@@ -201,7 +190,6 @@ export class EditComponent implements OnInit {
     }
     this.isShowModel = true;
   }
-
   /**
    * 关闭model
    */
@@ -214,8 +202,6 @@ export class EditComponent implements OnInit {
     this.selectedWeeks = [];
     this.initTempData();
   }
-
-
   /**
    * 保存数据并关闭model
    */
@@ -249,7 +235,6 @@ export class EditComponent implements OnInit {
     this.close();
     console.log('save3', [...this.selectedData], [...this.smLessons]);
   }
-
   private getData(): void {
     this.scheduleService.getById(this.scheduleId!)
       .subscribe((schedule) => {
@@ -264,7 +249,6 @@ export class EditComponent implements OnInit {
         this.makeWeeksAndRoomsRecoder();
         this.makeSmLessonsRecorder();
         console.log('getData', [...this.weeksRecorder], [...this.roomsRecorder]);
-
         this.termService.getCurrentTerm()
           .subscribe((term: Term) => {
             this.term = term;
@@ -275,7 +259,6 @@ export class EditComponent implements OnInit {
             seconds = timestamp - +term.startTime;
             days = Math.floor(seconds / (60 * 60 * 24));
             this.overtimeWeekNumber = Math.floor(days / 7);
-
             this.makeWeeks();
             this.scheduleService.getSchedulesInCurrentTerm()
               .subscribe((schedules: Schedule[]) => {
@@ -288,26 +271,21 @@ export class EditComponent implements OnInit {
       .subscribe((rooms: Room[]) => {
         this.rooms = rooms;
       });
-
   }
-
   /**
    * 清空选择的数据
    */
   private clearSelectedData(): void {
     this.selectedData = [];
   }
-
   private clearScreenedClazzes(): void {
     this.screenedClazzes = [];
   }
-
   private clearConflictTimes(): void {
     this.conflictTimesOfClazzes = [];
     this.conflictTimesOfTeacher1 = [];
     this.conflictTimesOfTeacher2 = [];
   }
-
   // 需要 schedules clazzIds teacher1 teacher2
   private makeConflictTimes(): void {
     this.makeConflictTimesOfClazzes();
@@ -317,7 +295,6 @@ export class EditComponent implements OnInit {
     // console.log('teacherId1', this.conflictTimesOfTeacher1);
     // console.log('teacherId2', this.conflictTimesOfTeacher2);
   }
-
   // 需要 当前学期的schedules
   private makeSites(): void {
     this.schedules.forEach(schedule => {
@@ -338,7 +315,6 @@ export class EditComponent implements OnInit {
     this.makeTimes();
     this.updateTimesAndSitesBySchedule();
   }
-
   /**
    *  生成班级冲突时间
    */
@@ -358,7 +334,6 @@ export class EditComponent implements OnInit {
       });
     });
   }
-
   private makeConflictTimesOfTeacher1(): void {
     const teacher1Id = this.teacher1.id;
     this.schedules.forEach((schedule: Schedule) => {
@@ -370,7 +345,6 @@ export class EditComponent implements OnInit {
     });
     // console.log('teacher1Id', this.conflictTimesOfTeacher1);
   }
-
   private makeConflictTimesOfTeacher2(): void {
     const teacher2Id = this.teacher2.id;
     this.schedules.forEach((schedule: Schedule) => {
@@ -382,7 +356,6 @@ export class EditComponent implements OnInit {
     });
     // console.log('teacher2Id', this.conflictTimesOfTeacher2);
   }
-
   private makeTimes(): void {
     this.conflictTimesOfClazzes.forEach(conflictTime => {
       this.times[conflictTime.day][conflictTime.lesson][conflictTime.week] = false;
@@ -394,7 +367,6 @@ export class EditComponent implements OnInit {
       this.times[conflictTime.day][conflictTime.lesson][conflictTime.week] = false;
     });
   }
-
   private updateTimesAndSitesBySchedule(): void {
     this.selectedData.forEach(data => {
       this.times[data.day][data.smLesson][data.week] = true;
@@ -404,12 +376,9 @@ export class EditComponent implements OnInit {
       });
     });
   }
-
   private makeWeeks(): void {
     this.weeks = Array.from(new Array(this.weekNumber).keys());
   }
-
-
   onWeekChange(week: number): void {
     if (this.pattern) {
       // // 在模式 true 下，切换week时保存数据
@@ -423,7 +392,6 @@ export class EditComponent implements OnInit {
     }
     console.log('onWeekChange', this.selectedData);
   }
-
   changeSelectedWeeks(week: number): void {
     console.log('changeSelectedWeeks', week);
     // 不支持张三小节1在教室1上课，李四小节2在教室1上课
@@ -441,10 +409,8 @@ export class EditComponent implements OnInit {
         });
       });
     }
-
     console.log('12123132123312', [...this.selectedWeeks], [...this.disabledRooms]);
   }
-
   onSmLessonsChange(smLesson: number): void {
     if (!this.smLessons.includes(smLesson)) {
       this.smLessons.push(smLesson);
@@ -452,11 +418,9 @@ export class EditComponent implements OnInit {
       this.smLessons.splice(this.smLessons.indexOf(smLesson), 1);
     }
   }
-
   onIsSmLessonsDetermineChange(): void {
     this.isSmLessonsDetermine = !this.isSmLessonsDetermine;
   }
-
   onRoomChange(roomId: number): void {
     // 不支持张三小节1在教室1上课，李四小节2在教室1上课
     const smLessons = this.bigLesson === 4 ? [0, 1, 2] : [0, 1];
@@ -493,8 +457,6 @@ export class EditComponent implements OnInit {
       }
     }
   }
-
-
   /**
    * 保存数据
    */
@@ -505,11 +467,9 @@ export class EditComponent implements OnInit {
     });
     console.log('保存saveTempData', this.tempData[this.week!]);
   }
-
   isRoomChecked(roomId: number): boolean {
     return this.selectedRooms.includes(roomId);
   }
-
   private makeTempData(): void {
     const smLessons = this.smLessonsRecorder[this.day!][this.bigLesson!];
     this.selectedData.forEach((data) => {
@@ -520,7 +480,6 @@ export class EditComponent implements OnInit {
     });
     this.smLessons = smLessons;
   }
-
   updatePattern(pattern: boolean): void {
     this.pattern = pattern;
     this.initTempData();
@@ -533,14 +492,12 @@ export class EditComponent implements OnInit {
       this.validateData();
     }
   }
-
   private deleteSelectedData(): void {
     this.selectedData = this.selectedData.filter(data => {
       const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
       return !(data.day === this.day && bigLesson === this.bigLesson);
     });
   }
-
   canSave(): boolean {
     if (this.pattern) {
       // 如果所有周对应教室都是空，那就不能保存
@@ -560,12 +517,10 @@ export class EditComponent implements OnInit {
       return status;
     }
   }
-
   isWeekDisabled(week: number): boolean {
     if (week < this.overtimeWeekNumber!) {
       return true;
     }
-
     let status = false;
     // 不支持小节1选教室1/2， 小节2选教室3/4
     const smLessons = this.bigLesson === 4 ? [0, 1, 2] : [0, 1];
@@ -580,7 +535,6 @@ export class EditComponent implements OnInit {
     }
     return status;
   }
-
   isRoomDisabled(roomId: number): boolean {
     if (this.pattern) {
       // 不支持张三小节1在教室1上课，李四小节2在教室1上课
@@ -599,7 +553,6 @@ export class EditComponent implements OnInit {
       return this.disabledRooms.includes(roomId);
     }
   }
-
   onSubmit(): void {
     const dispatches = [] as Dispatch[];
     this.selectedData.forEach((data) => {
@@ -615,14 +568,12 @@ export class EditComponent implements OnInit {
         this.commonService.success(() => this.router.navigateByUrl('/schedule'));
       });
   }
-
   private makeSelectedData(): void {
     this.dispatches.forEach(dispatch => {
       const roomIds = dispatch.rooms.map(room => room.id!);
       this.selectedData.push({day: dispatch.day!, smLesson: dispatch.lesson!, week: dispatch.week!, roomIds});
     });
   }
-
   // 当前系统在存入时规定同一大节只能上部分小结或者都上，不能不同小节在不同时间，在不同地点
   private makeSmLessonsRecorder(): void {
     this.selectedData.forEach((data) => {
@@ -637,7 +588,6 @@ export class EditComponent implements OnInit {
       }
     });
   }
-
   /**
    * 对selectedData进行验证，确保不存在类似于第一周在教室1/2上课，第二周在教室3/4上课的情况
    */
@@ -662,7 +612,6 @@ export class EditComponent implements OnInit {
       this.commonService.info(() => {}, '当前数据不支持同步模式，已自动为您切换为定制模式');
     }
   }
-
   /**
    * 同步模式使用
    */
@@ -677,13 +626,10 @@ export class EditComponent implements OnInit {
       }
     });
   }
-
-
   canSubmit(): boolean {
     const course = this.course;
     return this.selectedData.length === +course.hours!;
   }
-
   buttonActive(day: number, bigLesson: number): boolean {
     if (this.pattern) {
       let status = false;
@@ -698,7 +644,6 @@ export class EditComponent implements OnInit {
       return this.weeksRecorder[day][bigLesson].length !== 0;
     }
   }
-
   private makeNotEmptyWeeks(): void {
     for (let i = 0; i < this.weekNumber; i++) {
       if (this.tempData[i].length !== 0) {
@@ -708,22 +653,17 @@ export class EditComponent implements OnInit {
       }
     }
   }
-
   getNotEmptyWeeks(): string {
     return this.notEmptyWeeks.map(week => (week + 1)).join('、');
   }
-
   isAllWeekChecked(): boolean {
     return this.selectedWeeks.length === this.getEffectiveWeeks().length;
   }
-
   isAllRoomChecked(): boolean {
     return this.selectedRooms.length === this.getEffectiveRooms().length;
   }
-
   checkAllWeek(): void {
     const effectiveWeeks = this.getEffectiveWeeks();
-
     if (this.selectedWeeks.length !== effectiveWeeks.length) {
       if (!this.pattern) {
         effectiveWeeks.forEach(w => {
@@ -738,10 +678,8 @@ export class EditComponent implements OnInit {
       });
     }
   }
-
   checkAllRoom(): void {
     const effectiveRooms = this.getEffectiveRooms();
-
     if (Array.from(new Set(this.selectedRooms)).length !== effectiveRooms.length) {
       console.log('checkAllRoom2', Array.from(new Set(this.selectedRooms)), effectiveRooms);
       effectiveRooms.forEach(roomId => {
@@ -755,12 +693,10 @@ export class EditComponent implements OnInit {
       });
     }
   }
-
   private getEffectiveWeeks(): number[] {
     return this.weeks.filter(w => this.overtimeWeekNumber! <= w)
       .filter(w => !this.isWeekDisabled(w));
   }
-
   private getEffectiveRooms(): number[] {
     return this.rooms
       .filter(room => !this.isRoomDisabled(room.id!))
