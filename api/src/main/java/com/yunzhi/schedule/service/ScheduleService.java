@@ -2,6 +2,7 @@ package com.yunzhi.schedule.service;
 
 import com.yunzhi.schedule.entity.Schedule;
 import com.yunzhi.schedule.entity.Term;
+import com.yunzhi.schedule.entity.forType.ForUpdateClazzesAndTeachers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,4 +23,8 @@ public interface ScheduleService {
     Schedule getById(Long id);
 
     void deleteById(Long scheduleId);
+
+    void removeClazzFromSchedule(Long aLong, Long aLong1);
+
+    void updateClazzesAndTeachers(ForUpdateClazzesAndTeachers forUpdateClazzesAndTeachers);
 }

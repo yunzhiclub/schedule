@@ -92,4 +92,13 @@ export class ClazzService {
   update(id: number, clazz: Clazz): Observable<any> {
     return this.httpClient.post<any>(`${this.url}/update/` + id.toString(), clazz);
   }
+  /**
+   * 从排课中移除班级
+   */
+  removeClazzFromSchedule(clazzId: number, scheduleId: number | undefined): Observable<void> {
+    const data = [];
+    data[0] = scheduleId;
+    data[1] = clazzId;
+    return this.httpClient.post<void>('/schedule/removeClazzFromSchedule', data);
+  }
 }

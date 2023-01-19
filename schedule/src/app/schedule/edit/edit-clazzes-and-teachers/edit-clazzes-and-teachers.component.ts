@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Schedule} from '../../../../entity/schedule';
 import {Dispatch} from '../../../../entity/dispatch';
 import {ScheduleService} from '../../../../service/schedule.service';
 import {ClazzService} from '../../../../service/clazz.service';
 import {Clazz} from '../../../../entity/clazz';
+import {CommonService} from '../../../../service/common.service';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Teacher} from '../../../../entity/teacher';
+import {TeacherService} from '../../../../service/teacher.service';
 
 @Component({
   selector: 'app-edit-clazzes-and-teachers',
@@ -12,6 +16,9 @@ import {Clazz} from '../../../../entity/clazz';
   styleUrls: ['./edit-clazzes-and-teachers.component.scss']
 })
 export class EditClazzesAndTeachersComponent implements OnInit {
+  // 两个教师是否相同
+  isTeacherSame = false;
+  teachers = [] as Teacher[];
   private scheduleId: number | undefined;
   schedule = {} as Schedule;
   dispatches = [] as Dispatch[];
@@ -32,17 +39,44 @@ export class EditClazzesAndTeachersComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private scheduleService: ScheduleService,
-              private clazzService: ClazzService) { }
+              private clazzService: ClazzService,
+              private commonService: CommonService,
+              private teacherService: TeacherService,
+              private router: Router) { }
+  formGroup = new FormGroup({
+    clazzIds: new FormControl(null, Validators.required),
+    teacher1Id: new FormControl(null, Validators.required),
+    teacher2Id: new FormControl(null, Validators.required)
+  });
 
   ngOnInit(): void {
+    this.teacherService.getAll()
+      .subscribe(allTeacher => {
+        this.teachers = allTeacher;
+      });
     this.scheduleId = this.route.snapshot.params.id;
     console.log('this.scheduleId', this.scheduleId);
     this.scheduleService.getById(this.scheduleId!)
       .subscribe(schedule => {
         this.schedule = schedule;
         this.dispatches = schedule.dispatches;
+        this.setTeachers();
         this.getClazzesForAddClazzes();
       });
+    // 订阅参数
+    this.subscribeFormGroup();
+  }
+
+  /**
+   * 订阅参数，各参数改变时修改其后置数据
+   */
+  private subscribeFormGroup(): void {
+    this.formGroup.get('teacher1Id')?.valueChanges.subscribe((teacher1Id: number) => {
+      this.isTeacherSame = teacher1Id === this.formGroup.get('teacher2Id')?.value;
+    });
+    this.formGroup.get('teacher2Id')?.valueChanges.subscribe((teacher2Id: number) => {
+      this.isTeacherSame = teacher2Id === this.formGroup.get('teacher1Id')?.value;
+    });
   }
 
   // 为新增班级获取可选班级
@@ -118,5 +152,44 @@ export class EditClazzesAndTeachersComponent implements OnInit {
       .filter((x) => !this.dispatchConflictClazzes.some((item) => x.id === item.id));
     console.log('打印最终的可选择的班级', this.thirdFilerClazzes);
   }
+  onDeleteClazz(clazzId: number): void {
+    const scheduleId = this.scheduleId;
+    this.commonService.confirm((confirm) => {
+        if (confirm) {
+          this.clazzService.removeClazzFromSchedule(clazzId, scheduleId)
+            .subscribe(success => {
+              console.log('班级删除成功', success);
+              this.ngOnInit();
+              this.commonService.success();
+            }, error => {
+              console.log('班级删除失败', error);
+              this.commonService.error();
+            });
+        }
+      },
+    );
+  }
 
+  private setTeachers(): void {
+    this.formGroup.get('teacher1Id')!.setValue(this.schedule.teacher1.id);
+    this.formGroup.get('teacher2Id')!.setValue(this.schedule.teacher2.id);
+  }
+  canSubmit(): boolean {
+    return !(!this.isTeacherSame &&
+      this.formGroup.get('teacher1Id')?.value !== 'null' &&
+      this.formGroup.get('teacher2Id')?.value !== 'null');
+  }
+
+  onSubmit(formGroup: FormGroup): void {
+    const updateClazzesAndTeachers = {
+      teacher1Id: formGroup.get('teacher1Id')?.value,
+      teacher2Id: formGroup.get('teacher2Id')?.value,
+      clazzIds: formGroup.get('clazzIds')?.value,
+    };
+    // tslint:disable-next-line:max-line-length
+    this.scheduleService.updateClazzesAndTeachers(this.scheduleId, updateClazzesAndTeachers.teacher1Id, updateClazzesAndTeachers.teacher2Id, updateClazzesAndTeachers.clazzIds)
+      .subscribe(() => {
+        this.commonService.success(() => this.router.navigate(['../'], {relativeTo: this.route}));
+      });
+  }
 }
