@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("clazz")
@@ -43,18 +42,12 @@ public class ClazzController {
      * @return 分页教师
      */
     @GetMapping("/page")
+    @JsonView(PageJsonView.class)
     public Page<Clazz> page(
             @RequestParam(required = false, defaultValue = "") String name,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        Page<Clazz> page = this.clazzService.page(name, pageable);
-        page.getContent().forEach(clazz -> {
-            clazz.getStudents().forEach(student -> {
-                student.setClazz(null);
-            });
-            clazz.setStudents(clazz.getStudents().stream().filter(student -> !student.getDeleted()).collect(Collectors.toList()));
-        });
-        return page;
+        return this.clazzService.page(name, pageable);
     }
 
     @GetMapping("clazzNameUnique")
@@ -117,5 +110,12 @@ public class ClazzController {
     private class GetAllJsonView implements
             Clazz.NameJsonView,
             Clazz.IdJsonView
+    {}
+
+    private class PageJsonView implements
+            Clazz.IdJsonView,
+            Clazz.NameJsonView,
+            Clazz.StudentsJsonView,
+            Student.IdJsonView
     {}
 }

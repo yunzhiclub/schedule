@@ -11,15 +11,24 @@ import { AddComponent as membersAddComponent } from './members/add/add.component
 const routes: Routes = [
   {
     path: '',
-    component: ClazzComponent
+    component: ClazzComponent,
+    data: {
+      title: '首页'
+    }
   },
   {
     path: 'add',
-    component: AddComponent
+    component: AddComponent,
+    data: {
+      title: '新增'
+    }
   },
   {
     path: 'edit/:clazzId',
-    component: EditComponent
+    component: EditComponent,
+    data: {
+      title: '编辑'
+    }
   },
   {
     path: 'members/:clazzId',

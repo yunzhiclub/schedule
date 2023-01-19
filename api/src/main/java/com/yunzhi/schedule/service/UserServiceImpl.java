@@ -1,6 +1,5 @@
 package com.yunzhi.schedule.service;
 
-import com.yunzhi.schedule.excel.Excel;
 import com.yunzhi.schedule.config.Encoder;
 import com.yunzhi.schedule.entity.User;
 import com.yunzhi.schedule.filter.TokenFilter;
@@ -11,8 +10,7 @@ import org.springframework.util.Assert;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.OutputStream;
+import javax.xml.bind.ValidationException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
@@ -44,7 +42,7 @@ public class UserServiceImpl implements UserService {
     public User login() {
         // 获取 basic Authorization
         String authorization = request.getHeader("Authorization");
-        List<String> data = this.getData(authorization);
+        List<String> data = this.getPhoneAndPassword(authorization);
         String phone = data.get(0);
         String password = data.get(1);
         // 通过phone 找到user验证密码
@@ -71,10 +69,10 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-    private List<String> getData(String authorization) {
+    private List<String> getPhoneAndPassword(String authorization) {
         List<String> data = new ArrayList<>();
         String message = (String) Arrays.stream(authorization.split(" ")).toArray()[1];
-        Object[] objects = Arrays.stream(this.base64Decode(message).split(":")).toArray();
+        Object[] objects = Arrays.stream(base64Decode(message).split(":")).toArray();
         data.add(objects[0].toString());
         data.add(objects[1].toString());
         return data;
@@ -118,10 +116,10 @@ public class UserServiceImpl implements UserService {
     public User update(Long userId, User user) {
         Assert.notNull(user.getName(), "name不能为null");
         Assert.notNull(user.getPhone(), "phone不能为null");
-        User OldUser = this.getById(userId);
-        OldUser.setName(user.getName());
-        OldUser.setPhone(user.getPhone());
-        return this.userRepository.save(OldUser);
+        User oldUser = this.getById(userId);
+        oldUser.setName(user.getName());
+        oldUser.setPhone(user.getPhone());
+        return this.userRepository.save(oldUser);
     }
 
     @Override
@@ -137,5 +135,20 @@ public class UserServiceImpl implements UserService {
         this.xAuthTokenUserIdHashMap.remove(XAuthToken);
     }
 
+    @Override
+    public boolean checkPasswordIsRight(String password) {
+        User user = this.getCurrentLoginUser();
+        return Objects.equals(user.getPassword(), Encoder.getMD5Result(password));
+    }
+
+    @Override
+    public void updatePassword(String password, String newPassword) throws ValidationException {
+        if (!this.checkPasswordIsRight(password)) {
+            throw new ValidationException("旧密码不正确");
+        }
+        User currentUser = this.getCurrentLoginUser();
+        currentUser.setPassword(Encoder.getMD5Result(newPassword));
+        this.userRepository.save(currentUser);
+    }
 
 }

@@ -4,11 +4,12 @@ import { PersonalComponent } from './personal.component';
 import {PersonalRoutingModule} from './personal-routing.module';
 import { EditComponent } from './edit/edit.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import {ModifyPasswordComponent} from './modify-password/modify-password.component';
 
 
 
 @NgModule({
-  declarations: [PersonalComponent, EditComponent],
+  declarations: [PersonalComponent, EditComponent, ModifyPasswordComponent],
     imports: [
         CommonModule,
         PersonalRoutingModule,

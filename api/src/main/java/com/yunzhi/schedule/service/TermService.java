@@ -1,7 +1,7 @@
 package com.yunzhi.schedule.service;
 
 import com.yunzhi.schedule.entity.Term;
-import com.yunzhi.schedule.vo.StateTerm;
+import com.yunzhi.schedule.entity.vo.StateTerm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

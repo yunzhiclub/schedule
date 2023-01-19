@@ -2,9 +2,7 @@ package com.yunzhi.schedule.service;
 
 import com.yunzhi.schedule.entity.User;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.security.Principal;
+import javax.xml.bind.ValidationException;
 
 public interface UserService {
 
@@ -33,4 +31,7 @@ public interface UserService {
 
     void logout();
 
+    boolean checkPasswordIsRight(String password);
+
+    void updatePassword(String password, String newPassword) throws ValidationException;
 }

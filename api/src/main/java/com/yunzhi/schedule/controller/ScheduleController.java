@@ -45,6 +45,7 @@ public class ScheduleController {
      * @return 分页排课
      */
     @GetMapping("page")
+    @JsonView(PageJsonView.class)
     public Page<Schedule> page(
             @RequestParam(required = false, defaultValue = "") String courseName,
             @RequestParam(required = false, defaultValue = "") String termName,
@@ -52,20 +53,7 @@ public class ScheduleController {
             @RequestParam(required = false, defaultValue = "") String teacherName,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        Page<Schedule> schedulePage = this.scheduleService.page(courseName, termName, clazzName, teacherName, pageable);
-        schedulePage.getContent().forEach(schedule -> {
-            schedule.getDispatches().forEach(dispatch -> {
-                dispatch.setSchedule(null);
-            });
-            schedule.getClazzes().forEach(clazz -> {
-                clazz.getStudents().forEach(student -> {
-                    student.setClazz(null);
-                });
-            });
-            schedule.getTeacher1().setSchedules1(null); schedule.getTeacher1().setSchedules2(null);
-            schedule.getTeacher2().setSchedules1(null); schedule.getTeacher2().setSchedules2(null);
-        });
-        return schedulePage;
+        return this.scheduleService.page(courseName, termName, clazzName, teacherName, pageable);
     }
 
     @PostMapping
@@ -146,6 +134,10 @@ public class ScheduleController {
             Dispatch.DayJsonView,
             Dispatch.WeekJsonView,
             Room.IdJsonView
+    {}
+
+    public interface PageJsonView extends
+            GetById
     {}
 
 
