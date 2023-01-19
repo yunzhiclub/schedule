@@ -1,9 +1,7 @@
 package com.yunzhi.schedule.controller;
 
 import com.yunzhi.schedule.entity.Course;
-import com.yunzhi.schedule.entity.Room;
 import com.yunzhi.schedule.service.CourseService;
-import com.yunzhi.schedule.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,8 +34,7 @@ public class CourseController {
             @RequestParam(required = false, defaultValue = "") String hours,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        Page<Course> page = this.courseService.page(name, hours, pageable);
-        return page;
+        return this.courseService.page(name, hours, pageable);
     }
 
     /**

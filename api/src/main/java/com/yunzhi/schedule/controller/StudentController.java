@@ -33,6 +33,7 @@ public class StudentController {
      * @return 分页学生
      */
     @GetMapping("/page")
+    @JsonView(PageJsonView.class)
     public Page<Student> page(
             @RequestParam(required = false, defaultValue = "") Long clazzId,
             @RequestParam(required = false, defaultValue = "") String clazzName,
@@ -40,12 +41,7 @@ public class StudentController {
             @RequestParam(required = false, defaultValue = "") String sno,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-
-        Page<Student> page = this.studentService.page(clazzId, clazzName, name, sno, pageable);
-        page.getContent().forEach(student -> {
-            student.getClazz().setStudents(null);
-        });
-        return page;
+        return this.studentService.page(clazzId, clazzName, name, sno, pageable);
     }
 
     @GetMapping("studentNameUnique")
@@ -118,7 +114,7 @@ public class StudentController {
         this.studentService.importExcel(multipartFile.getInputStream(), response.getOutputStream());
     }
 
-    public class GetById implements
+    public interface GetById extends
             Student.IdJsonView,
             Student.NameJsonView,
             Student.SexJsonView,
@@ -128,4 +124,7 @@ public class StudentController {
             Clazz.NameJsonView
     {}
 
+    public interface PageJsonView extends
+            GetById
+    {}
 }

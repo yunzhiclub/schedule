@@ -1,4 +1,4 @@
-package com.yunzhi.schedule.vo;
+package com.yunzhi.schedule.entity.vo;
 
 /**
  * 用户状态改变输出

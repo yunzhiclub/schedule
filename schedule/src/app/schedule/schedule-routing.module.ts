@@ -8,15 +8,24 @@ import {EditClazzesAndTeachersComponent} from './edit/edit-clazzes-and-teachers/
 const routes: Routes = [
   {
     path: '',
-    component: ScheduleComponent
+    component: ScheduleComponent,
+    data: {
+      title: '首页'
+    }
   },
   {
     path: 'add',
-    component: AddComponent
+    component: AddComponent,
+    data: {
+      title: '新增排课'
+    }
   },
   {
     path: 'edit/:id',
-    component: EditComponent
+    component: EditComponent,
+    data: {
+      title: '编辑时间'
+    }
   },
   {
     path: 'edit/:id/editClazzesAndTeachers',

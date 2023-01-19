@@ -1,6 +1,8 @@
 package com.yunzhi.schedule.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.yunzhi.schedule.entity.Dispatch;
+import com.yunzhi.schedule.entity.Schedule;
 import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,37 +37,13 @@ public class TeacherController {
      * @return 分页教师
      */
     @GetMapping("/page")
+    @JsonView(PageJsonView.class)
     public Page<Teacher> page(
             @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(required = false, defaultValue = "") String phone,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        Page<Teacher> page = this.teacherService.page(name, phone, pageable);
-        page.getContent().forEach(teacher -> {
-            teacher.getSchedules1().forEach(schedule -> {
-                schedule.setTeacher1(null); schedule.setTeacher2(null);
-                schedule.setClazzes(null);
-                if (schedule.getDeleted()) {
-                    schedule.setDispatches(null);
-                } else {
-                    schedule.getDispatches().forEach(dispatch -> {
-                        dispatch.setSchedule(null);
-                    });
-                }
-            });
-            teacher.getSchedules2().forEach(schedule -> {
-                schedule.setTeacher1(null); schedule.setTeacher2(null);
-                schedule.setClazzes(null);
-                if (schedule.getDeleted()) {
-                    schedule.setDispatches(null);
-                } else {
-                    schedule.getDispatches().forEach(dispatch -> {
-                        dispatch.setSchedule(null);
-                    });
-                }
-            });
-        });
-        return page;
+        return this.teacherService.page(name, phone, pageable);
     }
 
     /**
@@ -157,5 +135,17 @@ public class TeacherController {
     public interface GetAll extends
             Teacher.NameJsonView,
             Teacher.IdJsonView
+    {}
+
+    public interface PageJsonView extends
+            Teacher.NameJsonView,
+            Teacher.IdJsonView,
+            Teacher.PhoneJsonView,
+            Teacher.Schedules1JsonView,
+            Teacher.Schedules2JsonView,
+            Teacher.SexJsonView,
+            Schedule.IdJsonView,
+            Schedule.DispatchesJsonView,
+            Dispatch.IdJsonView
     {}
 }

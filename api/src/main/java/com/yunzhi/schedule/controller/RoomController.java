@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.Room;
 import com.yunzhi.schedule.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +31,13 @@ public class RoomController {
      * @return 分页教室
      */
     @GetMapping("/page")
+    @JsonView(PageJsonView.class)
     public Page<Room> page(
             @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(required = false, defaultValue = "") String capacity,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        Page<Room> page = this.roomService.page(name, capacity, pageable);
-        return page;
+        return this.roomService.page(name, capacity, pageable);
     }
 
     /**
@@ -105,4 +106,10 @@ public class RoomController {
     public List<Room> getAll() {
         return this.roomService.getAll();
     }
+
+    public interface PageJsonView extends
+            Room.IdJsonView,
+            Room.NameJsonView,
+            Room.CapacityJsonView
+    {}
 }
