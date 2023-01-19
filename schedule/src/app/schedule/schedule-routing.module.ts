@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {ScheduleComponent} from './schedule.component';
 import {AddComponent} from './add/add.component';
-import {EditComponent} from "./edit/edit.component";
+import {EditComponent} from './edit/edit.component';
+import {EditClazzesAndTeachersComponent} from './edit/edit-clazzes-and-teachers/edit-clazzes-and-teachers.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
   {
     path: 'edit/:id',
     component: EditComponent
+  },
+  {
+    path: 'edit/:id/editClazzesAndTeachers',
+    component: EditClazzesAndTeachersComponent
   },
 ];
 

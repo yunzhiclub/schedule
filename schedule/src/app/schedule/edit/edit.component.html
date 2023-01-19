@@ -1,39 +1,29 @@
 <!-- 选择课程 -->
-<div class="form-group row">
+<div class="form-group row mb-0">
   <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>课程</label>
   <div class="col-sm">
-    <input type="text" class="disabled" disabled [value]="course.name">
+    <input type="text" class="disabled mt-1" disabled [value]="course.name">
   </div>
 </div>
 <div class="form-group row mb-0" *ngFor="let clazz of this.schedule.clazzes; index as x">
   <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>班级{{ x + 1 }}</label>
   <div class="col-sm">
-    <input type="text" class="disabled" disabled [value]="clazz.name"><button type="button" class="btn btn-danger btn-sm ml-1">删除</button>
+    <input type="text" class="disabled mt-1" disabled [value]="clazz.name">
   </div>
 </div>
-<div class="form-group row" *ngIf="!this.isShowAddClazzes">
-  <label class="col-sm-2 text-right col-form-label" style="width: 162px"></label>
-  <div class="col-sm">
-    <button type="button" class="btn btn-success" (click)="this.isShowAddClazzes = !this.isShowAddClazzes">新增上课班级</button>
+<div class="form-group row">
+  <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>教师</label>
+  <div class="col-sm-2">
+    <input type="text" class="disabled mt-1" disabled [value]="this.teacher1.name">
   </div>
-</div>
-<!-- 添加班级 -->
-<div class="form-group row" *ngIf="this.isShowAddClazzes">
-  <label class="col-sm-2 text-right col-form-label"><code>*</code>上课班级<br>(可多选)</label>
-  <div class="col-sm">
-    <select class="select picker form-control col-sm-3" style="width: 200px" multiple>
-      <option [value]="null">请选择班级</option>
-      <option *ngFor="let clazz of this.thirdFilerClazzes" [value]="+clazz.id">{{clazz.name}}</option>
-    </select>
-    <button type="button" class="btn btn-success mt-1" (click)="this.isShowAddClazzes = !this.isShowAddClazzes">取消</button>
-    <button type="button" class="btn btn-success mt-1">保存新增班级</button>
+  <div class="col-sm-2">
+    <input type="text" class="disabled mt-1" disabled [value]="this.teacher2.name">
   </div>
+  <a routerLink="editClazzesAndTeachers" class="btn btn-success">编辑班级/教师信息</a>
 </div>
 <!--选择时间-->
 <div class="form-group row">
-  <div class="col-sm-2">
-    <label class="col-sm-12 col-form-label"><code>*</code>上课时间:</label>
-  </div>
+  <label class="col-sm-2 text-right col-form-label"><code>*</code>上课时间</label>
   <div class="col-sm-10">
     <div class="dropdown">
       <button class="btn btn-sm btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -47,29 +37,38 @@
       <span class="font-weight-bold">课程学时:&nbsp;&nbsp;{{ course?.hours}}</span>
     </div>
   </div>
-  <div class="col-sm" style="float: right">
-    <table class="table  table-bordered">
-      <thead>
-      <tr>
-        <th>周几/课序</th>
-        <th *ngFor="let bigLesson of bigLessons">{{bigLesson! + 1}}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let day of days; index as d">
-        <th   class="col-sm-1">周{{day}}</th>
-        <td  *ngFor="let bigLesson of bigLessons" class="col-sm-1 container-fluid">
-          <div class="list-group">
-            <button class="list-group-item" [ngClass]="{'list-group-item-primary': buttonActive(d, bigLesson)}" (click)="showModel(d, bigLesson)"><h6>周{{day}}第{{bigLesson! + 1}}节</h6></button>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="row col-sm-12">
-    <div class="col">
-      <button type="submit" (click)="onSubmit()" [disabled]="!canSubmit()" class="btn btn-primary">确定</button>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-1 ml-5"></label>
+  <div class="col-sm-10">
+    <div class="dropdown">
+      <div class="col-sm-11 ml-5">
+        <table class="table  table-bordered">
+          <thead>
+          <tr>
+            <th>周几/课序</th>
+            <th *ngFor="let bigLesson of bigLessons">{{bigLesson! + 1}}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let day of days; index as d">
+            <th   class="col-sm-1">周{{day}}</th>
+            <td  *ngFor="let bigLesson of bigLessons" class="col-sm-1 container-fluid">
+              <div class="list-group">
+                <button class="list-group-item" [ngClass]="{'list-group-item-primary': buttonActive(d, bigLesson)}" (click)="showModel(d, bigLesson)"><h6>周{{day}}第{{bigLesson! + 1}}节</h6></button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row col-sm-12">
+        <div class="col">
+          <button style="float: right;" type="submit" (click)="onSubmit()" [disabled]="!canSubmit()" class="btn btn-primary mr-3"><i class="fas fa-save"></i>保存</button>
+          <a style="float: right;" class="btn btn-primary" routerLink="../../">返回</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
