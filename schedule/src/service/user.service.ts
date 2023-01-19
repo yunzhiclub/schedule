@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User} from '../entity/user';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {tap} from 'rxjs/operators';
+import {catchError, map, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
+import {AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn} from '@angular/forms';
+import {Random} from '../common/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -130,5 +132,51 @@ export class UserService {
 
   logout(): Observable<void> {
     return this.httpClient.get<void>(this.url + '/logout');
+  }
+
+  /**
+   * 验证原密码是否正确
+   */
+  public oldPasswordValidator(): AsyncValidatorFn {
+    return (ctrl: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> => {
+      return this.checkPasswordIsRight(ctrl.value)
+        .pipe(tap((value) => console.log('oldPasswordValidator', value)))
+        .pipe(map((isRight: boolean) => (isRight ? null : {passwordError: true})),
+          catchError(async () => null));
+    };
+  }
+
+  /**
+   * 校验密码是否正确
+   * @param oldPassword 密码
+   */
+  public checkPasswordIsRight(oldPassword: string): Observable<boolean> {
+    const vUser = {password: oldPassword};
+    return this.httpClient.post<boolean>(this.url + '/checkPasswordIsRight', vUser);
+  }
+
+  /**
+   * 校验新密码与校验密码是否相同
+   * @param control 表单
+   */
+  public confirmPasswordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const newPassword = control.get('newPassword')?.value;
+    const confirmNewPassword = control.get('confirmNewPassword')?.value;
+
+    // 判断确认密码与新密码是否相同
+    if (newPassword && confirmNewPassword) {
+      return newPassword !== confirmNewPassword ? {confirmPasswordError: true} : null;
+    }
+    return null;
+  };
+
+  /**
+   * 登录用户修改密码
+   * @param newPassword 新密码
+   * @param oldPassword 旧密码
+   */
+  public updatePassword(newPassword: string, oldPassword: string): Observable<void> {
+    const vUser = {password: oldPassword, newPassword: encodeURIComponent(newPassword)};
+    return this.httpClient.put<void>(this.url + '/updatePassword', vUser);
   }
 }

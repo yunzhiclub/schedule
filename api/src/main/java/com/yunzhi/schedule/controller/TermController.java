@@ -2,7 +2,7 @@ package com.yunzhi.schedule.controller;
 
 import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.service.TermService;
-import com.yunzhi.schedule.vo.StateTerm;
+import com.yunzhi.schedule.entity.vo.StateTerm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

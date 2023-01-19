@@ -7,15 +7,24 @@ import {EditComponent} from './edit/edit.component';
 const routes: Routes = [
   {
     path: '',
-    component: CourseComponent
+    component: CourseComponent,
+    data: {
+      title: '首页'
+    }
   },
   {
     path: 'add',
-    component: AddComponent
+    component: AddComponent,
+    data: {
+      title: '新增'
+    }
   },
   {
     path: 'edit/:id',
-    component: EditComponent
+    component: EditComponent,
+    data: {
+      title: '编辑'
+    }
   }
 ];
 

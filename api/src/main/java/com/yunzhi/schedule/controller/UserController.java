@@ -1,17 +1,14 @@
 package com.yunzhi.schedule.controller;
 
-import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.entity.User;
+import com.yunzhi.schedule.entity.vo.PasswordUser;
 import com.yunzhi.schedule.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import javax.xml.bind.ValidationException;
 
 
 @RestController
@@ -68,5 +65,24 @@ public class UserController {
     public User update(@PathVariable Long userId,
                           @RequestBody User user) {
         return this.userService.update(userId, user);
+    }
+
+    /**
+     * 校验密码是否正确接口
+     * @param user user
+     * @return boolean
+     */
+    @PostMapping("checkPasswordIsRight")
+    public boolean checkPasswordIsRight(@RequestBody User user) {
+        return this.userService.checkPasswordIsRight(user.getPassword());
+    }
+    /**
+     * 更新密码
+     * @param user user  新密码
+     * @return boolean
+     */
+    @PutMapping("updatePassword")
+    public void updatePassword(@RequestBody PasswordUser user) throws ValidationException {
+        this.userService.updatePassword(user.getPassword(), user.getNewPassword());
     }
 }

@@ -2,20 +2,29 @@ import { NgModule } from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {ScheduleComponent} from './schedule.component';
 import {AddComponent} from './add/add.component';
-import {EditComponent} from "./edit/edit.component";
+import {EditComponent} from './edit/edit.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: ScheduleComponent
+    component: ScheduleComponent,
+    data: {
+      title: '首页'
+    }
   },
   {
     path: 'add',
-    component: AddComponent
+    component: AddComponent,
+    data: {
+      title: '新增排课'
+    }
   },
   {
     path: 'edit/:id',
-    component: EditComponent
+    component: EditComponent,
+    data: {
+      title: '编辑时间'
+    }
   },
 ];
 
