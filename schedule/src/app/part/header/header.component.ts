@@ -33,8 +33,14 @@ export class HeaderComponent implements OnInit {
       .subscribe(() => {
         window.sessionStorage.removeItem('login');
         this.commonService.success(() => {
-          this.router.navigateByUrl('/login');
-        }, '' , '已注销');
-      });
+          this.router.navigateByUrl('/login').then();
+          }, '' , '已注销');
+      },
+        () => {
+          this.router.navigateByUrl('/login').then();
+        },
+        () => {
+          this.router.navigateByUrl('/login').then();
+        });
   }
 }

@@ -60,16 +60,17 @@
         <div class="modal-header">
           <h5 class="modal-title ml-3">周{{days[day!]}}第{{bigLesson! + 1}}节</h5>
           <ul class="list-group list-group-horizontal">
-<!--            <button class="btn border list-group-item"-->
-<!--                    [ngClass]="{'bg-primary': isAllWeekChecked(), 'text-white': isAllWeekChecked()}"-->
-<!--                    (click)="checkAllWeek()"-->
-<!--                    *ngIf="!pattern"-->
-<!--            >周全选</button>-->
-<!--            <button class="btn border list-group-item mr-3"-->
-<!--                    [ngClass]="{'bg-primary': isAllRoomChecked(), 'text-white': isAllRoomChecked()}"-->
-<!--                    (click)="checkAllRoom()"-->
-<!--            >教室全选</button>-->
-<!--            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+            <button class="btn border list-group-item"
+                    [ngClass]="{'bg-primary': isAllWeekChecked(), 'text-white': isAllWeekChecked()}"
+                    (click)="checkAllWeek()"
+                    *ngIf="!pattern"
+            >周全选</button>
+            <button class="btn border list-group-item mr-3"
+                    [ngClass]="{'bg-primary': isAllRoomChecked(), 'text-white': isAllRoomChecked()}"
+                    (click)="checkAllRoom()"
+                    *ngIf="!pattern || (pattern && this.week)"
+            >教室全选</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button class="btn border list-group-item" [ngClass]="{'bg-primary': smLessons.includes(0), 'text-white': smLessons.includes(0)}" (click)="onSmLessonsChange(0)" [disabled]="isSmLessonsDetermine">小节1</button>
             <button class="btn border list-group-item" [ngClass]="{'bg-primary': smLessons.includes(1), 'text-white': smLessons.includes(1)}" (click)="onSmLessonsChange(1)" [disabled]="isSmLessonsDetermine">小节2</button>
             <button class="btn border list-group-item" [ngClass]="{'bg-primary': smLessons.includes(2), 'text-white': smLessons.includes(2)}" (click)="onSmLessonsChange(2)" [disabled]="bigLesson !== 4 || isSmLessonsDetermine">小节3</button>

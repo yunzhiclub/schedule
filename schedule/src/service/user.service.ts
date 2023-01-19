@@ -24,7 +24,6 @@ export class UserService {
     const isLogin = window.sessionStorage.getItem(this.isLoginCacheKey) as string;
     this.isLogin = new BehaviorSubject(this.convertStringToBoolean(isLogin));
     this.isLogin$ = this.isLogin.asObservable();
-    this.initCurrentLoginUser().subscribe();
   }
 
 

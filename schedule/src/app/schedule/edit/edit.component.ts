@@ -430,9 +430,7 @@ export class EditComponent implements OnInit {
     const smLessons = this.bigLesson === 4 ? [0, 1, 2] : [0, 1];
     if (!this.selectedWeeks.includes(week)) {
       this.selectedWeeks.push(week);
-      // console.log('12123132123312', [...this.selectedWeeks]);
       smLessons.forEach(smLesson => {
-        console.log('this.sites', this.sites[this.day!][this.bigLesson! * 2 + smLesson][week]);
         this.disabledRooms = this.disabledRooms.concat(this.sites[this.day!][this.bigLesson! * 2 + smLesson][week]);
       });
     } else {
@@ -443,6 +441,8 @@ export class EditComponent implements OnInit {
         });
       });
     }
+
+    console.log('12123132123312', [...this.selectedWeeks], [...this.disabledRooms]);
   }
 
   onSmLessonsChange(smLesson: number): void {
@@ -586,9 +586,11 @@ export class EditComponent implements OnInit {
       // 不支持张三小节1在教室1上课，李四小节2在教室1上课
       const smLessons = this.bigLesson === 4 ? [0, 1, 2] : [0, 1];
       let status = false;
+      console.log('isRoomDisabled', [...this.sites]);
+      // todo: this.week尚未选择便渲染 全选按钮 见 593:45
       // @ts-ignore
       smLessons.forEach(smLesson => {
-        if (this.sites[this.day!][smLesson][this.week!].includes(roomId)) {
+        if (this.sites[this.day!][this.bigLesson! * 2 + smLesson][this.week!].includes(roomId)) {
           status = true;
         }
       });
@@ -711,38 +713,57 @@ export class EditComponent implements OnInit {
     return this.notEmptyWeeks.map(week => (week + 1)).join('、');
   }
 
-  // isAllWeekChecked(): boolean {
-  //   return this.selectedWeeks.length === (this.weeks.length - this.overtimeWeekNumber!);
-  // }
-  //
-  // isAllRoomChecked(): boolean {
-  //   return this.selectedRooms.length === this.rooms.length;
-  // }
-  //
-  // checkAllWeek(): void {
-  //   const arr = this.weeks.filter(w => this.overtimeWeekNumber! <= w)
-  //     .filter(w => !this.isWeekDisabled(w))
-  //     .filter(w => !this.disabledWeeks.includes(w));
-  //   if (this.selectedWeeks.length !== arr.length) {
-  //     if (!this.pattern) {
-  //       arr.forEach(w => {
-  //         this.onWeekChange(w);
-  //       });
-  //     }
-  //   } else {
-  //     this.selectedWeeks = this.selectedWeeks.filter(w => {
-  //       return w < this.overtimeWeekNumber!;
-  //     });
-  //   }
-  // }
-  //
-  // checkAllRoom(): void {
-  //   if (this.selectedRooms.length !== this.rooms.length) {
-  //     if (!this.pattern) {
-  //       this.selectedRooms = this.rooms.map(room => room.id!);
-  //     }
-  //   } else {
-  //     this.selectedRooms = [];
-  //   }
-  // }
+  isAllWeekChecked(): boolean {
+    return this.selectedWeeks.length === this.getEffectiveWeeks().length;
+  }
+
+  isAllRoomChecked(): boolean {
+    return this.selectedRooms.length === this.getEffectiveRooms().length;
+  }
+
+  checkAllWeek(): void {
+    const effectiveWeeks = this.getEffectiveWeeks();
+
+    if (this.selectedWeeks.length !== effectiveWeeks.length) {
+      if (!this.pattern) {
+        effectiveWeeks.forEach(w => {
+          if (!this.selectedWeeks.includes(w)) {
+            this.onWeekChange(w);
+          }
+        });
+      }
+    } else {
+      effectiveWeeks.forEach(week => {
+        this.onWeekChange(week);
+      });
+    }
+  }
+
+  checkAllRoom(): void {
+    const effectiveRooms = this.getEffectiveRooms();
+
+    if (Array.from(new Set(this.selectedRooms)).length !== effectiveRooms.length) {
+      console.log('checkAllRoom2', Array.from(new Set(this.selectedRooms)), effectiveRooms);
+      effectiveRooms.forEach(roomId => {
+        if (!this.selectedRooms.includes(roomId)) {
+          this.onRoomChange(roomId);
+        }
+      });
+    } else {
+      [...this.selectedRooms].forEach(roomId => {
+        this.onRoomChange(roomId);
+      });
+    }
+  }
+
+  private getEffectiveWeeks(): number[] {
+    return this.weeks.filter(w => this.overtimeWeekNumber! <= w)
+      .filter(w => !this.isWeekDisabled(w));
+  }
+
+  private getEffectiveRooms(): number[] {
+    return this.rooms
+      .filter(room => !this.isRoomDisabled(room.id!))
+      .map(room => room.id!);
+  }
 }
