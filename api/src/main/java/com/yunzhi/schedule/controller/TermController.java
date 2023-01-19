@@ -1,6 +1,5 @@
 package com.yunzhi.schedule.controller;
 
-import com.yunzhi.schedule.entity.Teacher;
 import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.service.TermService;
 import com.yunzhi.schedule.vo.StateTerm;
@@ -35,9 +34,7 @@ public class TermController {
             @SortDefault.SortDefaults({@SortDefault(sort = "state", direction = Sort.Direction.DESC),
                     @SortDefault(sort = "id", direction = Sort.Direction.DESC)})
             Pageable pageable) {
-        Page<Term> page = this.termService.page(name, pageable);
-        System.out.println(name);
-        return page;
+        return this.termService.page(name, pageable);
     }
 
     @GetMapping("termNameUnique")
