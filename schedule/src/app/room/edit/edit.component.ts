@@ -25,7 +25,7 @@ export class EditComponent implements OnInit {
     this.id = +this.route.snapshot.params.id;
     this.formGroup = new FormGroup({
       name: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.roomNameUnique(this.id)),
-      capacity: new FormControl(''),
+      capacity: new FormControl('', [Validators.required, YzValidator.notEmpty]),
     });
   }
 

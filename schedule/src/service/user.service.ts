@@ -18,7 +18,7 @@ export class UserService {
 
   public currentLoginUser = new User();
 
-  protected currentLoginUserSubject = new BehaviorSubject<User | null | undefined>(undefined);
+  currentLoginUserSubject = new BehaviorSubject<User | null | undefined>(undefined);
   currentLoginUser$ = this.currentLoginUserSubject.asObservable();
 
   constructor(private httpClient: HttpClient,
@@ -26,6 +26,7 @@ export class UserService {
     const isLogin = window.sessionStorage.getItem(this.isLoginCacheKey) as string;
     this.isLogin = new BehaviorSubject(this.convertStringToBoolean(isLogin));
     this.isLogin$ = this.isLogin.asObservable();
+    this.currentLoginUser$
   }
 
 
@@ -89,7 +90,6 @@ export class UserService {
       this.httpClient.get<User>(`${this.url}/me`)
         .subscribe({
           next: (user: User) => {
-            this.currentLoginUser = user;
             this.setCurrentLoginUser(user);
             subscriber.next();
           },
@@ -124,10 +124,8 @@ export class UserService {
    * @param userId 教师id
    * @param data 更新后的教师数据
    */
-  update(userId: number, data: { phone: string; name: string }): Observable<any> {
-    console.log('userId', userId);
-    console.log('update', data);
-    return this.httpClient.post<any>(`${this.url}/update/` + userId.toString(), data);
+  update(userId: number, data: { name: string }): Observable<User> {
+    return this.httpClient.post<User>(`${this.url}/update/` + userId.toString(), data);
   }
 
   logout(): Observable<void> {

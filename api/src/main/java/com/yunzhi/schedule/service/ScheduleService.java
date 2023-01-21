@@ -14,7 +14,7 @@ public interface ScheduleService {
     /**
      * 获取某个学期中的所有排课
      */
-    List<Schedule> getSchedulesInCurrentTerm(Term term);
+    List<Schedule> getSchedulesByTerm(Term term);
 
     Page<Schedule> page(String courseName, String termName, String clazzName, String teacherName, Pageable pageable);
 

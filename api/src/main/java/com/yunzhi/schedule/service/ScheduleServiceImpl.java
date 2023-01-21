@@ -34,7 +34,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
-    public List<Schedule> getSchedulesInCurrentTerm(Term term) {
+    public List<Schedule> getSchedulesByTerm(Term term) {
         return this.scheduleRepository.findSchedulesByTermAndDeletedFalse(term);
     }
 

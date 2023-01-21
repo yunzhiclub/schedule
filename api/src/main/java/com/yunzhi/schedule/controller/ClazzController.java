@@ -116,6 +116,7 @@ public class ClazzController {
             Clazz.IdJsonView,
             Clazz.NameJsonView,
             Clazz.StudentsJsonView,
+            Clazz.EntranceDateJsonView,
             Student.IdJsonView
     {}
 }

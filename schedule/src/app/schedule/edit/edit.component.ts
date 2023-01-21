@@ -251,6 +251,7 @@ export class EditComponent implements OnInit {
         console.log('getData', [...this.weeksRecorder], [...this.roomsRecorder]);
         this.termService.getCurrentTerm()
           .subscribe((term: Term) => {
+            this.commonService.checkTermIsActivated(term);
             this.term = term;
             let seconds = +term.endTime - +term.startTime;
             let days = Math.ceil(seconds / (60 * 60 * 24));

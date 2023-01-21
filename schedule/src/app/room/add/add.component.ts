@@ -23,7 +23,7 @@ export class AddComponent implements OnInit {
               private httpClient: HttpClient) {
     this.formGroup = new FormGroup({
       name: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.roomNameUnique()),
-      capacity: new FormControl('')
+      capacity: new FormControl('', [Validators.required, YzValidator.notEmpty])
     });
   }
 

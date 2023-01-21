@@ -7,6 +7,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {DomSanitizer} from '@angular/platform-browser';
 import {filter} from 'rxjs/operators';
 import * as FileSaver from 'file-saver';
+import {Term} from '../entity/term';
 
 @Injectable({
   providedIn: 'root'
@@ -271,5 +272,14 @@ export class CommonService {
    */
   saveFile(blob: Blob, fileName: string): void {
     FileSaver.saveAs(blob, fileName);
+  }
+
+  checkTermIsActivated(term: Term): void {
+    console.log('checkTermIsActivated', term);
+    if (term === null) {
+      this.error(() => {
+        this.router.navigateByUrl('/schedule');
+      }, '当前无激活学期');
+    }
   }
 }

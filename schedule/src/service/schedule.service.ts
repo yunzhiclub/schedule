@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {Page} from '../common/page';
 import {Schedule} from '../entity/schedule';
 import {Dispatch} from '../entity/dispatch';
+import {Term} from '../entity/term';
 
 @Injectable({
   providedIn: 'root'
@@ -76,5 +77,12 @@ export class ScheduleService {
   updateClazzesAndTeachers(scheduleId: number | undefined, teacher1Id: number, teacher2Id: number, clazzIds: number[]): Observable<boolean> {
     const data = {scheduleId, teacher1Id, teacher2Id, clazzIds};
     return this.httpClient.post<boolean>(`${this.baseUrl}/updateClazzesAndTeachers/`, data);
+  }
+
+  getSchedulesByTerm(term: Term): Observable<Schedule[]> {
+    return this.httpClient.get<Schedule[]>(this.baseUrl + '/getSchedulesByTerm/' + term.id)
+      .pipe(map((schedules: Schedule[]) => {
+        return schedules.map((schedule: Schedule) => new Schedule(schedule));
+      }));
   }
 }

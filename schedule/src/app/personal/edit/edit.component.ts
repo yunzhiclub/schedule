@@ -39,10 +39,10 @@ export class EditComponent implements OnInit {
     Assert.isNumber(this.userId, 'id类型不是number');
     this.userService.update(this.userId as number, {
       name: this.formGroup.get('name')?.value,
-      phone: this.formGroup.get('phone')?.value,
+      // phone: this.formGroup.get('phone')?.value,
     })
       .subscribe(success => {
-        console.log('用户更新成功', success);
+        this.userService.setCurrentLoginUser(success);
         this.commonService.success(() => this.router.navigate(['../'], {relativeTo: this.route}));
       }, error => {
         console.log('用户更新失败', error);

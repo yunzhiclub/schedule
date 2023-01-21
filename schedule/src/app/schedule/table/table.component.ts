@@ -272,23 +272,28 @@ export class TableComponent implements OnInit {
         this.makeSmLessonsRecorder();
         this.makeNotEmptyWeeksTable();
 
+        this.term = schedule.term;
+        const term = this.term;
+        let seconds = +term.endTime - +term.startTime;
+        let days = Math.ceil(seconds / (60 * 60 * 24));
+        this.weekNumber = Math.ceil(days / 7);
+        console.log('getData => weekNumber', this.weekNumber, days, seconds, term);
         this.termService.getCurrentTerm()
-          .subscribe((term: Term) => {
-            this.term = term;
-            let seconds = +term.endTime - +term.startTime;
-            let days = Math.ceil(seconds / (60 * 60 * 24));
-            this.weekNumber = Math.ceil(days / 7);
-            const timestamp = Date.parse(new Date().toString()) / 1000;
-            seconds = timestamp - +term.startTime;
-            days = Math.floor(seconds / (60 * 60 * 24));
-            this.overtimeWeekNumber = Math.floor(days / 7);
+          .subscribe((currentTerm) => {
+            if (currentTerm.id === term.id) {
+              const timestamp = Date.parse(new Date().toString()) / 1000;
+              seconds = timestamp - +term.startTime;
+              days = Math.floor(seconds / (60 * 60 * 24));
+              this.overtimeWeekNumber = Math.floor(days / 7);
+              console.log('overtimeWeekNumber', this.overtimeWeekNumber);
+            }
+          });
 
-            this.makeWeeks();
-            this.scheduleService.getSchedulesInCurrentTerm()
-              .subscribe((schedules: Schedule[]) => {
-                this.schedules = schedules;
-                this.makeTimesAndSites();
-              });
+        this.makeWeeks();
+        this.scheduleService.getSchedulesByTerm(schedule.term)
+          .subscribe((schedules: Schedule[]) => {
+            this.schedules = schedules;
+            this.makeTimesAndSites();
           });
       });
     this.roomService.getAll()
@@ -406,6 +411,7 @@ export class TableComponent implements OnInit {
   }
 
   private makeWeeks(): void {
+    console.log('makeWeeks', this.weekNumber.toString());
     this.weeks = Array.from(new Array(this.weekNumber).keys());
   }
 
@@ -545,7 +551,7 @@ export class TableComponent implements OnInit {
     });
     if (!status && !this.pattern) {
       this.pattern = true;
-      this.commonService.info(() => {}, '当前数据不支持同步模式，已自动为您切换为定制模式');
+      // this.commonService.info(() => {}, '当前数据不支持同步模式，已自动为您切换为定制模式');
     }
   }
 
@@ -595,7 +601,7 @@ export class TableComponent implements OnInit {
   }
 
   getNotEmptyWeeksOfTable(day: number, bigLesson: number): string {
-    return this.notEmptyWeeksTable[day][bigLesson].join('、');
+    return this.notEmptyWeeksTable[day][bigLesson].map(week => week + 1).join('、');
   }
 
   onWeekClick(week: number): void {
