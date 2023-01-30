@@ -72,10 +72,14 @@ export class EditClazzesAndTeachersComponent implements OnInit {
    */
   private subscribeFormGroup(): void {
     this.formGroup.get('teacher1Id')?.valueChanges.subscribe((teacher1Id: number) => {
-      this.isTeacherSame = teacher1Id === this.formGroup.get('teacher2Id')?.value;
+      if (this.formGroup.get('teacher2Id')?.value !== null) {
+        this.isTeacherSame = teacher1Id === this.formGroup.get('teacher2Id')?.value.toString();
+      } else {
+        this.isTeacherSame = teacher1Id === this.formGroup.get('teacher2Id')?.value;
+      }
     });
     this.formGroup.get('teacher2Id')?.valueChanges.subscribe((teacher2Id: number) => {
-      this.isTeacherSame = teacher2Id === this.formGroup.get('teacher1Id')?.value;
+      this.isTeacherSame = teacher2Id === this.formGroup.get('teacher1Id')?.value.toString();
     });
   }
   // 为新增班级获取可选班级
@@ -87,7 +91,7 @@ export class EditClazzesAndTeachersComponent implements OnInit {
     this.clazzService.getAll()
       .subscribe(allClazzes => {
         this.allClazzes = allClazzes;
-        console.log('get all classes success', this.allClazzes);
+        // console.log('get all classes success', this.allClazzes);
         this.getFirstFilerClazzes();
         this.getSecondFilerClazzes();
       }, error => {
@@ -98,7 +102,7 @@ export class EditClazzesAndTeachersComponent implements OnInit {
   getFirstFilerClazzes(): void {
     this.firstFilerClazzes = this.allClazzes
       .filter((x) => !this.schedule.clazzes.some((item) => x.id === item.id));
-    console.log('打印firstFilerClazzes', this.firstFilerClazzes);
+    // console.log('打印firstFilerClazzes', this.firstFilerClazzes);
   }
   //  从firstFilerClazzes中除去已经选择该课程的班级得到secondFilerClazzes
   getSecondFilerClazzes(): void {
@@ -106,7 +110,7 @@ export class EditClazzesAndTeachersComponent implements OnInit {
     this.scheduleService.getSchedulesInCurrentTerm()
       .subscribe(schedules => {
         this.allSchedulesInCurrentTerm = schedules;
-        console.log('allSchedulesInCurrentTerm', this.allSchedulesInCurrentTerm);
+        // console.log('allSchedulesInCurrentTerm', this.allSchedulesInCurrentTerm);
         for (const schedule of this.allSchedulesInCurrentTerm) {
           if (schedule.course.id === this.schedule.course.id) {
             for (const clazz of schedule.clazzes) {
@@ -115,7 +119,7 @@ export class EditClazzesAndTeachersComponent implements OnInit {
           }
         }
         this.secondFilerClazzes = this.firstFilerClazzes.filter((x) => !willFilteredClazzes.some(item => x.id === item.id));
-        console.log('this.secondFilerClazzes', this.secondFilerClazzes);
+        // console.log('this.secondFilerClazzes', this.secondFilerClazzes);
         this.getThirdFilerClazzes();
         this.getSelectableTeachers();
       });
@@ -125,9 +129,9 @@ export class EditClazzesAndTeachersComponent implements OnInit {
     for (const schedule of this.allSchedulesInCurrentTerm) {
       for (const dispatch of schedule.dispatches) {
         for (const alreadyExitDispatch of this.dispatches) {
-          if ( dispatch.day === dispatch.day
-            && dispatch.lesson === dispatch.lesson
-            && dispatch.week === dispatch.week
+          if ( dispatch.day === alreadyExitDispatch.day
+            && dispatch.lesson === alreadyExitDispatch.lesson
+            && dispatch.week === alreadyExitDispatch.week
             && schedule.id !== this.schedule.id) {
             this.scheduleIdOfDispatchConflictClazzes.push(schedule.id);
           }
@@ -146,11 +150,11 @@ export class EditClazzesAndTeachersComponent implements OnInit {
         }
       }
     }
-    console.log('打印 dispatchConflictClazzes', this.dispatchConflictClazzes);
+    // console.log('打印 dispatchConflictClazzes', this.dispatchConflictClazzes);
     // 从第一次筛选过后的班级中筛选出来不在冲突班级的班级
     this.thirdFilerClazzes = this.secondFilerClazzes
       .filter((x) => !this.dispatchConflictClazzes.some((item) => x.id === item.id));
-    console.log('打印最终的可选择的班级', this.thirdFilerClazzes);
+    // console.log('打印最终的可选择的班级', this.thirdFilerClazzes);
   }
   onDeleteClazz(clazzId: number): void {
     const scheduleId = this.scheduleId;
@@ -174,6 +178,9 @@ export class EditClazzesAndTeachersComponent implements OnInit {
     this.formGroup.get('teacher2Id')!.setValue(this.schedule.teacher2.id);
   }
   canSubmit(): boolean {
+    console.log('canSubmit', !(!this.isTeacherSame &&
+      this.formGroup.get('teacher1Id')?.value !== 'null' &&
+      this.formGroup.get('teacher2Id')?.value !== 'null'));
     return !(!this.isTeacherSame &&
       this.formGroup.get('teacher1Id')?.value !== 'null' &&
       this.formGroup.get('teacher2Id')?.value !== 'null');
@@ -192,20 +199,17 @@ export class EditClazzesAndTeachersComponent implements OnInit {
   }
   private getSelectableTeachers(): void {
     this.getConflictTeachers();
-    console.log('this.teachers', this.teachers);
-    console.log('this.conflictTeachers', this.conflictTeachers);
     this.selectableTeachers = this.teachers
       .filter((x) => !this.conflictTeachers.some((item) => x.id === item.id));
   }
   private getConflictTeachers(): void {
     for (const schedule of this.allSchedulesInCurrentTerm) {
-      if (schedule.id !== this.scheduleId) {
+      if (schedule.id !== this.schedule.id) {
         for (const dispatch of schedule.dispatches) {
           for (const alreadyExitDispatch of this.dispatches) {
-            if ( dispatch.day === dispatch.day
-              && dispatch.lesson === dispatch.lesson
-              && dispatch.week === dispatch.week
-              && schedule.id !== this.schedule.id) {
+            if ( dispatch.day === alreadyExitDispatch.day
+              && dispatch.lesson === alreadyExitDispatch.lesson
+              && dispatch.week === alreadyExitDispatch.week) {
               if (!this.whetherTeachersIncludeTeacher(this.conflictTeachers, schedule.teacher1)) {
                 this.conflictTeachers.push(schedule.teacher1);
               }

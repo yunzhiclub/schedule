@@ -26,7 +26,7 @@
 <h1 class="text-center mb-5 title-pt" style="margin-top: 90px" *ngIf="!term">
   <label>请前往学期管理激活学期</label><br>
 </h1>
-<div class="row" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null && this.formGroup.get('displayMode')?.value === 'small'">
+<div class="row" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null && this.formGroup.get('displayMode')?.value === 'small' && term">
   <div class="col-md-12">
     <table class="table table-striped table-bordered">
       <thead class="table-primary">
@@ -65,7 +65,7 @@
   </div>
 </div>
 
-<div class="row" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null && this.formGroup.get('displayMode')?.value === 'big'">
+<div class="row" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null && this.formGroup.get('displayMode')?.value === 'big' && term">
   <div class="col-md-12">
     <table class="table table-striped table-bordered">
       <thead class="table-primary">
