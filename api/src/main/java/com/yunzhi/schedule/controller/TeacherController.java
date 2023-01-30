@@ -43,7 +43,20 @@ public class TeacherController {
             @RequestParam(required = false, defaultValue = "") String phone,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        return this.teacherService.page(name, phone, pageable);
+        Page<Teacher> teacherPage = this.teacherService.page(name, phone, pageable);
+        teacherPage.getContent().forEach(teacher -> {
+            teacher.getSchedules1().forEach(schedule -> {
+                if (schedule.getDeleted()) {
+                    schedule.setDispatches(null);
+                }
+            });
+            teacher.getSchedules2().forEach(schedule -> {
+                if (schedule.getDeleted()) {
+                    schedule.setDispatches(null);
+                }
+            });
+        });
+        return teacherPage;
     }
 
     /**
@@ -63,6 +76,7 @@ public class TeacherController {
      * @return 教师
      */
     @GetMapping("getById/{id}")
+    @JsonView(GetById.class)
     public Teacher getById(@PathVariable Long id) {
         return this.teacherService.getById(id);
     }
@@ -147,5 +161,13 @@ public class TeacherController {
             Schedule.IdJsonView,
             Schedule.DispatchesJsonView,
             Dispatch.IdJsonView
+    {}
+    public interface GetById extends
+            Teacher.NameJsonView,
+            Teacher.IdJsonView,
+            Teacher.SexJsonView,
+            Teacher.PhoneJsonView,
+            Teacher.Schedules1JsonView,
+            Teacher.Schedules2JsonView
     {}
 }

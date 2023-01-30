@@ -36,8 +36,15 @@ public class ScheduleController {
     @JsonView(GetSchedulesInCurrentTerm.class)
     public List<Schedule> getSchedulesInCurrentTerm() {
         Term term = this.termService.getCurrentTerm();
-        List<Schedule> schedules = this.scheduleService.getSchedulesInCurrentTerm(term);
+        List<Schedule> schedules = this.scheduleService.getSchedulesByTerm(term);
         return schedules;
+    }
+
+    @GetMapping("getSchedulesByTerm/{termId}")
+    @JsonView(getSchedulesByTerm.class)
+    public List<Schedule> getSchedulesByTerm(@PathVariable Long termId) {
+        Term term = this.termService.getById(termId);
+        return this.scheduleService.getSchedulesByTerm(term);
     }
 
     /**
@@ -141,6 +148,9 @@ public class ScheduleController {
             Clazz.IdJsonView,
             Teacher.NameJsonView,
             Term.NameJsonView,
+            Term.IdJsonView,
+            Term.EndTimeJsonView,
+            Term.StartTimeJsonView,
             Course.NameJsonView,
             Course.IdJsonView,
             Course.HoursJsonView,
@@ -154,6 +164,9 @@ public class ScheduleController {
 
     public interface PageJsonView extends
             GetById
+    {}
+    public interface getSchedulesByTerm extends
+            GetSchedulesInCurrentTerm
     {}
 
 

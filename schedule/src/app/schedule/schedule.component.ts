@@ -8,6 +8,8 @@ import {Assert, stringToIntegerNumber} from '../../common/utils';
 import {config} from '../../conf/app.config';
 import {ScheduleService} from '../../service/schedule.service';
 import {Clazz} from '../../entity/clazz';
+import {Term} from '../../entity/term';
+import {TermService} from '../../service/term.service';
 
 @Component({
   selector: 'app-schedule',
@@ -27,9 +29,11 @@ export class ScheduleComponent implements OnInit {
     clazzName: 'clazzName',
     teacherName: 'teacherName'
   };
+  term = {} as Term;
 
   constructor(private commonService: CommonService,
               private route: ActivatedRoute,
+              private termService: TermService,
               private scheduleService: ScheduleService) { }
 
   ngOnInit(): void {
@@ -52,6 +56,10 @@ export class ScheduleComponent implements OnInit {
           console.log(data);
         });
     });
+    this.termService.getCurrentTerm()
+      .subscribe((term: Term) => {
+        this.term = term;
+      });
   }
 
   /**

@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.sql.Timestamp;
 
 /**
  * 学期实体
@@ -22,9 +21,11 @@ public class Term implements SoftDelete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty("id")
+    @JsonView(IdJsonView.class)
     private Long id;
 
     @ApiModelProperty("学期状态")
+    @JsonView(StateJsonView.class)
     private Boolean state = false;
 
     public String getName() {
@@ -94,4 +95,6 @@ public class Term implements SoftDelete {
     public interface NameJsonView {}
     public interface StartTimeJsonView {}
     public interface EndTimeJsonView {}
+    public interface IdJsonView {}
+    public interface StateJsonView {}
 }

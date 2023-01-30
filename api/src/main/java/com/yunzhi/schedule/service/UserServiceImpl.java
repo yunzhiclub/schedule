@@ -115,10 +115,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(Long userId, User user) {
         Assert.notNull(user.getName(), "name不能为null");
-        Assert.notNull(user.getPhone(), "phone不能为null");
+//        Assert.notNull(user.getPhone(), "phone不能为null");
         User oldUser = this.getById(userId);
         oldUser.setName(user.getName());
-        oldUser.setPhone(user.getPhone());
+//        oldUser.setPhone(user.getPhone());
         return this.userRepository.save(oldUser);
     }
 

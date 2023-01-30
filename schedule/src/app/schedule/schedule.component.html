@@ -35,7 +35,7 @@
       <td>{{schedule.teacher1.name + '、' + schedule.teacher2.name}}</td>
       <td>
         <a class="btn btn-sm btn-info" [routerLink]="'timetable/' + schedule.id"><i class="fas  fa-info-circle"></i>查看课表</a>
-        <a class="btn btn-sm btn-primary" [routerLink]="'edit/' + schedule.id"><i class="fas fa-edit"></i>编辑</a>
+        <button class="btn btn-sm btn-primary" [disabled]="schedule.term.id !== term?.id" [routerLink]="'edit/' + schedule.id"><i class="fas fa-edit"></i>编辑</button>
         <a class="btn btn-sm btn-danger" (click)="onDelete(schedule.id)"><i class="fas fa-trash"></i>删除</a>
       </td>
     </tr>

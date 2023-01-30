@@ -299,8 +299,11 @@ export class AddComponent implements OnInit {
   }
 
   private getData(): void {
+    console.log('getData');
     this.termService.getCurrentTerm()
       .subscribe((term: Term) => {
+        this.commonService.checkTermIsActivated(term);
+        console.log('getData2');
         this.term = term;
         let seconds = +term.endTime - +term.startTime;
         let days = Math.ceil(seconds / (60 * 60 * 24));

@@ -156,6 +156,8 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
 
     private void chen() {
         Term term = this.addTerm("已激活学期", true, 1672502400L, 1688140800L);
+        Term term0 = this.addTerm("未激活学期", false, 1672502400L, 1688140800L);
+
         Teacher teacher1 = this.addTeacher("张三", true, "13100000000");
         Teacher teacher2 = this.addTeacher("李四", false, "13100000001");
         Teacher teacher3 = this.addTeacher("王五", false, "13100000002");

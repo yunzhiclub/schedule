@@ -18,10 +18,9 @@ export class HeaderComponent implements OnInit {
                private router: Router) { }
 
   ngOnInit(): void {
-    this.userService.currentLoginUser$
-      .subscribe((user) => {
-        this.username = user?.name;
-      });
+    this.userService.currentLoginUser$.subscribe((user) => {
+      this.username = user?.name;
+    });
   }
   a(): void {
     window.location.reload();
