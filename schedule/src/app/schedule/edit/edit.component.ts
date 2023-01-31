@@ -91,7 +91,7 @@ export class EditComponent implements OnInit {
   isSmLessonsDetermine = false;
   // 定制模式下非空的周
   notEmptyWeeks = [] as number[];
-  // 所有班级
+
   constructor(private clazzService: ClazzService,
               private courseService: CourseService,
               private teacherService: TeacherService,
@@ -244,29 +244,28 @@ export class EditComponent implements OnInit {
         this.teacher2 = schedule.teacher2;
         this.course = schedule.course;
         this.dispatches = schedule.dispatches;
+        this.term = schedule.term;
         this.makeSelectedData();
         this.validateData();
         this.makeWeeksAndRoomsRecoder();
         this.makeSmLessonsRecorder();
         console.log('getData', [...this.weeksRecorder], [...this.roomsRecorder]);
-        this.termService.getCurrentTerm()
-          .subscribe((term: Term) => {
-            this.commonService.checkTermIsActivated(term);
-            this.term = term;
-            let seconds = +term.endTime - +term.startTime;
-            let days = Math.ceil(seconds / (60 * 60 * 24));
-            this.weekNumber = Math.ceil(days / 7);
-            const timestamp = Date.parse(new Date().toString()) / 1000;
-            seconds = timestamp - +term.startTime;
-            days = Math.floor(seconds / (60 * 60 * 24));
-            this.overtimeWeekNumber = Math.floor(days / 7);
-            this.makeWeeks();
-            this.scheduleService.getSchedulesInCurrentTerm()
-              .subscribe((schedules: Schedule[]) => {
-                this.schedules = schedules;
-                this.makeTimesAndSites();
-              });
+
+        const term = this.term;
+        let seconds = +term.endTime - +term.startTime;
+        let days = Math.ceil(seconds / (60 * 60 * 24));
+        this.weekNumber = Math.ceil(days / 7);
+        const timestamp = Date.parse(new Date().toString()) / 1000;
+        seconds = timestamp - +term.startTime;
+        days = Math.floor(seconds / (60 * 60 * 24));
+        this.overtimeWeekNumber = Math.floor(days / 7);
+        this.makeWeeks();
+        this.scheduleService.getSchedulesByTerm(term)
+          .subscribe((schedules: Schedule[]) => {
+            this.schedules = schedules;
+            this.makeTimesAndSites();
           });
+
       });
     this.roomService.getAll()
       .subscribe((rooms: Room[]) => {
