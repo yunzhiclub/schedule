@@ -19,7 +19,7 @@
   <div class="col-sm-2">
     <input type="text" class="disabled mt-1" disabled [value]="this.teacher2.name">
   </div>
-  <a routerLink="editClazzesAndTeachers" class="btn btn-success">编辑班级/教师信息</a>
+  <a routerLink="editClazzesAndTeachers" class="ml-2 btn btn-success">编辑班级/教师信息</a>
 </div>
 <!--选择时间-->
 <div class="form-group row">
@@ -34,7 +34,8 @@
         <button class="dropdown-item" type="button" (click)="updatePattern(true)">定制选择</button>
       </div>
       <span class="ml-5 mr-5 font-weight-bold">当前学时:&nbsp;&nbsp;{{ selectedData.length}}</span>
-      <span class="font-weight-bold">课程学时:&nbsp;&nbsp;{{ course?.hours}}</span>
+      <span class="mr-5 font-weight-bold">课程学时:&nbsp;&nbsp;{{ course?.hours}}</span>
+      <span class="font-weight-bold">学期:&nbsp;&nbsp;{{ term?.name}}</span>
     </div>
   </div>
 </div>
