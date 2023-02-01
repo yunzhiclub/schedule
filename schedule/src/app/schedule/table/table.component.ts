@@ -91,7 +91,7 @@ export class TableComponent implements OnInit {
   pattern = false;
   // 定制模式下非空的周 for model
   notEmptyWeeks = [] as number[];
-  // 定制模式下非空的周 for table
+  // 非空的周 for table
   notEmptyWeeksTable = [] as number[][][];
 
   constructor(private clazzService: ClazzService,

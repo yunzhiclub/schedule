@@ -804,4 +804,8 @@ export class AddComponent implements OnInit {
       .filter(room => !this.isRoomDisabled(room.id!))
       .map(room => room.id!);
   }
+
+  getWeeksForShow(day: number, bigLesson: number): string {
+    return this.weeksRecorder[day][bigLesson].map(week => week + 1).join('、');
+  }
 }
