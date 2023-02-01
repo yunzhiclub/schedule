@@ -10,7 +10,7 @@ import {User} from '../../entity/user';
 export class PersonalComponent implements OnInit {
   public user = new User();
 
-  constructor( private userService: UserService ) { }
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
     this.userService.getCurrentLoginUser()
@@ -18,5 +18,4 @@ export class PersonalComponent implements OnInit {
         this.user = currentLoginUser;
       });
   }
-
 }
