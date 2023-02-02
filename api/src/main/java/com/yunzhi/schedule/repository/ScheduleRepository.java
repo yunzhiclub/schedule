@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import javax.persistence.criteria.JoinType;
 import java.util.List;
 
 public interface ScheduleRepository extends PagingAndSortingRepository<Schedule, Long>, JpaSpecificationExecutor<Schedule> {
@@ -21,8 +22,8 @@ public interface ScheduleRepository extends PagingAndSortingRepository<Schedule,
         Specification<Schedule> specification = ScheduleSpecs.containingName(courseName, "course")
                 .and(ScheduleSpecs.containingName(termName, "term"))
                 .and(ScheduleSpecs.containingName(teacherName, "teacher1")
-                    .or(ScheduleSpecs.containingName(teacherName, "teacher2")));
-        System.out.println("-------------------------");
+                    .or(ScheduleSpecs.containingName(teacherName, "teacher2")))
+                .and(ScheduleSpecs.containingClazzName(clazzName));
         return this.findAll(specification, pageable);
     }
 
