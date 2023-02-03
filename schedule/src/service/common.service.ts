@@ -8,7 +8,9 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {filter} from 'rxjs/operators';
 import * as FileSaver from 'file-saver';
 import {Term} from '../entity/term';
-
+import {Room} from '../entity/room';
+import {Schedule} from '../entity/schedule';
+import {Clazz} from '../entity/clazz';
 // @ts-ignore
 import * as Excel from 'exceljs/dist/exceljs.min.js';
 
@@ -295,7 +297,9 @@ export class CommonService {
   }
 
   // tslint:disable-next-line:typedef
-  public generateExcel() {
+  public generateExcel(bigModelContent: { rooms: Room[]; weeks: number[];
+                                          clazzes: Clazz[]; schedules: Schedule[] }[][],
+                       bigModelRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][]) {
     // Create workbook and worksheet
     this.workbook = new Excel.Workbook();
 
@@ -311,15 +315,177 @@ export class CommonService {
 
     // Title
     const title = 'Excel file example';
-
-    // Add Row
-    this.worksheet.addRow([title]);
+    // 课程表初始化
+    this.timetableExcelInit();
+    // 填充内容
+    // [0][0] => B2; [0][1] => D2; [0][2] => F2; [0][3] => H2; [0][4] => J2; [0][5] => L2; [0][6] => N2
+    // [1][0] => B8; [1][1] => D8; [1][2] => F8; [1][3] => H8; [1][4] => J8; [1][5] => L8; [1][6] => N8
+    // [2][0] => B14; [2][1] => D14; [2][2] => F14; [2][3] => H14; [2][4] => J14; [2][5] => L14; [2][6] => N14
+    // [3][0] => B20; [3][1] => D20; [3][2] => F20; [3][3] => H20; [3][4] => J20; [3][5] => L20; [3][6] => N20
+    // [4][0] => B26; [4][1] => D26; [4][2] => F26; [4][3] => H26; [4][4] => J26; [4][5] => L26; [4][6] => N26
+    console.log('bigModelContent', bigModelContent);
+    for (let l = 0; l < 5; l++) {
+      for (let d = 0; d < 7; d++) {
+        if (bigModelContent[l][d].schedules.length > 0) {
+          let cellRow = '';
+          let cellCol = '';
+          if (l === 0) { cellRow = '2'; }
+          if (l === 1) { cellRow = '8'; }
+          if (l === 2) { cellRow = '14'; }
+          if (l === 3) { cellRow = '20'; }
+          if (l === 4) { cellRow = '26'; }
+          if (d === 0) { cellCol = 'B'; }
+          if (d === 1) { cellCol = 'D'; }
+          if (d === 2) { cellCol = 'F'; }
+          if (d === 3) { cellCol = 'H'; }
+          if (d === 4) { cellCol = 'J'; }
+          if (d === 5) { cellCol = 'L'; }
+          if (d === 6) { cellCol = 'N'; }
+          const cellName = cellCol + cellRow;
+          this.worksheet.getCell(cellName).value = bigModelContent[l][d].schedules[0].course.name + '\n'
+            + this.getWeeksForExcel(bigModelRoomsAndWeeks[l][d][bigModelContent[l][d].schedules[0].id][0].weeks) + '\n'
+            + this.getRoomsForExcel(bigModelRoomsAndWeeks[l][d][bigModelContent[l][d].schedules[0].id][0].rooms) + '\n'
+            + bigModelContent[l][d].schedules[0].clazzes[0].name + '\n'
+            + bigModelContent[l][d].schedules[0].teacher1.name + '、'
+            + bigModelContent[l][d].schedules[0].teacher2.name;
+        }
+      }
+    }
 
     // Generate Excel File
     this.workbook.xlsx.writeBuffer().then((data: BlobPart) => {
       const blob = new Blob([data], {type: EXCEL_TYPE});
       // Given name
-      FileSaver.saveAs(blob, 'download.xlsx');
+      const filename = '课程表';
+      FileSaver.saveAs(blob, filename + EXCEL_EXTENSION);
     });
+  }
+  private getRoomsForExcel(rooms: Room[]): string {
+    let result = '';
+    for (const room of rooms) {
+      if (result === '') {
+        result = result + room.name;
+      } else {
+        result = result + '、' + room.name;
+      }
+    }
+    return result;
+  }
+  private getWeeksForExcel(weeks: number[]): string {
+    let result = '';
+    const minWeeks = this.arrayMin(weeks);
+    const maxWeeks = this.arrayMax(weeks);
+    if (this.isArrayContinuous(weeks, minWeeks, maxWeeks)) {
+      return (minWeeks + 1) + '-' + (maxWeeks + 1) + '周';
+    }
+    for (let i = minWeeks; i <= maxWeeks; i++) {
+      if (!this.isArrayContinuous(weeks, minWeeks, i)) {
+        result = (minWeeks + 1) + '-' + i;
+        break;
+      }
+    }
+    return result + '周';
+  }
+  // 判断数组是否连续
+  private isArrayContinuous(arrs: number[], min: number, max: number): boolean {
+    for (let i = min; i <= max; i++) {
+      if (!arrs.includes(i)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  // 找出数组中的最小值
+  private arrayMin(arrs: number[]): number {
+    let min = arrs[0];
+    for (let i = 1, ilen = arrs.length; i < ilen; i += 1) {
+      if (arrs[i] < min) {
+        min = arrs[i];
+      }
+    }
+    return min;
+  }
+  // 找出数组中的最大值
+  private arrayMax(arrs: number[]): number {
+    let max = arrs[0];
+    for (let i = 1, ilen = arrs.length; i < ilen; i += 1) {
+      if (arrs[i] > max) {
+        max = arrs[i];
+      }
+    }
+    return max;
+  }
+  private timetableExcelInit(): void {
+    const rowValues = [];
+    rowValues[1] = '天/节';
+    rowValues[2] = '周一';
+    rowValues[4] = '周二';
+    rowValues[6] = '周三';
+    rowValues[8] = '周四';
+    rowValues[10] = '周五';
+    rowValues[12] = '周六';
+    rowValues[14] = '周日';
+    this.worksheet.addRow(rowValues);
+    const rows = [
+      ['第一大节'], [], [], [], [], [],
+      ['第二大节'], [], [], [], [], [],
+      ['第三大节'], [], [], [], [], [],
+      ['第四大节'], [], [], [], [], [],
+      ['第五大节'], [], [], [], [], [],
+    ];
+    this.worksheet.addRows(rows);
+    this.worksheet.mergeCells('B1:C1');
+    this.worksheet.mergeCells('D1:E1');
+    this.worksheet.mergeCells('F1:G1');
+    this.worksheet.mergeCells('H1:I1');
+    this.worksheet.mergeCells('J1:K1');
+    this.worksheet.mergeCells('L1:M1');
+    this.worksheet.mergeCells('N1:O1');
+
+    this.worksheet.mergeCells('A2', 'A7');
+    this.worksheet.mergeCells('A8', 'A13');
+    this.worksheet.mergeCells('A14', 'A19');
+    this.worksheet.mergeCells('A20', 'A25');
+    this.worksheet.mergeCells('A26', 'A31');
+
+    this.worksheet.mergeCells('B2', 'C7');
+    this.worksheet.mergeCells('D2', 'E7');
+    this.worksheet.mergeCells('F2', 'G7');
+    this.worksheet.mergeCells('H2', 'I7');
+    this.worksheet.mergeCells('J2', 'K7');
+    this.worksheet.mergeCells('L2', 'M7');
+    this.worksheet.mergeCells('N2', 'O7');
+
+    this.worksheet.mergeCells('B8', 'C13');
+    this.worksheet.mergeCells('D8', 'E13');
+    this.worksheet.mergeCells('F8', 'G13');
+    this.worksheet.mergeCells('H8', 'I13');
+    this.worksheet.mergeCells('J8', 'K13');
+    this.worksheet.mergeCells('L8', 'M13');
+    this.worksheet.mergeCells('N8', 'O13');
+
+    this.worksheet.mergeCells('B14', 'C19');
+    this.worksheet.mergeCells('D14', 'E19');
+    this.worksheet.mergeCells('F14', 'G19');
+    this.worksheet.mergeCells('H14', 'I19');
+    this.worksheet.mergeCells('J14', 'K19');
+    this.worksheet.mergeCells('L14', 'M19');
+    this.worksheet.mergeCells('N14', 'O19');
+
+    this.worksheet.mergeCells('B20', 'C25');
+    this.worksheet.mergeCells('D20', 'E25');
+    this.worksheet.mergeCells('F20', 'G25');
+    this.worksheet.mergeCells('H20', 'I25');
+    this.worksheet.mergeCells('J20', 'K25');
+    this.worksheet.mergeCells('L20', 'M25');
+    this.worksheet.mergeCells('N20', 'O25');
+
+    this.worksheet.mergeCells('B26', 'C31');
+    this.worksheet.mergeCells('D26', 'E31');
+    this.worksheet.mergeCells('F26', 'G31');
+    this.worksheet.mergeCells('H26', 'I31');
+    this.worksheet.mergeCells('J26', 'K31');
+    this.worksheet.mergeCells('L26', 'M31');
+    this.worksheet.mergeCells('N26', 'O31');
   }
 }
