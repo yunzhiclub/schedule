@@ -388,6 +388,6 @@ export class TimetableComponent implements OnInit {
   }
 
   excelExport(): void {
-    this.commonService.generateExcel();
+    this.commonService.generateExcel(this.bigModelContent, this.bigModelRoomsAndWeeks);
   }
 }
