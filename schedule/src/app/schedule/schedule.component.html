@@ -4,7 +4,7 @@
     <form class="form-inline"  (submit)="onSubmit(queryForm)"  [formGroup]="queryForm">
       <input type="text" formControlName="courseName" class="form-control col-2 mr-3" placeholder="课程名称">
       <input type="text" formControlName="termName" class="form-control col-2 mr-3" placeholder="学期名称">
-      <input type="text" [disabled]="true" formControlName="clazzName" class="form-control col-2 mr-3" placeholder="班级名称">
+      <input type="text" formControlName="clazzName" class="form-control col-2 mr-3" placeholder="班级名称">
       <input type="text" formControlName="teacherName" class="form-control col-2 mr-3" placeholder="教师名称">
       <button type="submit" class="btn btn-info"><i class="fas fa-search"></i>查询</button>
     </form>
