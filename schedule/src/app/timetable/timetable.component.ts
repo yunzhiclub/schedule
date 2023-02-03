@@ -8,6 +8,7 @@ import {Room} from '../../entity/room';
 import {Clazz} from '../../entity/clazz';
 import {Term} from '../../entity/term';
 import {TermService} from '../../service/term.service';
+import {CommonService} from '../../service/common.service';
 
 @Component({
   selector: 'app-timetable',
@@ -59,7 +60,8 @@ export class TimetableComponent implements OnInit {
 
   constructor(private  teacherService: TeacherService,
               private scheduleService: ScheduleService,
-              private termService: TermService) { }
+              private termService: TermService,
+              private commonService: CommonService) { }
 
   ngOnInit(): void {
     this.teacherService.getAll()
@@ -383,5 +385,9 @@ export class TimetableComponent implements OnInit {
         this.bigModelContent[l][d].schedules.push(schedule);
       }
     }
+  }
+
+  excelExport(): void {
+    this.commonService.generateExcel();
   }
 }
