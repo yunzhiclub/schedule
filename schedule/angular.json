@@ -33,13 +33,15 @@
             "styles": [
               "src/styles.scss",
               "./node_modules/bootstrap/dist/css/bootstrap.css",
-              "./node_modules/@fortawesome/fontawesome-free/css/all.css"
+              "./node_modules/@fortawesome/fontawesome-free/css/all.css",
+              "./node_modules/select2/dist/css/select2.min.css"
             ],
             "scripts": [
-              "./node_modules/jquery/dist/jquery.slim.min.js",
+              "./node_modules/jquery/dist/jquery.js",
               "./node_modules/popper.js/dist/umd/popper.min.js",
               "./node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "./node_modules/@fortawesome/fontawesome-free/js/all.js"
+              "./node_modules/@fortawesome/fontawesome-free/js/all.js",
+              "./node_modules/select2/dist/js/select2.min.js"
             ]
           },
           "configurations": {
@@ -99,14 +101,16 @@
             "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
+              "src/assets"
             ],
             "styles": [
               "src/styles.scss",
-              "./node_modules/bootstrap/dist/css/bootstrap.css"
+              "./node_modules/bootstrap/dist/css/bootstrap.css",
+              "./node_modules/select2/dist/css/select2.min.css",
+              "./node_modules/select2/dist/js/select2.min.js"
             ],
             "scripts": [
-              "./node_modules/jquery/dist/jquery.slim.min.js",
+              "./node_modules/jquery/dist/jquery.js",
               "./node_modules/popper.js/dist/umd/popper.min.js",
               "./node_modules/bootstrap/dist/js/bootstrap.min.js"
             ]
