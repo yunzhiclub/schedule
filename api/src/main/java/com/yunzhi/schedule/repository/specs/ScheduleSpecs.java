@@ -1,8 +1,9 @@
 package com.yunzhi.schedule.repository.specs;
 
 import com.yunzhi.schedule.entity.Schedule;
-import com.yunzhi.schedule.entity.Term;
 import org.springframework.data.jpa.domain.Specification;
+
+import javax.persistence.criteria.JoinType;
 
 public class ScheduleSpecs {
 
@@ -16,4 +17,23 @@ public class ScheduleSpecs {
             return Specification.where(null);
         }
     }
+
+
+    /**
+     * 按名称查找
+     *
+     * @param clazzName
+     * @return
+     */
+    public static Specification<Schedule> containingClazzName(String clazzName) {
+        if (clazzName != null && !clazzName.trim().isEmpty()) {
+            return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.join("clazzes", JoinType.LEFT)
+                    .get("name").as(String.class), String.format("%%%s%%", clazzName.trim()));
+        } else {
+            return Specification.where(null);
+        }
+    }
+
+
+
 }

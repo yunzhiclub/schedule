@@ -25,9 +25,11 @@ export class TeacherComponent implements OnInit {
     searchName: 'searchName',
     searchPhone: 'searchPhone'
   };
+  termId: number | undefined;
   constructor(private route: ActivatedRoute,
               private commonService: CommonService,
-              private teacherService: TeacherService
+              private teacherService: TeacherService,
+              private termService: TermService
   ) {
   }
 
@@ -45,10 +47,13 @@ export class TeacherComponent implements OnInit {
         searchName: params[this.keys.searchName],
         searchPhone: params[this.keys.searchPhone]})
         .subscribe(data => {
-          console.log(data);
           this.setData(data);
         });
     });
+    this.termService.getCurrentTerm()
+      .subscribe(term => {
+        this.termId = term.id;
+      });
   }
 
   /**

@@ -28,11 +28,21 @@ export class Teacher {
     this.schedules = Array.from(new Set([...this.schedules1, ...this.schedules2]));
   }
 
-  getHours(): number {
+  /**
+   * 获取当前教师学时,如果有参数则只显示该学期对应学时
+   */
+  getHours(termId?: number | undefined): number {
     let counter = 0;
+    const isFilter = termId !== undefined;
     this.schedules?.forEach(schedule => {
       if (schedule.dispatches) {
-        counter = schedule.dispatches.length + counter;
+        if (isFilter) {
+          if (termId === schedule?.term?.id) {
+            counter = schedule.dispatches.length + counter;
+          }
+        } else {
+          counter = schedule.dispatches.length + counter;
+        }
       }
     });
     return counter;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.Dispatch;
 import com.yunzhi.schedule.entity.Schedule;
 import com.yunzhi.schedule.entity.Teacher;
+import com.yunzhi.schedule.entity.Term;
 import com.yunzhi.schedule.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -160,6 +161,8 @@ public class TeacherController {
             Teacher.SexJsonView,
             Schedule.IdJsonView,
             Schedule.DispatchesJsonView,
+            Schedule.TermJsonView,
+            Term.IdJsonView,
             Dispatch.IdJsonView
     {}
     public interface GetById extends
