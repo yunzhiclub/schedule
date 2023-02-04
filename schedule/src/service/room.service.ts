@@ -4,6 +4,7 @@ import {Page} from '../common/page';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {Room} from '../entity/room';
+import {Assert} from '../common/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -84,5 +85,10 @@ export class RoomService {
 
   getAll(): Observable<Room[]> {
     return this.httpClient.get<Room[]>(this.url + '/getAll');
+  }
+
+  getForRoomDetail(roomId: number | undefined): Observable<Room> {
+    Assert.isNotNullOrUndefined(roomId, 'roomId 不合法');
+    return this.httpClient.get<Room>(this.url + '/getForRoomDetail/' + roomId);
   }
 }

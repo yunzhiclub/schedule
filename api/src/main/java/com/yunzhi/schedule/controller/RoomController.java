@@ -1,7 +1,7 @@
 package com.yunzhi.schedule.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.yunzhi.schedule.entity.Room;
+import com.yunzhi.schedule.entity.*;
 import com.yunzhi.schedule.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -56,6 +56,7 @@ public class RoomController {
      * @param id   教室id
      * @return 教室
      */
+    @JsonView(GetById.class)
     @GetMapping("getById/{id}")
     public Room getById(@PathVariable Long id) {
         return this.roomService.getById(id);
@@ -103,8 +104,15 @@ public class RoomController {
      * 获取所有教室
      */
     @GetMapping("getAll")
+    @JsonView(GetAll.class)
     public List<Room> getAll() {
         return this.roomService.getAll();
+    }
+
+    @GetMapping("getForRoomDetail/{roomId}")
+    @JsonView(GetForRoomDetail.class)
+    public Room getForRoomDetail(@PathVariable Long roomId) {
+        return this.roomService.getById(roomId);
     }
 
     public interface PageJsonView extends
@@ -112,4 +120,40 @@ public class RoomController {
             Room.NameJsonView,
             Room.CapacityJsonView
     {}
+    public interface GetById extends
+            Room.IdJsonView,
+            Room.NameJsonView,
+            Room.CapacityJsonView
+    {}
+    public interface GetAll extends
+            Room.IdJsonView,
+            Room.NameJsonView,
+            Room.CapacityJsonView
+    {}
+    public interface GetForRoomDetail extends
+            Room.IdJsonView,
+            Room.NameJsonView,
+            Room.CapacityJsonView,
+            Room.Dispatches,
+            Dispatch.IdJsonView,
+            Dispatch.DayJsonView,
+            Dispatch.LessonJsonView,
+            Dispatch.WeekJsonView,
+            Dispatch.ScheduleJsonView,
+            Schedule.IdJsonView,
+            Schedule.TermJsonView,
+            Term.IdJsonView,
+            Schedule.ClazzJsonView,
+            Clazz.IdJsonView,
+            Clazz.NameJsonView,
+            Schedule.Teacher1JsonView,
+            Schedule.Teacher2JsonView,
+            Teacher.IdJsonView,
+            Teacher.NameJsonView,
+            Schedule.CourseJsonView,
+            Course.IdJsonView,
+            Course.NameJsonView
+    {}
+
+
 }
