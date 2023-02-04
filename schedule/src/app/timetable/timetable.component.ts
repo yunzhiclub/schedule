@@ -392,6 +392,7 @@ export class TimetableComponent implements OnInit {
 
   excelExport(): void {
     const displayModel = this.formGroup.get('displayMode')?.value;
-    this.commonService.generateExcel(this.bigModelContent, this.bigModelRoomsAndWeeks, this.fileTeacherName, displayModel, this.content, this.roomsAndWeeks);
+    this.commonService.generateExcel(this.bigModelContent, this.bigModelRoomsAndWeeks, this.fileTeacherName, displayModel,
+                                     this.content, this.roomsAndWeeks);
   }
 }
