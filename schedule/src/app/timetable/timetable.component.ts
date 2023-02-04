@@ -57,6 +57,7 @@ export class TimetableComponent implements OnInit {
     weeks: number[]
   }[][][][];
   isShowForBigModel = [] as number[][];
+  private fileTeacherName: string | undefined;
 
   constructor(private  teacherService: TeacherService,
               private scheduleService: ScheduleService,
@@ -171,6 +172,7 @@ export class TimetableComponent implements OnInit {
     } else {
       if (this.formGroup.get('selectedTeacherId')?.value === 'all') {
         // console.log('选择全部教师');
+        this.fileTeacherName = '所有教师';
         this.setIsShowForAllTeacher();
       }
     }
@@ -180,6 +182,7 @@ export class TimetableComponent implements OnInit {
     for (const teacher of this.allTeachers) {
       if (teacher.id.toString() === this.formGroup.get('selectedTeacherId')?.value) {
         this.selectedTeacher = teacher;
+        this.fileTeacherName = this.selectedTeacher.name;
         break;
       }
     }
@@ -388,6 +391,8 @@ export class TimetableComponent implements OnInit {
   }
 
   excelExport(): void {
-    this.commonService.generateExcel(this.bigModelContent, this.bigModelRoomsAndWeeks);
+    const displayModel = this.formGroup.get('displayMode')?.value;
+    this.commonService.generateExcel(this.bigModelContent, this.bigModelRoomsAndWeeks, this.fileTeacherName, displayModel,
+                                     this.content, this.roomsAndWeeks);
   }
 }
