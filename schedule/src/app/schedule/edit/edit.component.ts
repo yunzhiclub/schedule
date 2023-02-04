@@ -541,7 +541,6 @@ export class EditComponent implements OnInit {
       const smLessons = this.bigLesson === 4 ? [0, 1, 2] : [0, 1];
       let status = false;
       console.log('isRoomDisabled', [...this.sites]);
-      // todo: this.week尚未选择便渲染 全选按钮 见 593:45
       // @ts-ignore
       smLessons.forEach(smLesson => {
         if (this.sites[this.day!][this.bigLesson! * 2 + smLesson][this.week!].includes(roomId)) {
@@ -654,7 +653,7 @@ export class EditComponent implements OnInit {
     }
   }
   getNotEmptyWeeks(): string {
-    return this.notEmptyWeeks.map(week => (week + 1)).join('、');
+    return this.notEmptyWeeks.map(week => (week + 1)).sort((a, b) => a - b).join('、');
   }
   isAllWeekChecked(): boolean {
     return this.selectedWeeks.length === this.getEffectiveWeeks().length;
@@ -704,6 +703,6 @@ export class EditComponent implements OnInit {
   }
 
   getWeeksForShow(day: number, bigLesson: number): string {
-    return this.weeksRecorder[day][bigLesson].map(week => week + 1).join('、');
+    return this.weeksRecorder[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
   }
 }

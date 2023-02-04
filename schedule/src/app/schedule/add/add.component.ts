@@ -748,7 +748,7 @@ export class AddComponent implements OnInit {
   }
 
   getNotEmptyWeeks(): string {
-    return this.notEmptyWeeks.map(week => (week + 1)).join('、');
+    return this.notEmptyWeeks.map(week => (week + 1)).sort((a, b) => a - b).join('、');
   }
 
   isAllWeekChecked(): boolean {
@@ -806,6 +806,6 @@ export class AddComponent implements OnInit {
   }
 
   getWeeksForShow(day: number, bigLesson: number): string {
-    return this.weeksRecorder[day][bigLesson].map(week => week + 1).join('、');
+    return this.weeksRecorder[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
   }
 }

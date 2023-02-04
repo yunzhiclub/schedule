@@ -1,0 +1,75 @@
+<!-- 选择课程 -->
+<div class="form-group row">
+  <label class="col-sm-2 text-right col-form-label"><code>*</code>教室名称</label>
+  <div class="col-sm-10">
+    <input type="text" class="disabled" disabled [value]="room.name">
+  </div>
+  <label class="col-sm-2 text-right col-form-label"><code>*</code>教室容量</label>
+  <div class="col-sm-10">
+    <input type="text" class="disabled" disabled [value]="room.capacity">
+  </div>
+</div>
+<!--选择时间-->
+<div class="form-group row">
+  <label class="col-sm-2 text-right col-form-label"><code>*</code>使用时间</label>
+  <div class="col-sm mt-3">
+    <table class="table  table-bordered">
+      <thead>
+      <tr>
+        <th>周几/课序</th>
+        <th *ngFor="let bigLesson of bigLessons">{{bigLesson! + 1}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let day of days; index as d">
+        <th   class="col-sm-1">周{{day}}</th>
+        <td  *ngFor="let bigLesson of bigLessons" class="col-sm-1 container-fluid">
+          <div class="list-group">
+            <button data-toggle="modal" data-target="#staticBackdrop" class="list-group-item" [ngClass]="{'list-group-item-primary': buttonActive(d, bigLesson)}" (click)="showModel(d, bigLesson)">
+              <span *ngIf="notEmptyWeeksTable[d][bigLesson].length">周: {{getNotEmptyWeeksOfTable(d, bigLesson)}}</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col" class="col-2">周</th>
+              <th scope="col" class="col-2">课程</th>
+              <th scope="col" class="col-2">教师</th>
+              <th scope="col" class="col-2">班级</th>
+              <th scope="col" class="col-2">小节</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let week of weeks">
+              <th scope="row">第 {{week + 1}} 周</th>
+              <td>{{getCourseName(week)}}</td>
+              <td>{{getTeachersName(week)}}</td>
+              <td>{{getClazzesName(week)}}</td>
+              <td>{{getSmLessons(week)}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>

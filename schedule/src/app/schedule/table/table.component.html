@@ -60,7 +60,7 @@
         </div>
         <div class="modal-body">
           <div class=" row ">
-            <span class="col-12">选择周:&nbsp;
+            <span class="col-12">周:&nbsp;
               <span class="text-muted" *ngIf="pattern" style="font-size: 0.7em">(选择某个周再选择对应教室，已占用周:&nbsp;{{getNotEmptyWeeks()}})</span>
             </span>
           </div>
@@ -73,7 +73,7 @@
           </ul><br>
 
           <div *ngIf="week !== undefined || !pattern">
-            <h6>选择教室<span class="text-muted" *ngIf="pattern" style="font-size: 0.7em">(周:{{week! + 1}})</span>:</h6>
+            <h6>教室<span class="text-muted" *ngIf="pattern" style="font-size: 0.7em">(周:{{week! + 1}})</span>:</h6>
             <ul class="list-group list-group-horizontal">
               <ng-container *ngFor="let room of rooms" class="list-group-item">
                 <button [disabled]="isRoomDisabled(room.id!)"
@@ -91,9 +91,7 @@
           <br><br>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="close()" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary" [disabled]="!canSave()" (click)="save()">
-            <i class="fas fa-save"></i>保存</button>
+          <button type="button" class="btn btn-primary" (click)="close()" data-dismiss="modal">关闭</button>
         </div>
       </div>
     </div>

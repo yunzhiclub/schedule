@@ -28,6 +28,7 @@
     <td>{{ room.name }}</td>
     <td>{{ room.capacity }}</td>
     <td>
+      <a class="btn btn-sm btn-info" [routerLink]="'/room/roomDetail/' + room.id"><i class="fas fa-info-circle"></i>教室详情</a>
       <a class="btn btn-sm btn-primary" [routerLink]="'/room/edit/' + room.id"><i class="fas fa-edit"></i>编辑</a>
       <a class="btn btn-sm btn-danger" (click)="onDelete(room.id!)"><i class="fas fa-trash"></i>删除</a>
     </td>

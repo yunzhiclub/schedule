@@ -12,7 +12,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {AuthModule} from './auth/auth.module';
 import {SizeModule} from '../common/size/size.module';
 import {PageModule} from '../common/page/page.module';
-import {ReactiveFormsModule} from "@angular/forms";
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -20,18 +20,18 @@ import {ReactiveFormsModule} from "@angular/forms";
     ScheduleComponent,
     TimetableComponent,
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        LayoutModule,
-        PipeModule,
-        ApiProModule,
-        HttpClientModule,
-        AuthModule,
-        SizeModule,
-        PageModule,
-        ReactiveFormsModule,
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    LayoutModule,
+    PipeModule,
+    ApiProModule,
+    HttpClientModule,
+    AuthModule,
+    SizeModule,
+    PageModule,
+    ReactiveFormsModule,
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

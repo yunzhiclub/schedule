@@ -222,41 +222,6 @@ export class TableComponent implements OnInit {
     this.initTempData();
   }
 
-
-  /**
-   * 保存数据并关闭model
-   */
-  save(): void {
-    this.deleteSelectedData();
-    console.log('save1', [...this.selectedData]);
-    if (this.pattern) {
-      this.smLessons.forEach(smLesson => {
-        for (let week = 0; week < this.tempData.length; week++) {
-          if (this.tempData[week].length > 0) {
-            this.selectedData.push({week, day: this.day!, smLesson: this.bigLesson! * 2 + smLesson, roomIds: this.tempData[week]});
-          }
-        }
-      });
-    } else {
-      if (this.smLessons.length !== 0) {
-        this.weeksRecorder[this.day!][this.bigLesson!] = [...this.selectedWeeks];
-        this.roomsRecorder[this.day!][this.bigLesson!] = [...this.selectedRooms];
-      } else {
-        this.weeksRecorder[this.day!][this.bigLesson!] = [];
-        this.roomsRecorder[this.day!][this.bigLesson!] = [];
-      }
-      console.log('save2', [...this.smLessons], [...this.selectedWeeks], [...this.selectedData]);
-      this.smLessons.forEach(smLesson => {
-        this.selectedWeeks.forEach(week => {
-          this.selectedData.push({week, day: this.day!, smLesson: this.bigLesson! * 2 + smLesson, roomIds: this.selectedRooms});
-        });
-      });
-    }
-    this.smLessonsRecorder[this.day!][this.bigLesson!] = Array.from(this.smLessons);
-    this.close();
-    console.log('save3', [...this.selectedData], [...this.smLessons]);
-  }
-
   private getData(): void {
     this.scheduleService.getById(this.scheduleId!)
       .subscribe((schedule) => {
@@ -430,33 +395,6 @@ export class TableComponent implements OnInit {
     this.smLessons = smLessons;
   }
 
-  private deleteSelectedData(): void {
-    this.selectedData = this.selectedData.filter(data => {
-      const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
-      return !(data.day === this.day && bigLesson === this.bigLesson);
-    });
-  }
-
-  canSave(): boolean {
-    if (this.pattern) {
-      // 如果所有周对应教室都是空，那就不能保存
-      let isHave = false;
-      this.tempData.forEach(week => {
-        if (week.length !== 0) {
-          isHave = true;
-        }
-      });
-      return isHave;
-    } else {
-      let status = false;
-      if ((this.selectedWeeks.length === 0 && this.selectedRooms.length === 0) ||
-        (this.selectedWeeks.length !== 0 && this.selectedRooms.length !== 0)) {
-        status = true;
-      }
-      return status;
-    }
-  }
-
   isWeekDisabled(week: number): boolean {
     let status = false;
     // 不支持小节1选教室1/2， 小节2选教室3/4
@@ -479,7 +417,6 @@ export class TableComponent implements OnInit {
       const smLessons = this.bigLesson === 4 ? [0, 1, 2] : [0, 1];
       let status = false;
       console.log('isRoomDisabled', [...this.sites]);
-      // todo: this.week尚未选择便渲染 全选按钮 见 593:45
       // @ts-ignore
       smLessons.forEach(smLesson => {
         if (this.sites[this.day!][this.bigLesson! * 2 + smLesson][this.week!].includes(roomId)) {
@@ -597,11 +534,11 @@ export class TableComponent implements OnInit {
   }
 
   getNotEmptyWeeks(): string {
-    return this.notEmptyWeeks.map(week => (week + 1)).join('、');
+    return this.notEmptyWeeks.map(week => (week + 1)).sort((a, b) => a - b).join('、');
   }
 
   getNotEmptyWeeksOfTable(day: number, bigLesson: number): string {
-    return this.notEmptyWeeksTable[day][bigLesson].map(week => week + 1).join('、');
+    return this.notEmptyWeeksTable[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
   }
 
   onWeekClick(week: number): void {
