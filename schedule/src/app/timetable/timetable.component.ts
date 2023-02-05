@@ -20,6 +20,7 @@ export class TimetableComponent implements OnInit {
     selectedTeacherId: new FormControl(null, Validators.required),
     displayMode: new FormControl(null, Validators.required)
   });
+  key = 1;
   term: Term | undefined;
   lessons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   days = ['一', '二', '三', '四', '五', '六', '日'];
@@ -83,7 +84,6 @@ export class TimetableComponent implements OnInit {
     this.initRoomsAndWeeks();
     this.formGroup?.get('selectedTeacherId')?.setValue('please');
     this.formGroup?.get('displayMode')?.setValue('big');
-    this.onTeacherChange();
   }
   private initRoomsAndWeeks(): void {
     for (let i = 0; i < 11; i++) {
@@ -394,5 +394,104 @@ export class TimetableComponent implements OnInit {
     const displayModel = this.formGroup.get('displayMode')?.value;
     this.commonService.generateExcel(this.bigModelContent, this.bigModelRoomsAndWeeks, this.fileTeacherName, displayModel,
                                      this.content, this.roomsAndWeeks);
+  }
+
+  getWeeksForTimetable(weeks: number[]): string {
+    if (weeks.length === 1) {
+      return (weeks[0] + 1).toString() + '周';
+    }
+    let result = '';
+    const minWeeks = this.arrayMin(weeks);
+    const maxWeeks = this.arrayMax(weeks);
+    if (this.isArrayContinuous(weeks, minWeeks, maxWeeks)) {
+      return (minWeeks + 1) + '-' + (maxWeeks + 1) + '周';
+    }
+    result = this.weeksNotContinuous(weeks, minWeeks, maxWeeks);
+    return result + '周';
+  }
+  private weeksNotContinuous(arr: number[], min: number, max: number): string {
+    let a = true;
+    let result = '';
+    const sortArr = this.sortArr(arr);
+    for (let i = 0; i < sortArr.length - 1; i++) {
+      if (sortArr[i] + 1 !== sortArr[i + 1]) {
+        if (a) {
+          if (min !== sortArr[i]) {
+            result = result + (min + 1) + '-' + (sortArr[i] + 1) + '、';
+          } else {
+            result = result + (min + 1) + '、';
+          }
+          a = !a;
+        }
+        this.key = i + 1;
+        let b = true;
+        for (let j = this.key; j < sortArr.length - 1; j++) {
+          if (sortArr[j] + 1 !== sortArr[j + 1]) {
+            if (b) {
+              if (sortArr[this.key] !== sortArr[j]) {
+                result = result + (sortArr[this.key] + 1) + '-' + (sortArr[j] + 1) + '、';
+              } else {
+                result = result + (sortArr[this.key] + 1) + '、';
+              }
+              b = !b;
+            }
+          }
+        }
+      }
+      if (i === sortArr.length - 2) {
+        if (sortArr[this.key] !== max) {
+          result = result + (sortArr[this.key] + 1) + '-' + (max + 1);
+        } else {
+          result = result + (max + 1);
+        }
+      }
+    }
+    return result;
+  }
+  // 冒泡排序(从小到大)
+  private sortArr(arr: number[]): number[] {
+    // 控制循环多少次
+    for (let i = 0; i < arr.length - 1; i++) {
+      // 控制比较
+      for (let j = 0; j < arr.length; j++) {
+        // 一次循环中，如果前者大于后者就交换位置，所以第一次循环最大的就在最后
+        if (arr[j] > arr[j + 1]) {
+          // 交换位置
+          const element = arr[j];
+          arr[j] = arr[j + 1];
+          arr[j + 1] = element;
+        }
+      }
+    }
+    return arr;
+  }
+  // 找出数组中的最小值
+  private arrayMin(arrs: number[]): number {
+    let min = arrs[0];
+    for (let i = 1, ilen = arrs.length; i < ilen; i += 1) {
+      if (arrs[i] < min) {
+        min = arrs[i];
+      }
+    }
+    return min;
+  }
+  // 找出数组中的最大值
+  private arrayMax(arrs: number[]): number {
+    let max = arrs[0];
+    for (let i = 1, ilen = arrs.length; i < ilen; i += 1) {
+      if (arrs[i] > max) {
+        max = arrs[i];
+      }
+    }
+    return max;
+  }
+  // 判断数组是否连续
+  private isArrayContinuous(arrs: number[], min: number, max: number): boolean {
+    for (let i = min; i <= max; i++) {
+      if (!arrs.includes(i)) {
+        return false;
+      }
+    }
+    return true;
   }
 }
