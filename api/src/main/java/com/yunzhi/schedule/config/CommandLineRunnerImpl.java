@@ -63,94 +63,50 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
             this.userRepository.save(user);
         }
 
-//        this.forHePanTest();
-        this.chen();
+        this.forHePanTest();
+//        this.chen();
     }
 
 
     private void forHePanTest() {
-//        // 添加50条测试学期
-//        for (int i = 0; i < 50; i++) {
-//            this.addTerm("学期" + i, false, 1672502400L, 1688140800L);
-//        }
-//
-//        // 添加50条测试老师
-//        for (int i = 0; i < 50; i++) {
-//            this.addTeacher("老师" + i, false,  "1688140800");
-//        }
-//
-//        // 添加50条测试班级
-//        for (int i = 0; i < 50; i++) {
-//            this.addClazz("班级" + i, 1672502400L);
-//        }
-//
-//        Clazz clazzA = this.addClazz("班级A", 1672502400L);
-//        // 添加50条测试学生
-//        for (int i = 0; i < 50; i++) {
-//            this.addStudent("学生" + i, true, RandomString.make(6), clazzA);
-//        }
-//
-//        // 添加50条测试教室
-//        for (int i = 0; i < 50; i++) {
-//            this.addRoom("教室" + i,  RandomString.make(2));
-//        }
-//
-//        // 添加50条测试课程
-//        for (int i = 0; i < 50; i++) {
-//            this.addCourse("课程" + i,  RandomString.make(2));
-//        }
-
-        Term term1 = this.addTerm("已激活学期", true, 1672502400L, 1688140800L);
-        Term term0 = this.addTerm("未激活学期", false, 1672502400L, 1688140800L);
-
-        // 添加测试教师
-        Teacher teacher1 = this.addTeacher("张三", true, "13100000000");
-        Teacher teacher2 = this.addTeacher("李四", false, "13100000001");
-        Teacher teacher3 = this.addTeacher("王五", true, "13100000000");
-        Teacher teacher4 = this.addTeacher("赵六", false, "13100000001");
-
-        // 添加测试教室
-        Room room1 = this.addRoom("A1",  RandomString.make(2));
-        Room room2 = this.addRoom("B1",  RandomString.make(2));
-        Room room3 = this.addRoom("C1",  RandomString.make(2));
-        List<Room> rooms = new ArrayList<>();
-        rooms.add(room1);
-        rooms.add(room2);
-        List<Room> rooms3 = new ArrayList<>();
-        rooms3.add(room3);
-
-        // 添加测试班级
-        Clazz clazz1 = this.addClazz("计科221", 1672502400L);
-        Clazz clazz2 = this.addClazz("计科222", 1672502400L);
-        List<Clazz> clazzes = new ArrayList<>();
-        clazzes.add(clazz1);
-        clazzes.add(clazz2);
-
-        // 添加测试课程
-        Course course = this.addCourse("计算机组成原理", "6");
-        Course cours0 = this.addCourse("汇编语言", "6");
-
-        // 添加测试排课
-//        Schedule schedule1 = this.addSchedule(course, term1, teacher1, teacher2, clazzes);
-//        Schedule schedule2 = this.addSchedule(cours0, term1, teacher2, teacher4, clazzes);
-//        Schedule schedule0 = this.addSchedule(cours0, term0, teacher3, teacher4, clazzes);
-
-        // 添加测试调度
-//        this.addDispatch(schedule1, 1L, 1L, 1L, rooms);
-//        this.addDispatch(schedule1, 2L, 1L, 1L, rooms);
-//        this.addDispatch(schedule1, 3L, 1L, 1L, rooms);
-//
-//        this.addDispatch(schedule1, 7L, 1L, 1L, rooms3);
-//        this.addDispatch(schedule1, 8L, 1L, 1L, rooms3);
-//        this.addDispatch(schedule1, 9L, 1L, 1L, rooms3);
-//
-//        this.addDispatch(schedule2, 4L, 2L, 2L, rooms);
-//        this.addDispatch(schedule2, 5L, 2L, 2L, rooms);
-//        this.addDispatch(schedule2, 6L, 2L, 2L, rooms);
-//
-//        this.addDispatch(schedule0, 1L, 2L, 2L, rooms);
-//        this.addDispatch(schedule0, 2L, 2L, 2L, rooms);
-//        this.addDispatch(schedule0, 3L, 2L, 2L, rooms);
+        // 添加60条测试学期
+        for (int i = 0; i < 58; i++) {
+            this.addTerm("学期" + i, false, 1672502400L, 1688140800L);
+        }
+        Term term = this.addTerm("2023春季学期", true, 1672502400L, 1688140800L);
+        this.addTerm("2023秋季学期", false, 1672502400L, 1688140800L);
+        // 添加60条测试老师
+        for (int i = 0; i < 54; i++) {
+            this.addTeacher("老师" + i, false,  "1688140800");
+        }
+        Teacher zhangsan = this.addTeacher("张三", true, "13100000001");
+        Teacher lisi = this.addTeacher("李四", false, "13100000002");
+        Teacher wangwu = this.addTeacher("王五", false, "13100000003");
+        Teacher zhaoliu = this.addTeacher("赵六", true, "13100000004");
+        Teacher sunqi = this.addTeacher("孙七", false, "13100000005");
+        Teacher zhouba = this.addTeacher("周八", true, "13100000006");
+        // 添加60条测试班级
+        for (int i = 0; i < 60; i++) {
+            Clazz clazz =  this.addClazz("班级" + i, 1672502400L);
+            // 每个班级添加15条测试学生
+            for (int j = 0; j < 15; j++) {
+                this.addStudent("学生" + j + "-" + clazz.getName(), true, RandomString.make(6), clazz);
+            }
+        }
+        // 添加60条测试教室
+        for (int i = 0; i < 60; i++) {
+            Room room = this.addRoom("教室" + i,  RandomString.make(2));
+        }
+        // 添加60条测试课程
+        for (int i = 0; i < 54; i++) {
+            this.addCourse("课程" + i,  RandomString.make(2));
+        }
+        Course jsjzcyl = this.addCourse("计算机组成原理", "36");
+        Course hbyy = this.addCourse("汇编语言", "36");
+        Course Cyycxsj = this.addCourse("C语言程序设计", "48");
+        Course gdsx = this.addCourse("高等数学", "42");
+        Course lssx = this.addCourse("离散数学", "30");
+        Course sjjg = this.addCourse("数据结构", "36");
     }
 
 
