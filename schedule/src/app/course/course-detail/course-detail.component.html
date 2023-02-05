@@ -1,17 +1,17 @@
 <!-- 选择课程 -->
 <div class="form-group row">
-  <label class="col-sm-2 text-right col-form-label"><code>*</code>教室名称</label>
+  <label class="col-sm-2 text-right col-form-label"><code>*</code>课程名称</label>
   <div class="col-sm-10">
-    <input type="text" class="disabled" disabled [value]="room.name">
+    <input type="text" class="disabled" disabled [value]="'汇编'">
   </div>
-  <label class="col-sm-2 text-right col-form-label"><code>*</code>教室容量</label>
+  <label class="col-sm-2 text-right col-form-label"><code>*</code>课程学时</label>
   <div class="col-sm-10">
-    <input type="text" class="disabled" disabled [value]="room.capacity">
+    <input type="text" class="disabled" disabled [value]="12">
   </div>
 </div>
 <!--选择时间-->
 <div class="form-group row">
-  <label class="col-sm-2 text-right col-form-label"><code>*</code>使用时间</label>
+  <label class="col-sm-2 text-right col-form-label"><code>*</code>上课时间</label>
   <div class="col-sm mt-3">
     <table class="table  table-bordered">
       <thead>
@@ -53,22 +53,29 @@
               <thead>
               <tr>
                 <th scope="col" class="col-2">周</th>
-                <th scope="col" class="col-2">课程</th>
                 <th scope="col" class="col-2">教师</th>
                 <th scope="col" class="col-2">班级</th>
-                <th scope="col" class="col-2">时间(1-11)</th>
+                <th scope="col" class="col-2">地点</th>
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let week of weeks">
-                <ng-container *ngIf="week < weeks.length / 2">
-                  <th scope="row">第 {{week + 1}} 周</th>
-                  <td>{{getCourseName(week)}}</td>
-                  <td>{{getTeachersName(week)}}</td>
-                  <td>{{getClazzesName(week)}}</td>
-                  <td>{{getSmLessons(week)}}</td>
+                <ng-container *ngFor="let week of weeks; index as index">
+                  <ng-container *ngIf="week < weeks.length / 2">
+                    <tr>
+                      <th scope="row" [rowSpan]="currentData[week].length > 0 ? currentData[week].length : 1">第 {{week + 1}} 周
+                      <td>{{ getTeachersName(week) }}</td>
+                      <td>{{ getClazzesName(week) }}</td>
+                      <td>{{ getRoomsName(week) }}</td>
+                    </tr>
+                    <ng-container *ngFor="let schedule of currentData[week]; index as i">
+                      <tr *ngIf="i !== 0">
+                        <td>{{ getTeachersName(week, i) }}</td>
+                        <td>{{ getClazzesName(week, i) }}</td>
+                        <td>{{ getRoomsName(week, i) }}</td>
+                      </tr>
+                    </ng-container>
+                  </ng-container>
                 </ng-container>
-              </tr>
               </tbody>
             </table>
           </div>
@@ -77,22 +84,29 @@
               <thead>
               <tr>
                 <th scope="col" class="col-2">周</th>
-                <th scope="col" class="col-2">课程</th>
                 <th scope="col" class="col-2">教师</th>
                 <th scope="col" class="col-2">班级</th>
-                <th scope="col" class="col-2">时间(1-11)</th>
+                <th scope="col" class="col-2">地点</th>
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let week of weeks">
-                <ng-container *ngIf="week >= weeks.length / 2">
-                  <th scope="row">第 {{week + 1}} 周</th>
-                  <td>{{getCourseName(week)}}</td>
-                  <td>{{getTeachersName(week)}}</td>
-                  <td>{{getClazzesName(week)}}</td>
-                  <td>{{getSmLessons(week)}}</td>
+                <ng-container *ngFor="let week of weeks; index as index">
+                  <ng-container *ngIf="week >= weeks.length / 2">
+                    <tr>
+                      <th scope="row" [rowSpan]="currentData[week].length > 0 ? currentData[week].length : 1">第 {{week + 1}} 周
+                      <td>{{ getTeachersName(week) }}</td>
+                      <td>{{ getClazzesName(week) }}</td>
+                      <td>{{ getRoomsName(week) }}</td>
+                    </tr>
+                    <ng-container *ngFor="let schedule of currentData[week]; index as i">
+                      <tr *ngIf="i !== 0">
+                        <td>{{ getTeachersName(week, i) }}</td>
+                        <td>{{ getClazzesName(week, i) }}</td>
+                        <td>{{ getRoomsName(week, i) }}</td>
+                      </tr>
+                    </ng-container>
+                  </ng-container>
                 </ng-container>
-              </tr>
               </tbody>
             </table>
           </div>

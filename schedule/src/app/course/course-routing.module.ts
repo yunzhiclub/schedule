@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {CourseComponent} from './course.component';
 import {AddComponent} from './add/add.component';
 import {EditComponent} from './edit/edit.component';
+import {CourseDetailComponent} from './course-detail/course-detail.component';
 
 const routes: Routes = [
   {
@@ -10,6 +11,13 @@ const routes: Routes = [
     component: CourseComponent,
     data: {
       title: '首页'
+    }
+  },
+  {
+    path: 'courseDetail/:courseId',
+    component: CourseDetailComponent,
+    data: {
+      title: '课程详情'
     }
   },
   {

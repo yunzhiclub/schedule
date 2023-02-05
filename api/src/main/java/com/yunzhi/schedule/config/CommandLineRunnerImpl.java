@@ -171,8 +171,9 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
 
         Student student1 = this.addStudent("学生1", true, "123123", clazz1);
 
-        Schedule schedule1 = this.addSchedule(course1, term, teacher1, teacher3, Collections.singletonList(clazz1));
-        Schedule schedule2 = this.addSchedule(course2, term, teacher2, teacher3, Collections.singletonList(clazz2));
+        Schedule schedule1 = this.addSchedule(course2, term, teacher1, teacher2, Collections.singletonList(clazz1));
+        Schedule schedule2 = this.addSchedule(course1, term, teacher2, teacher3, Collections.singletonList(clazz2));
+        Schedule schedule3 = this.addSchedule(course2, term, teacher3, teacher4, Collections.singletonList(clazz2));
 
 
         // 添加测试教室
@@ -183,13 +184,17 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         List<Room> rooms2 = new ArrayList<>();
         rooms2.add(room2);
 
-        this.addDispatch(schedule1, 1L, 1L, 2L, rooms1);
-        this.addDispatch(schedule1, 2L, 1L, 2L, rooms1);
-        this.addDispatch(schedule1, 3L, 1L, 2L, rooms1);
+        this.addDispatch(schedule1, 7L, 1L, 2L, rooms1);
+        this.addDispatch(schedule1, 8L, 1L, 2L, rooms1);
+        this.addDispatch(schedule1, 9L, 1L, 2L, rooms1);
 
-        this.addDispatch(schedule2, 4L, 1L, 2L, rooms2);
-        this.addDispatch(schedule2, 5L, 1L, 2L, rooms2);
-        this.addDispatch(schedule2, 6L, 1L, 2L, rooms2);
+        this.addDispatch(schedule2, 4L, 1L, 2L, rooms1);
+        this.addDispatch(schedule2, 5L, 1L, 2L, rooms1);
+        this.addDispatch(schedule2, 6L, 1L, 2L, rooms1);
+
+        this.addDispatch(schedule3, 7L, 1L, 2L, rooms2);
+        this.addDispatch(schedule3, 8L, 1L, 2L, rooms2);
+        this.addDispatch(schedule3, 9L, 1L, 2L, rooms2);
 
     }
 
