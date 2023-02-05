@@ -377,10 +377,6 @@ export class TimetableComponent implements OnInit {
         }
       }
     }
-    // console.log('roomsAndWeeks[2][2][2]', roomsAndWeeks[2][2][2]);
-    // console.log('this.bigModelRoomsAndWeeks[1][2][2]', this.bigModelRoomsAndWeeks[1][2][2]);
-    // console.log('this.roomsAndWeeks', this.roomsAndWeeks);
-    // console.log('setBigModelRoomsAndWeeks', this.bigModelRoomsAndWeeks);
   }
   private mergeSchedules(schedules: Schedule[], schedules2: Schedule[], l: number, d: number): void {
     for (const schedule of schedules2) {
