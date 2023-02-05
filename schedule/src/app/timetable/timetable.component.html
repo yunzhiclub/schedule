@@ -50,7 +50,7 @@
             <div *ngFor="let schedule of this.content[l][d].schedules">
               <div style="color: red">{{ schedule.course.name }}</div>
               <div *ngFor="let roomsAndWeeks of this.roomsAndWeeks[l][d][schedule.id]">
-                <div style="color: green; font-size: large" *ngIf="roomsAndWeeks.rooms.length !== 0">第<label *ngFor="let week of roomsAndWeeks.weeks">{{ week + 1 }}&nbsp;</label>周在教室<label *ngFor="let room of roomsAndWeeks.rooms">{{ room.name }}&nbsp;</label></div>
+                <div style="color: green; font-size: large" *ngIf="roomsAndWeeks.rooms.length !== 0"><label>{{ this.getWeeksForTimetable(roomsAndWeeks.weeks) }}</label>在<label *ngFor="let room of roomsAndWeeks.rooms">{{ room.name }}&nbsp;</label></div>
               </div>
               <div>班级：<label *ngFor="let clazz of schedule.clazzes">{{ clazz.name }}&nbsp;</label></div>
               <div>教师：<label>{{ schedule.teacher1.name }}&nbsp;</label>
@@ -89,10 +89,10 @@
             <div *ngFor="let schedule of this.bigModelContent[l][d].schedules">
               <div style="color: red">{{ schedule.course.name }}</div>
               <div *ngFor="let bigModelRoomsAndWeek of this.bigModelRoomsAndWeeks[l][d][schedule.id]">
-                <div style="color: green; font-size: large" *ngIf="bigModelRoomsAndWeek.rooms.length !== 0">第<label *ngFor="let week of bigModelRoomsAndWeek.weeks">{{ week + 1 }}&nbsp;</label>周在教室<label *ngFor="let room of bigModelRoomsAndWeek.rooms">{{ room.name }}&nbsp;</label></div>
+                <div style="color: green; font-size: large" *ngIf="bigModelRoomsAndWeek.rooms.length !== 0"><label>{{ this.getWeeksForTimetable(bigModelRoomsAndWeek.weeks) }}</label>在<label *ngFor="let room of bigModelRoomsAndWeek.rooms">{{ room.name }}&nbsp;</label></div>
               </div>
-              <div>班级：<label *ngFor="let clazz of schedule.clazzes">{{ clazz.name }}&nbsp;</label></div>
-              <div>教师：<label>{{ schedule.teacher1.name }}&nbsp;</label>
+              <div><label *ngFor="let clazz of schedule.clazzes">{{ clazz.name }}&nbsp;</label></div>
+              <div><label>{{ schedule.teacher1.name }}&nbsp;</label>
                 <label>{{ schedule.teacher2.name }}&nbsp;</label>
               </div>
               <hr>

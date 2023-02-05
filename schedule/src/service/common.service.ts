@@ -23,6 +23,7 @@ declare const ExcelJS: any;
   providedIn: 'root'
 })
 export class CommonService {
+  key = 1;
   // @ts-ignore
   workbook: ExcelJS.Workbook;
   worksheet: any;
@@ -379,13 +380,64 @@ export class CommonService {
     if (this.isArrayContinuous(weeks, minWeeks, maxWeeks)) {
       return (minWeeks + 1) + '-' + (maxWeeks + 1) + '周';
     }
-    for (let i = minWeeks; i <= maxWeeks; i++) {
-      if (!this.isArrayContinuous(weeks, minWeeks, i)) {
-        result = (minWeeks + 1) + '-' + i;
-        break;
+    result = this.weeksNotContinuous(weeks, minWeeks, maxWeeks);
+    return result + '周';
+  }
+  private weeksNotContinuous(arr: number[], min: number, max: number): string {
+    let a = true;
+    let result = '';
+    const sortArr = this.sortArr(arr);
+    for (let i = 0; i < sortArr.length - 1; i++) {
+      if (sortArr[i] + 1 !== sortArr[i + 1]) {
+        if (a) {
+          if (min !== sortArr[i]) {
+            result = result + (min + 1) + '-' + (sortArr[i] + 1) + '、';
+          } else {
+            result = result + (min + 1) + '、';
+          }
+          a = !a;
+        }
+        this.key = i + 1;
+        let b = true;
+        for (let j = this.key; j < sortArr.length - 1; j++) {
+          if (sortArr[j] + 1 !== sortArr[j + 1]) {
+            if (b) {
+              if (sortArr[this.key] !== sortArr[j]) {
+                result = result + (sortArr[this.key] + 1) + '-' + (sortArr[j] + 1) + '、';
+              } else {
+                result = result + (sortArr[this.key] + 1) + '、';
+              }
+              b = !b;
+            }
+          }
+        }
+      }
+      if (i === sortArr.length - 2) {
+        if (sortArr[this.key] !== max) {
+          result = result + (sortArr[this.key] + 1) + '-' + (max + 1);
+        } else {
+          result = result + (max + 1);
+        }
       }
     }
-    return result + '周';
+    return result;
+  }
+  // 冒泡排序(从小到大)
+  private sortArr(arr: number[]): number[] {
+    // 控制循环多少次
+    for (let i = 0; i < arr.length - 1; i++) {
+      // 控制比较
+      for (let j = 0; j < arr.length; j++) {
+        // 一次循环中，如果前者大于后者就交换位置，所以第一次循环最大的就在最后
+        if (arr[j] > arr[j + 1]) {
+          // 交换位置
+          const element = arr[j];
+          arr[j] = arr[j + 1];
+          arr[j + 1] = element;
+        }
+      }
+    }
+    return arr;
   }
   // 判断数组是否连续
   private isArrayContinuous(arrs: number[], min: number, max: number): boolean {
