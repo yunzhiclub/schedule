@@ -1,6 +1,7 @@
 package com.yunzhi.schedule.controller;
 
-import com.yunzhi.schedule.entity.Course;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.yunzhi.schedule.entity.*;
 import com.yunzhi.schedule.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("course")
 public class CourseController {
-    private CourseService courseService;
+    private final CourseService courseService;
 
     @Autowired
     CourseController(CourseService courseService) {
@@ -29,6 +30,7 @@ public class CourseController {
      * @return 分页课程
      */
     @GetMapping("/page")
+    @JsonView(PageJsonView.class)
     public Page<Course> page(
             @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(required = false, defaultValue = "") String hours,
@@ -54,6 +56,7 @@ public class CourseController {
      */
     @PostMapping("add")
     @ResponseStatus(HttpStatus.CREATED)
+    @JsonView(GetByIdJsonView.class)
     public Course save(@RequestBody Course course) {
         return this.courseService.save(course);
     }
@@ -64,6 +67,7 @@ public class CourseController {
      * @return     课程
      */
     @GetMapping("getById/{id}")
+    @JsonView(GetByIdJsonView.class)
     public Course getById(@PathVariable Long id) {
         return this.courseService.getById(id);
     }
@@ -74,6 +78,7 @@ public class CourseController {
      * @return 课程
      */
     @PostMapping("update/{id}")
+    @JsonView(GetByIdJsonView.class)
     public Course update(@PathVariable Long id,
                        @RequestBody Course course) {
         return this.courseService.update(id, course);
@@ -84,7 +89,50 @@ public class CourseController {
      * @return     课程
      */
     @GetMapping("getAll")
+    @JsonView(GetAllJsonView.class)
     public List<Course> getAll() {
         return this.courseService.getAll();
     }
+
+    @GetMapping("getForCourseDetail/{courseId}")
+    @JsonView(GetForCourseDetailJsonView.class)
+    public Course getForCourseDetail(@PathVariable Long courseId) {
+        Course course = this.courseService.getById(courseId);
+        return course;
+    }
+
+    public interface GetByIdJsonView extends
+            Course.IdJsonView,
+            Course.NameJsonView,
+            Course.HoursJsonView
+    {}
+    public interface GetAllJsonView extends
+            GetByIdJsonView
+    {}
+    public interface PageJsonView extends
+            GetByIdJsonView
+    {}
+
+    public interface GetForCourseDetailJsonView extends
+            GetByIdJsonView,
+            Course.SchedulesJsonView,
+            Schedule.IdJsonView,
+            Schedule.TermJsonView,
+            Term.IdJsonView,
+            Schedule.DispatchesJsonView,
+            Dispatch.IdJsonView,
+            Dispatch.DayJsonView,
+            Dispatch.LessonJsonView,
+            Dispatch.WeekJsonView,
+            Schedule.ClazzJsonView,
+            Clazz.IdJsonView,
+            Clazz.NameJsonView,
+            Schedule.Teacher1JsonView,
+            Schedule.Teacher2JsonView,
+            Teacher.IdJsonView,
+            Teacher.NameJsonView,
+            Dispatch.RoomsJsonView,
+            Room.NameJsonView
+    {}
+
 }

@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @SQLDelete(sql = "update `course` set deleted = 1 where id = ?")
@@ -25,6 +24,11 @@ public class Course implements SoftDelete {
     @ApiModelProperty("课时")
     @JsonView(HoursJsonView.class)
     private String hours;
+
+    @ApiModelProperty("排课")
+    @JsonView(SchedulesJsonView.class)
+    @OneToMany(mappedBy = "course")
+    private List<Schedule> schedules = new ArrayList<>();
 
     @ApiModelProperty("是否已删除")
     private Boolean deleted = false;
@@ -60,8 +64,17 @@ public class Course implements SoftDelete {
         this.deleted = deleted;
     }
 
+    public List<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
+    }
+
     public interface IdJsonView {}
     public interface NameJsonView {}
     public interface HoursJsonView {}
+    public interface SchedulesJsonView {}
 
 }

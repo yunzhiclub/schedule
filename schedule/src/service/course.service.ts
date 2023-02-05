@@ -6,6 +6,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {Course} from '../entity/course';
 import {Clazz} from "../entity/clazz";
+import {Assert} from '../common/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -79,5 +80,10 @@ export class CourseService {
    */
   getAll(): Observable<Course[]> {
     return this.httpClient.get<Course[]>(`${this.url}/getAll/`);
+  }
+
+  getForCourseDetail(courseId: number | undefined): Observable<Course> {
+    Assert.isNotNullOrUndefined(courseId, 'courseId 不合法');
+    return this.httpClient.get<Course>(this.url + '/getForCourseDetail/' + courseId);
   }
 }
