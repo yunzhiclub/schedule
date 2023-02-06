@@ -33,7 +33,7 @@ export class ScheduleService {
     size: number,
     page: number,
     courseName?: string,
-    termName?: string,
+    termId?: number,
     clazzName?: string,
     teacherName?: string, }):
     Observable<Page<Schedule>> {
@@ -43,8 +43,8 @@ export class ScheduleService {
     if (param.courseName) {
       httpParams = httpParams.append('courseName', param.courseName);
     }
-    if (param.termName) {
-      httpParams = httpParams.append('termName', param.termName);
+    if (param.termId) {
+      httpParams = httpParams.append('termId', param.termId.toString());
     }
     if (param.clazzName) {
       httpParams = httpParams.append('clazzName', param.clazzName);

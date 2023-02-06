@@ -25,12 +25,18 @@ export class ScheduleComponent implements OnInit {
     page: 'page',
     size: 'size',
     courseName: 'courseName',
-    termName: 'termName',
+    termId: 'termId',
     clazzName: 'clazzName',
     teacherName: 'teacherName'
   };
   term = {} as Term;
-
+  terms = [] as Term[];
+  cars = [
+    { id: 1, name: 'Volvo' },
+    { id: 2, name: 'Saab' },
+    { id: 3, name: 'Opel' },
+    { id: 4, name: 'Audi' },
+  ];
   constructor(private commonService: CommonService,
               private route: ActivatedRoute,
               private termService: TermService,
@@ -38,7 +44,7 @@ export class ScheduleComponent implements OnInit {
 
   ngOnInit(): void {
     this.queryForm.addControl(this.keys.courseName, new FormControl());
-    this.queryForm.addControl(this.keys.termName, new FormControl());
+    this.queryForm.addControl(this.keys.termId, new FormControl());
     this.queryForm.addControl(this.keys.clazzName, new FormControl());
     this.queryForm.addControl(this.keys.teacherName, new FormControl());
     // 订阅参数变化
@@ -48,7 +54,7 @@ export class ScheduleComponent implements OnInit {
         page: stringToIntegerNumber(params[this.keys.page], 0) as number,
         size: stringToIntegerNumber(params[this.keys.size], config.size) as number,
         courseName: params[this.keys.courseName],
-        termName: params[this.keys.termName],
+        termId: params[this.keys.termId],
         clazzName: params[this.keys.clazzName],
         teacherName: params[this.keys.teacherName],
       }).subscribe(data => {
@@ -59,6 +65,11 @@ export class ScheduleComponent implements OnInit {
     this.termService.getCurrentTerm()
       .subscribe((term: Term) => {
         this.term = term;
+        this.queryForm.get(this.keys.termId)?.setValue(term.id);
+      });
+    this.termService.getAll()
+      .subscribe(terms => {
+        this.terms = terms;
       });
   }
 
@@ -149,4 +160,5 @@ export class ScheduleComponent implements OnInit {
       },
     );
   }
+
 }

@@ -92,4 +92,8 @@ export class TermService {
   getCurrentTerm(): Observable<Term> {
     return this.httpClient.get<Term>(`${this.url}/getCurrentTerm`);
   }
+
+  getAll(): Observable<Term[]> {
+    return this.httpClient.get<Term[]>(this.url + '/getAll');
+  }
 }

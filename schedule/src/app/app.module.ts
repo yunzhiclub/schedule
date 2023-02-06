@@ -12,7 +12,8 @@ import {HttpClientModule} from '@angular/common/http';
 import {AuthModule} from './auth/auth.module';
 import {SizeModule} from '../common/size/size.module';
 import {PageModule} from '../common/page/page.module';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {NgSelectModule} from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import {ReactiveFormsModule} from '@angular/forms';
     SizeModule,
     PageModule,
     ReactiveFormsModule,
+    NgSelectModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
