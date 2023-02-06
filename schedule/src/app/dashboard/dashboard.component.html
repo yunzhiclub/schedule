@@ -1,3 +1,16 @@
 <h1 class="text-center mb-5 title-pt" style="margin-top: 90px">
   <label>{{ this.title }}欢迎您！</label><br>
 </h1>
+
+
+<select class="js-example-basic-multiple" name="states[]" multiple="multiple">
+  <option value="AL">Alabama</option>
+  ...
+  <option value="WY">Wyoming</option>
+</select>
+
+<script>
+  $(document).ready(function() {
+    $('.js-example-basic-multiple').select2();
+  });
+</script>
