@@ -16,7 +16,7 @@ public interface ScheduleService {
      */
     List<Schedule> getSchedulesByTerm(Term term);
 
-    Page<Schedule> page(String courseName, String termName, String clazzName, String teacherName, Pageable pageable);
+    Page<Schedule> page(String courseName, Long termId, String clazzName, String teacherName, Pageable pageable);
 
     Schedule add(Schedule schedule);
 

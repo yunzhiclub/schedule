@@ -39,9 +39,8 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
-    public Page<Schedule> page(String courseName, String termName, String clazzName, String teacherName, Pageable pageable) {
-        System.out.println("-------------------------");
-        return this.scheduleRepository.findAll(courseName, termName, clazzName, teacherName, pageable);
+    public Page<Schedule> page(String courseName, Long termId, String clazzName, String teacherName, Pageable pageable) {
+        return this.scheduleRepository.findAll(courseName, termId, clazzName, teacherName, pageable);
     }
 
     @Override

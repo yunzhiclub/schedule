@@ -63,8 +63,8 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
             this.userRepository.save(user);
         }
 
-        this.forHePanTest();
-//        this.chen();
+//        this.forHePanTest();
+        this.chen();
     }
 
 
