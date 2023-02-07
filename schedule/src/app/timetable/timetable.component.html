@@ -5,11 +5,21 @@
   <div class="col-md-3">
     <div class="row">
       <label class="col-form-label text-right col-md-4"><code>*</code>教师</label>
-      <select class="selectpicker form-control col-md-8" formControlName="selectedTeacherId" (change)="onTeacherChange()">
-        <option [value]="'please'">请选择要查看课表的教师</option>
-        <option [value]="'all'">全部教师</option>
-        <option *ngFor="let teacher of allTeachers;" [value]="teacher.id">{{ teacher.name }}</option>
-      </select>
+<!--      <select class="selectpicker form-control col-md-8" formControlName="selectedTeacherId" (change)="onTeacherChange()">-->
+<!--        <option [value]="'please'">请选择要查看课表的教师</option>-->
+<!--        <option [value]="'all'">全部教师</option>-->
+<!--        <option *ngFor="let teacher of allTeachers;" [value]="teacher.id">{{ teacher.name }}</option>-->
+<!--      </select>-->
+      <ng-select [items]="allTeachers"
+                 bindLabel="name"
+                 bindValue="id"
+                 formControlName="selectedTeacherId"
+                 placeholder="教师名称"
+                 style="width: 10em"
+                 (change)="onTeacherChange()"
+      >
+      </ng-select>
+      {{ formGroup.value | json }}
     </div>
   </div>
   <div class="col-md-5">
