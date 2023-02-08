@@ -19,10 +19,9 @@
                  (change)="onTeacherChange()"
       >
       </ng-select>
-      {{ formGroup.value | json }}
     </div>
   </div>
-  <div class="col-md-5">
+  <div class="col-md-4">
     <div class="row">
       <label class="col-form-label text-right col-sm-5" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null"><code>*</code>课程表显示模式</label>
       <select  class=" selectpicker form-control col-sm-5" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null" formControlName="displayMode" (change)="onModelChange()">
@@ -31,7 +30,9 @@
       </select>
     </div>
   </div>
-  <button (click)="excelExport()">导出excel</button>
+  <div class="col text-right">
+    <button (click)="excelExport()" class="btn btn-info"><i class="fa fa-file-export"></i>导出excel</button>
+  </div>
 </div>
 <hr/>
 <h1 class="text-center mb-5 title-pt" style="margin-top: 90px" *ngIf="!term">

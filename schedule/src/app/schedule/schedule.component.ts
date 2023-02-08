@@ -50,27 +50,31 @@ export class ScheduleComponent implements OnInit {
     // 订阅参数变化
     this.route.params.subscribe(params => {
       this.params = params;
-      this.scheduleService.page({
-        page: stringToIntegerNumber(params[this.keys.page], 0) as number,
-        size: stringToIntegerNumber(params[this.keys.size], config.size) as number,
-        courseName: params[this.keys.courseName],
-        termId: params[this.keys.termId],
-        clazzName: params[this.keys.clazzName],
-        teacherName: params[this.keys.teacherName],
-      }).subscribe(data => {
-          this.setData(data);
-          console.log(data);
-        });
+      this.loadData();
     });
     this.termService.getCurrentTerm()
       .subscribe((term: Term) => {
         this.term = term;
         this.queryForm.get(this.keys.termId)?.setValue(term.id);
+        this.loadData();
       });
     this.termService.getAll()
       .subscribe(terms => {
         this.terms = terms;
       });
+  }
+  private loadData(): void {
+    this.scheduleService.page({
+      page: stringToIntegerNumber(this.params[this.keys.page], 0) as number,
+      size: stringToIntegerNumber(this.params[this.keys.size], config.size) as number,
+      courseName: this.params[this.keys.courseName],
+      termId: this.params[this.keys.termId],
+      clazzName: this.params[this.keys.clazzName],
+      teacherName: this.params[this.keys.teacherName],
+    }).subscribe(data => {
+      this.setData(data);
+      console.log(data);
+    });
   }
 
   /**
@@ -160,5 +164,4 @@ export class ScheduleComponent implements OnInit {
       },
     );
   }
-
 }
