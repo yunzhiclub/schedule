@@ -101,6 +101,7 @@ export class TimetableComponent implements OnInit {
             this.onTeacherChange();
           });
       });
+    console.log('this.formGroup.get(\'selectedTeacherId\')?.value', this.formGroup.get('selectedTeacherId')?.value);
   }
   private initRoomsAndWeeks(): void {
     for (let i = 0; i < 11; i++) {
@@ -176,6 +177,7 @@ export class TimetableComponent implements OnInit {
   }
 
   onTeacherChange(): void {
+    console.log('this.formGroup.get(\'selectedTeacherId\')?.value', this.formGroup.get('selectedTeacherId')?.value);
     // 重新选择教师后,将教室与周的组置空
     this.initRoomsAndWeeks();
     // 重新选择教师后,将内容置空
@@ -406,8 +408,13 @@ export class TimetableComponent implements OnInit {
 
   excelExport(): void {
     const displayModel = this.formGroup.get('displayMode')?.value;
-    this.commonService.generateExcel(this.bigModelContent, this.bigModelRoomsAndWeeks, this.fileTeacherName, displayModel,
-                                     this.content, this.roomsAndWeeks);
+    this.commonService.generateExcel(this.bigModelContent,
+      this.bigModelRoomsAndWeeks,
+      this.fileTeacherName,
+      displayModel,
+      this.content,
+      this.roomsAndWeeks,
+      this.getHours());
   }
 
   getWeeksForTimetable(weeks: number[]): string {
@@ -507,5 +514,13 @@ export class TimetableComponent implements OnInit {
       }
     }
     return true;
+  }
+
+  getHours(): number {
+    let counter = 0;
+    for (const  schedule of this.schedulesOfSelectedTeacher) {
+      counter = schedule.dispatches.length + counter;
+    }
+    return counter;
   }
 }

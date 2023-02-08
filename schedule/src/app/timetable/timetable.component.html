@@ -21,7 +21,12 @@
       </ng-select>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-1">
+    <div class="row">
+      <div class="text-left mt-1" style="color: tomato; font-size: large" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== 'all'">总学时：{{ this.getHours() }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
     <div class="row">
       <label class="col-form-label text-right col-sm-5" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null"><code>*</code>课程表显示模式</label>
       <select  class=" selectpicker form-control col-sm-5" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null" formControlName="displayMode" (change)="onModelChange()">
