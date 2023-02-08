@@ -36,8 +36,7 @@ public class ScheduleController {
     @JsonView(GetSchedulesInCurrentTerm.class)
     public List<Schedule> getSchedulesInCurrentTerm() {
         Term term = this.termService.getCurrentTerm();
-        List<Schedule> schedules = this.scheduleService.getSchedulesByTerm(term);
-        return schedules;
+        return this.scheduleService.getSchedulesByTerm(term);
     }
 
     @GetMapping("getSchedulesByTerm/{termId}")

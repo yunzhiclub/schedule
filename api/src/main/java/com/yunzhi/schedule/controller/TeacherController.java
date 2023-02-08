@@ -19,6 +19,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("teacher")
@@ -47,13 +48,13 @@ public class TeacherController {
         Page<Teacher> teacherPage = this.teacherService.page(name, phone, pageable);
         teacherPage.getContent().forEach(teacher -> {
             teacher.getSchedules1().forEach(schedule -> {
-                if (schedule.getDeleted()) {
-                    schedule.setDispatches(null);
+                if (!schedule.getDeleted()) {
+                    schedule.setDispatches(schedule.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
                 }
             });
             teacher.getSchedules2().forEach(schedule -> {
-                if (schedule.getDeleted()) {
-                    schedule.setDispatches(null);
+                if (!schedule.getDeleted()) {
+                    schedule.setDispatches(schedule.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
                 }
             });
         });
