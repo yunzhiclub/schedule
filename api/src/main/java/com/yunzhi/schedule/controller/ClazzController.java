@@ -76,6 +76,7 @@ public class ClazzController {
     }
 
     @GetMapping("{clazzId}")
+    @JsonView(GetByIdJsonView.class)
     public Clazz getById(@PathVariable Long clazzId) {
         return this.clazzService.getById(clazzId);
     }
@@ -118,5 +119,10 @@ public class ClazzController {
             Clazz.StudentsJsonView,
             Clazz.EntranceDateJsonView,
             Student.IdJsonView
+    {}
+    private class GetByIdJsonView implements
+            Clazz.IdJsonView,
+            Clazz.NameJsonView,
+            Clazz.EntranceDateJsonView
     {}
 }
