@@ -302,7 +302,8 @@ export class CommonService {
                        bigModelRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
                        fileTeacherName: string | undefined, displayModel: any,
                        content: { rooms: Room[]; weeks: number[]; clazzes: Clazz[]; schedules: Schedule[] }[][],
-                       roomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][]) {
+                       roomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
+                       teacherHours: number) {
     // Create workbook and worksheet
     this.workbook = new Excel.Workbook();
 
@@ -324,6 +325,13 @@ export class CommonService {
       Model = '(小节)';
       this.getSmallModelTimeTable(content, roomsAndWeeks);
     }
+
+    // 添加教师学时、学期名称等信息
+    if (fileTeacherName !== '所有教师') {
+      this.worksheet.mergeCells('W1:Y9');
+      this.worksheet.getCell('W1').value = fileTeacherName + '的总学时：' + teacherHours;
+    }
+
 
     // Generate Excel File
     this.workbook.xlsx.writeBuffer().then((data: BlobPart) => {
