@@ -36,8 +36,7 @@ public class ScheduleController {
     @JsonView(GetSchedulesInCurrentTerm.class)
     public List<Schedule> getSchedulesInCurrentTerm() {
         Term term = this.termService.getCurrentTerm();
-        List<Schedule> schedules = this.scheduleService.getSchedulesByTerm(term);
-        return schedules;
+        return this.scheduleService.getSchedulesByTerm(term);
     }
 
     @GetMapping("getSchedulesByTerm/{termId}")
@@ -56,12 +55,12 @@ public class ScheduleController {
     @JsonView(PageJsonView.class)
     public Page<Schedule> page(
             @RequestParam(required = false, defaultValue = "") String courseName,
-            @RequestParam(required = false, defaultValue = "") String termName,
+            @RequestParam(required = false, defaultValue = "") Long termId,
             @RequestParam(required = false, defaultValue = "") String clazzName,
             @RequestParam(required = false, defaultValue = "") String teacherName,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        return this.scheduleService.page(courseName, termName, clazzName, teacherName, pageable);
+        return this.scheduleService.page(courseName, termId, clazzName, teacherName, pageable);
     }
 
     @PostMapping

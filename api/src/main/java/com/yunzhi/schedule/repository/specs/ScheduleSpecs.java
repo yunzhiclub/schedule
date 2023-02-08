@@ -17,6 +17,14 @@ public class ScheduleSpecs {
             return Specification.where(null);
         }
     }
+    public static Specification<Schedule> relatingTerm(Long termId) {
+        if (termId != null) {
+            return (root, criteriaQuery, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.join("term").get("id").as(Long.class), termId);
+        } else {
+            return Specification.where(null);
+        }
+    }
 
 
     /**
@@ -33,7 +41,5 @@ public class ScheduleSpecs {
             return Specification.where(null);
         }
     }
-
-
 
 }

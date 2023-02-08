@@ -201,7 +201,7 @@ export class RoomDetailComponent implements OnInit {
   getTeachersName(week: number): string {
     const data = this.currentData[week];
     if (data) {
-      return data.teacher1.name + '、' + data.teacher2.name;
+      return (data.teacher1.name ? data.teacher1.name : '-') + '、' + (data.teacher2.name ? data.teacher2.name : '-');
     }
     return '';
   }

@@ -105,4 +105,9 @@ public class TermServiceImpl implements TermService {
         }
         return Term;
     }
+
+    @Override
+    public List<Term> getAll() {
+        return (List<Term>) this.termRepository.findAll();
+    }
 }

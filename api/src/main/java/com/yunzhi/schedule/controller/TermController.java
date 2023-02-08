@@ -11,6 +11,7 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @RestController
 @RequestMapping("term")
@@ -86,6 +87,11 @@ public class TermController {
     @GetMapping("getCurrentTerm")
     public Term getCurrentTerm() {
         return this.termService.getCurrentTerm();
+    }
+
+    @GetMapping("getAll")
+    public List<Term> getAll() {
+        return this.termService.getAll();
     }
 
 }

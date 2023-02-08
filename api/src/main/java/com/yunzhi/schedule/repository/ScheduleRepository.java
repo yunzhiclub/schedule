@@ -18,9 +18,9 @@ public interface ScheduleRepository extends PagingAndSortingRepository<Schedule,
 
     List<Schedule> findSchedulesByTermAndDeletedFalse(Term term);
 
-    default Page<Schedule> findAll(String courseName, String termName, String clazzName, String teacherName, Pageable pageable) {
+    default Page<Schedule> findAll(String courseName, Long termId, String clazzName, String teacherName, Pageable pageable) {
         Specification<Schedule> specification = ScheduleSpecs.containingName(courseName, "course")
-                .and(ScheduleSpecs.containingName(termName, "term"))
+                .and(ScheduleSpecs.relatingTerm(termId))
                 .and(ScheduleSpecs.containingName(teacherName, "teacher1")
                     .or(ScheduleSpecs.containingName(teacherName, "teacher2")))
                 .and(ScheduleSpecs.containingClazzName(clazzName));

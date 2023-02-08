@@ -14,6 +14,7 @@ import org.springframework.util.Assert;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService{
@@ -35,13 +36,19 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     @Override
     public List<Schedule> getSchedulesByTerm(Term term) {
-        return this.scheduleRepository.findSchedulesByTermAndDeletedFalse(term);
+        List<Schedule> schedules = this.scheduleRepository.findSchedulesByTermAndDeletedFalse(term);
+        schedules.forEach(schedule -> {
+            schedule.setDispatches(schedule.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
+            schedule.getDispatches().forEach(dispatch -> {
+                dispatch.setRooms(dispatch.getRooms().stream().filter(room -> !room.getDeleted()).collect(Collectors.toList()));
+            });
+        });
+        return schedules;
     }
 
     @Override
-    public Page<Schedule> page(String courseName, String termName, String clazzName, String teacherName, Pageable pageable) {
-        System.out.println("-------------------------");
-        return this.scheduleRepository.findAll(courseName, termName, clazzName, teacherName, pageable);
+    public Page<Schedule> page(String courseName, Long termId, String clazzName, String teacherName, Pageable pageable) {
+        return this.scheduleRepository.findAll(courseName, termId, clazzName, teacherName, pageable);
     }
 
     @Override

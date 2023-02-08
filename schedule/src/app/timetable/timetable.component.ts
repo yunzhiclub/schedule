@@ -68,22 +68,40 @@ export class TimetableComponent implements OnInit {
   ngOnInit(): void {
     this.teacherService.getAll()
       .subscribe(allTeachers => {
-        this.allTeachers = allTeachers;
+        this.allTeachers.push({id: 'all' as unknown, name: '全部教师'} as Teacher);
+        allTeachers.forEach(teacher => this.allTeachers.push(teacher));
+        // todo: this.allTeachers = allTeachers;
     });
+    // this.scheduleService.getSchedulesInCurrentTerm()
+    //   .subscribe(allSchedulesInCurrentTerm => {
+    //     this.allSchedulesInCurrentTerm = allSchedulesInCurrentTerm;
+    //     // console.log('allSchedulesInCurrentTerm', this.allSchedulesInCurrentTerm);
+    //   });
+    // this.termService.getCurrentTerm()
+    //   .subscribe(currentTerm => {
+    //     this.term = currentTerm;
+    //   });
+    // this.initIsShow();
+    // this.initContent();
+    // this.initRoomsAndWeeks();
+    // this.formGroup?.get('selectedTeacherId')?.setValue('all');
+    // this.formGroup?.get('displayMode')?.setValue('big');
+    // todo: 确定数据返回
     this.scheduleService.getSchedulesInCurrentTerm()
       .subscribe(allSchedulesInCurrentTerm => {
         this.allSchedulesInCurrentTerm = allSchedulesInCurrentTerm;
-        // console.log('allSchedulesInCurrentTerm', this.allSchedulesInCurrentTerm);
+        this.termService.getCurrentTerm()
+          .subscribe(currentTerm => {
+            this.term = currentTerm;
+            this.initIsShow();
+            this.initContent();
+            this.initRoomsAndWeeks();
+            this.formGroup?.get('selectedTeacherId')?.setValue('all');
+            this.formGroup?.get('displayMode')?.setValue('big');
+            this.onTeacherChange();
+          });
       });
-    this.termService.getCurrentTerm()
-      .subscribe(currentTerm => {
-        this.term = currentTerm;
-      });
-    this.initIsShow();
-    this.initContent();
-    this.initRoomsAndWeeks();
-    this.formGroup?.get('selectedTeacherId')?.setValue('please');
-    this.formGroup?.get('displayMode')?.setValue('big');
+    console.log('this.formGroup.get(\'selectedTeacherId\')?.value', this.formGroup.get('selectedTeacherId')?.value);
   }
   private initRoomsAndWeeks(): void {
     for (let i = 0; i < 11; i++) {
@@ -159,6 +177,7 @@ export class TimetableComponent implements OnInit {
   }
 
   onTeacherChange(): void {
+    console.log('this.formGroup.get(\'selectedTeacherId\')?.value', this.formGroup.get('selectedTeacherId')?.value);
     // 重新选择教师后,将教室与周的组置空
     this.initRoomsAndWeeks();
     // 重新选择教师后,将内容置空
@@ -180,7 +199,8 @@ export class TimetableComponent implements OnInit {
 
   private getSelectedTeacher(): void {
     for (const teacher of this.allTeachers) {
-      if (teacher.id.toString() === this.formGroup.get('selectedTeacherId')?.value) {
+      // todo: if (teacher.id.toString() === this.formGroup.get('selectedTeacherId')?.value) {
+      if (teacher.id.toString() === this.formGroup.get('selectedTeacherId')?.value + '') {
         this.selectedTeacher = teacher;
         this.fileTeacherName = this.selectedTeacher.name;
         break;
@@ -388,8 +408,13 @@ export class TimetableComponent implements OnInit {
 
   excelExport(): void {
     const displayModel = this.formGroup.get('displayMode')?.value;
-    this.commonService.generateExcel(this.bigModelContent, this.bigModelRoomsAndWeeks, this.fileTeacherName, displayModel,
-                                     this.content, this.roomsAndWeeks);
+    this.commonService.generateExcel(this.bigModelContent,
+      this.bigModelRoomsAndWeeks,
+      this.fileTeacherName,
+      displayModel,
+      this.content,
+      this.roomsAndWeeks,
+      this.getHours());
   }
 
   getWeeksForTimetable(weeks: number[]): string {
@@ -489,5 +514,13 @@ export class TimetableComponent implements OnInit {
       }
     }
     return true;
+  }
+
+  getHours(): number {
+    let counter = 0;
+    for (const  schedule of this.schedulesOfSelectedTeacher) {
+      counter = schedule.dispatches.length + counter;
+    }
+    return counter;
   }
 }

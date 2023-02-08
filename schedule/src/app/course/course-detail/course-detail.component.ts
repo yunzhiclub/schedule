@@ -101,7 +101,7 @@ export class CourseDetailComponent implements OnInit {
   getTeachersName(week: number, index = 0): string {
     const data = this.currentData[week][index];
     if (data) {
-      return data.teacher1.name + '、' + data.teacher2.name;
+      return (data.teacher1.name ? data.teacher1.name : '-') + '、' + (data.teacher2.name ? data.teacher2.name : '-');
     }
     return '';
   }

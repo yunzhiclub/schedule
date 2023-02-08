@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("course")
@@ -98,6 +99,19 @@ public class CourseController {
     @JsonView(GetForCourseDetailJsonView.class)
     public Course getForCourseDetail(@PathVariable Long courseId) {
         Course course = this.courseService.getById(courseId);
+        course.getSchedules().forEach(schedule -> {
+            schedule.setClazzes(schedule.getClazzes().stream().filter(clazz -> !clazz.getDeleted()).collect(Collectors.toList()));
+            schedule.setDispatches(schedule.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
+            schedule.getDispatches().forEach(dispatch -> {
+                dispatch.setRooms(dispatch.getRooms().stream().filter(room -> !room.getDeleted()).collect(Collectors.toList()));
+            });
+            if (schedule.getTeacher1().getDeleted()) {
+                schedule.setTeacher1(new Teacher());
+            }
+            if (schedule.getTeacher2().getDeleted()) {
+                schedule.setTeacher2(new Teacher());
+            }
+        });
         return course;
     }
 
