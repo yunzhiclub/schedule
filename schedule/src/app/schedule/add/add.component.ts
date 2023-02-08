@@ -42,8 +42,6 @@ export class AddComponent implements OnInit {
   conflictTimesOfTeacher1: {day: number, lesson: number, week: number}[] = [];
   // 教师2冲突时间
   conflictTimesOfTeacher2: {day: number, lesson: number, week: number}[] = [];
-  // 冲突地点, 通过学期所有被占用教室获取
-  conflictSites: {day: number, lesson: number, week: number, roomIds: number[]}[] = [];
   // 选择的时间地点
   selectedData: {day: number, smLesson: number, week: number, roomIds: number[]}[] = [];
   // 临时时间地点
@@ -321,11 +319,13 @@ export class AddComponent implements OnInit {
       .subscribe((rooms: Room[]) => {
         this.rooms = rooms;
       });
+
     this.scheduleService.getSchedulesInCurrentTerm()
       .subscribe((schedules: Schedule[]) => {
         this.schedules = schedules;
-        this.makeConflictSites();
+        console.log('getSchedulesInCurrentTerm', this.schedules);
       });
+
     this.courseService.getAll()
       .subscribe(allCourse => {
         this.courses = allCourse;
@@ -456,12 +456,6 @@ export class AddComponent implements OnInit {
       }
     });
     // console.log('teacher2Id', this.conflictTimesOfTeacher2);
-  }
-
-  private makeConflictSites(): void {
-    this.conflictSites.forEach(conflictSite => {
-      this.sites[conflictSite.day][conflictSite.lesson][conflictSite.week].concat(conflictSite.roomIds);
-    });
   }
 
   private makeTimes(): void {
