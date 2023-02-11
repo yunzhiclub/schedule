@@ -115,7 +115,8 @@ public class ClazzController {
 
     private class GetAllJsonView implements
             Clazz.NameJsonView,
-            Clazz.IdJsonView
+            Clazz.IdJsonView,
+            Clazz.StudentNumberJsonView
     {}
 
     private class PageJsonView implements
@@ -123,11 +124,13 @@ public class ClazzController {
             Clazz.NameJsonView,
             Clazz.StudentsJsonView,
             Clazz.EntranceDateJsonView,
+            Clazz.StudentNumberJsonView,
             Student.IdJsonView
     {}
     private class GetByIdJsonView implements
             Clazz.IdJsonView,
             Clazz.NameJsonView,
-            Clazz.EntranceDateJsonView
+            Clazz.EntranceDateJsonView,
+            Clazz.StudentNumberJsonView
     {}
 }

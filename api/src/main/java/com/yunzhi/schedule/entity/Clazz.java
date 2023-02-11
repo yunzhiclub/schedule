@@ -29,7 +29,9 @@ public class Clazz implements SoftDelete {
     @ApiModelProperty("入学时间")
     @JsonView(EntranceDateJsonView.class)
     private Long entranceDate;
-
+    @ApiModelProperty("学生人数")
+    @JsonView(StudentNumberJsonView.class)
+    private Long studentNumber;
 
     @ApiModelProperty("是否已删除")
     private Boolean deleted = false;
@@ -78,8 +80,17 @@ public class Clazz implements SoftDelete {
         this.deleted = deleted;
     }
 
+    public Long getStudentNumber() {
+        return studentNumber;
+    }
+
+    public void setStudentNumber(Long studentNumber) {
+        this.studentNumber = studentNumber;
+    }
+
     public interface IdJsonView {}
     public interface NameJsonView {}
     public interface EntranceDateJsonView {}
     public interface StudentsJsonView {}
+    public interface StudentNumberJsonView {}
 }

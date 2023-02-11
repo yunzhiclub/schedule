@@ -58,7 +58,7 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
             //角色为系统管理员
             String password = "yunzhi";
             user.setPhone("13920618851");
-            user.setName("系统管理员");
+            user.setName("张三");
             user.setPassword(Encoder.getMD5Result(password));
             this.userRepository.save(user);
         }
@@ -205,6 +205,7 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         Clazz clazz = new Clazz();
         clazz.setName(name);
         clazz.setEntranceDate(entranceDate);
+        clazz.setStudentNumber(30L);
         return this.clazzRepository.save(clazz);
     }
 
