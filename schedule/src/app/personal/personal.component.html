@@ -1,28 +1,23 @@
-<div class="row">
-  <div class="col-md-4">
-    <a class="btn btn-primary btn-sm" [routerLink]="'edit'"><i class="fas fa-edit"></i>修改个人信息</a>
-    <a class="btn btn-primary btn-sm" [routerLink]="'modifyPassword'"><i class="fas fa-edit"></i>修改密码</a>
-  </div>
-</div>
+<!--<div class="row">-->
+<!--  <div class="col-md-4">-->
+<!--    <a class="btn btn-primary btn-sm" [routerLink]="'edit'"><i class="fas fa-edit"></i>修改个人信息</a>-->
+<!--    <a class="btn btn-primary btn-sm" [routerLink]="'modifyPassword'"><i class="fas fa-edit"></i>修改密码</a>-->
+<!--  </div>-->
+<!--</div>-->
+<h4>我的资料</h4>
+<hr>
 <div class="row">
   <div class="col-md-3">
-    <table class="table table-striped mt-2">
-      <thead>
-      <tr class="table-primary">
-        <th scope="col" colspan="2">
-          <h3>我的信息</h3>
-        </th>
-      </tr>
-      </thead>
+    <table class="table border mt-2">
       <tbody>
       <tr>
-        <td>姓名</td>
+        <td class="border-right">姓名</td>
         <td>
           {{ this.user.name }}
         </td>
       </tr>
       <tr>
-        <td>手机号</td>
+        <td class="border-right">手机号</td>
         <td>
           {{ this.user.phone }}
         </td>

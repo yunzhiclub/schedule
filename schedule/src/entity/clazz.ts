@@ -7,17 +7,20 @@ import {Student} from "./student";
 export class Clazz {
   id: number;
   name: string | undefined;
+  studentNumber: number | undefined;
   entranceDate = '';
   students = [] as Student[];
 
   constructor(data = {} as {
     id?: number,
     name?: string,
-    entranceDate?: string
+    entranceDate?: string,
+    studentNumber?: number,
     students?: Student[]
   }) {
     this.id = (data.id as number);
     this.name = data.name;
+    this.studentNumber = data.studentNumber;
     this.entranceDate = data.entranceDate ? data.entranceDate : '';
     this.students = data.students ? data.students : [];
   }
@@ -34,6 +37,7 @@ export class Clazz {
     return this.entranceDate!;
   }
   getStudentNumber(): number {
-    return this.students.length;
+    Assert.isDefined(this.studentNumber, '不满足获取studentNumber的前提条件');
+    return this.studentNumber!;
   }
 }

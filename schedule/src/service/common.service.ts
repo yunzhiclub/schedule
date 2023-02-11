@@ -32,7 +32,7 @@ export class CommonService {
     { name: '学期管理',   url: 'term',       icon: 'fas fa-school' } as BaseMenu,
     { name: '教师管理',   url: 'teacher',    icon: 'fas fa-chalkboard-teacher' } as BaseMenu,
     { name: '班级管理',   url: 'clazz',      icon: 'fas fa-university' } as BaseMenu,
-    { name: '学生管理',   url: 'student',    icon: 'fas fa-user-graduate' } as BaseMenu,
+    // { name: '学生管理',   url: 'student',    icon: 'fas fa-user-graduate' } as BaseMenu,
     { name: '教室管理',   url: 'room',       icon: 'fas fa-warehouse' } as BaseMenu,
     { name: '课程管理',   url: 'course',     icon: 'fas fa-book' } as BaseMenu,
     { name: '排课管理',   url: 'schedule',   icon: 'fas fa-clock' } as BaseMenu,

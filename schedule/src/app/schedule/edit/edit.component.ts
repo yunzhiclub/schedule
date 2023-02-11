@@ -52,8 +52,6 @@ export class EditComponent implements OnInit {
   rooms: Room[] = [];
   /* 待处理班级，需要筛选掉已经上过该门课的班级 */
   clazzes = [] as Clazz[];
-  /* 可选班级，clazzes筛选过后的班级 */
-  screenedClazzes: Clazz[] = [];
   // v层循环用
   bigLessons = [0, 1, 2, 3, 4];
   days = ['一', '二', '三', '四', '五', '六', '日'];
@@ -247,9 +245,7 @@ export class EditComponent implements OnInit {
         this.term = schedule.term;
         this.makeSelectedData();
         this.validateData();
-        this.makeWeeksAndRoomsRecoder();
         this.makeSmLessonsRecorder();
-        console.log('getData', [...this.weeksRecorder], [...this.roomsRecorder]);
 
         const term = this.term;
         let seconds = +term.endTime - +term.startTime;
@@ -264,27 +260,14 @@ export class EditComponent implements OnInit {
           .subscribe((schedules: Schedule[]) => {
             this.schedules = schedules;
             this.makeTimesAndSites();
+            this.makeWeeksAndRoomsRecoder();
+            console.log('getData', [...this.weeksRecorder], [...this.roomsRecorder]);
           });
-
       });
     this.roomService.getAll()
       .subscribe((rooms: Room[]) => {
         this.rooms = rooms;
       });
-  }
-  /**
-   * 清空选择的数据
-   */
-  private clearSelectedData(): void {
-    this.selectedData = [];
-  }
-  private clearScreenedClazzes(): void {
-    this.screenedClazzes = [];
-  }
-  private clearConflictTimes(): void {
-    this.conflictTimesOfClazzes = [];
-    this.conflictTimesOfTeacher1 = [];
-    this.conflictTimesOfTeacher2 = [];
   }
   // 需要 schedules clazzIds teacher1 teacher2
   private makeConflictTimes(): void {
@@ -314,6 +297,7 @@ export class EditComponent implements OnInit {
     this.makeConflictTimes();
     this.makeTimes();
     this.updateTimesAndSitesBySchedule();
+    console.log(this.times, this.sites);
   }
   /**
    *  生成班级冲突时间
@@ -417,9 +401,6 @@ export class EditComponent implements OnInit {
     } else {
       this.smLessons.splice(this.smLessons.indexOf(smLesson), 1);
     }
-  }
-  onIsSmLessonsDetermineChange(): void {
-    this.isSmLessonsDetermine = !this.isSmLessonsDetermine;
   }
   onRoomChange(roomId: number): void {
     // 不支持张三小节1在教室1上课，李四小节2在教室1上课
@@ -617,11 +598,17 @@ export class EditComponent implements OnInit {
   private makeWeeksAndRoomsRecoder(): void {
     this.selectedData.forEach((data) => {
       const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
+      this.day = data.day;
+      this.bigLesson = bigLesson;
       if (!this.weeksRecorder[data.day][bigLesson].includes(data.week)) {
         this.weeksRecorder[data.day][bigLesson].push(data.week);
+        this.onWeekChange(data.week);
       }
       if (this.roomsRecorder[data.day][bigLesson].length === 0) {
         this.roomsRecorder[data.day][bigLesson] = [...data.roomIds];
+        data.roomIds.forEach(roomId => {
+          this.onRoomChange(roomId);
+        });
       }
     });
   }
@@ -658,9 +645,6 @@ export class EditComponent implements OnInit {
   isAllWeekChecked(): boolean {
     return this.selectedWeeks.length === this.getEffectiveWeeks().length;
   }
-  isAllRoomChecked(): boolean {
-    return this.selectedRooms.length === this.getEffectiveRooms().length;
-  }
   checkAllWeek(): void {
     const effectiveWeeks = this.getEffectiveWeeks();
     if (this.selectedWeeks.length !== effectiveWeeks.length) {
@@ -677,31 +661,10 @@ export class EditComponent implements OnInit {
       });
     }
   }
-  checkAllRoom(): void {
-    const effectiveRooms = this.getEffectiveRooms();
-    if (Array.from(new Set(this.selectedRooms)).length !== effectiveRooms.length) {
-      console.log('checkAllRoom2', Array.from(new Set(this.selectedRooms)), effectiveRooms);
-      effectiveRooms.forEach(roomId => {
-        if (!this.selectedRooms.includes(roomId)) {
-          this.onRoomChange(roomId);
-        }
-      });
-    } else {
-      [...this.selectedRooms].forEach(roomId => {
-        this.onRoomChange(roomId);
-      });
-    }
-  }
   private getEffectiveWeeks(): number[] {
     return this.weeks.filter(w => this.overtimeWeekNumber! <= w)
       .filter(w => !this.isWeekDisabled(w));
   }
-  private getEffectiveRooms(): number[] {
-    return this.rooms
-      .filter(room => !this.isRoomDisabled(room.id!))
-      .map(room => room.id!);
-  }
-
   getWeeksForShow(day: number, bigLesson: number): string {
     return this.weeksRecorder[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
   }

@@ -22,10 +22,12 @@ export class AddComponent implements OnInit {
   formGroup = new FormGroup({
     name: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.clazzNameUnique()),
     entranceDate: new FormControl('', [Validators.required, YzValidator.notEmpty]),
+    studentNumber: new FormControl('', [Validators.required]),
   });
   keys = {
     name: 'name',
     entranceDate: 'entranceDate',
+    studentNumber: 'studentNumber'
   };
 
   ngOnInit(): void {
@@ -35,7 +37,8 @@ export class AddComponent implements OnInit {
   onSubmit(formGroup: FormGroup): void {
     const clazz = new Clazz({
       name: formGroup.get('name')?.value,
-      entranceDate: formGroup.get('entranceDate')?.value
+      entranceDate: formGroup.get('entranceDate')?.value,
+      studentNumber: formGroup.get('studentNumber')?.value,
     });
     this.clazzService.save(clazz)
       .subscribe(() => {

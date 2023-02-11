@@ -1,5 +1,6 @@
 package com.yunzhi.schedule.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.yunzhi.schedule.entity.User;
 import com.yunzhi.schedule.entity.vo.PasswordUser;
 import com.yunzhi.schedule.service.UserService;
@@ -26,6 +27,7 @@ public class UserController {
     }
 
     @GetMapping("{id}")
+    @JsonView(GetByIdJsonView.class)
     public User getById(@PathVariable Long id) {
         if (id == null) {
             return null;
@@ -34,17 +36,20 @@ public class UserController {
     }
 
     @GetMapping("me")
+    @JsonView(GetByIdJsonView.class)
     public User getCurrentLoginUser() {
         return this.userService.getCurrentLoginUser();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @JsonView(GetByIdJsonView.class)
     public User save(@RequestBody User student) {
         return userService.save(student);
     }
 
     @RequestMapping("login")
+    @JsonView(GetByIdJsonView.class)
     public User login() {
         return this.userService.login();
     }
@@ -62,6 +67,7 @@ public class UserController {
      * @return 教师
      */
     @PostMapping("update/{userId}")
+    @JsonView(GetByIdJsonView.class)
     public User update(@PathVariable Long userId,
                           @RequestBody User user) {
         return this.userService.update(userId, user);
@@ -85,4 +91,12 @@ public class UserController {
     public void updatePassword(@RequestBody PasswordUser user) throws ValidationException {
         this.userService.updatePassword(user.getPassword(), user.getNewPassword());
     }
+
+    public interface GetByIdJsonView extends
+            User.IdJsonView,
+            User.NameJsonView,
+            User.PhoneJsonView
+    {}
+
+
 }
