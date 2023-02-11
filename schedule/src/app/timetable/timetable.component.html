@@ -1,49 +1,62 @@
-<div class="row" [formGroup]="formGroup" *ngIf="term">
-  <div class="col-md-3 mt-1">
-    <h4 class="text-left">学期：{{ term.name }}</h4>
-  </div>
-  <div class="col-md-3">
-    <div class="row">
-      <label class="col-form-label text-right col-md-4"><code>*</code>教师</label>
-<!--      <select class="selectpicker form-control col-md-8" formControlName="selectedTeacherId" (change)="onTeacherChange()">-->
-<!--        <option [value]="'please'">请选择要查看课表的教师</option>-->
-<!--        <option [value]="'all'">全部教师</option>-->
-<!--        <option *ngFor="let teacher of allTeachers;" [value]="teacher.id">{{ teacher.name }}</option>-->
-<!--      </select>-->
-      <ng-select [items]="allTeachers"
-                 bindLabel="name"
-                 bindValue="id"
-                 formControlName="selectedTeacherId"
-                 placeholder="教师名称"
-                 style="width: 10em"
-                 (change)="onTeacherChange()"
-      >
-      </ng-select>
+<div [formGroup]="formGroup" *ngIf="term">
+  <div class="row">
+    <div class="col-md-3 mt-1">
+      <h4 class="text-left">学期：{{ term.name }}</h4>
+    </div>
+    <div class="col-md-3">
+      <div class="row">
+        <label class="col-form-label text-right col-md-4"><code>*</code>教师</label>
+  <!--      <select class="selectpicker form-control col-md-8" formControlName="selectedTeacherId" (change)="onTeacherChange()">-->
+  <!--        <option [value]="'please'">请选择要查看课表的教师</option>-->
+  <!--        <option [value]="'all'">全部教师</option>-->
+  <!--        <option *ngFor="let teacher of allTeachers;" [value]="teacher.id">{{ teacher.name }}</option>-->
+  <!--      </select>-->
+        <ng-select [items]="allTeachers"
+                   bindLabel="name"
+                   bindValue="id"
+                   formControlName="selectedTeacherId"
+                   placeholder="教师名称"
+                   style="width: 10em"
+                   (change)="onTeacherChange()"
+        >
+        </ng-select>
+      </div>
+    </div>
+  <!--  <div class="col-md-1">-->
+  <!--    <div class="row">-->
+  <!--      <div class="text-left mt-1" style="color: tomato; font-size: large" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== 'all' && this.formGroup.get('selectedTeacherId')?.value !== null">总学时：{{ this.getHours() }}</div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+    <div class="col-md-4">
+      <div class="row">
+        <div class="text-left mt-1" style="color: tomato; font-size: large" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== 'all' && this.formGroup.get('selectedTeacherId')?.value !== null">总学时：{{ this.getHours() }}</div>
+        <label class="col-form-label text-right col-sm-5" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null"><code>*</code>课程表显示模式</label>
+        <select  class=" selectpicker form-control col-sm-3" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null" formControlName="displayMode" (change)="onModelChange()">
+          <option [value]="'big'">大节显示</option>
+          <option [value]="'small'">小节显示</option>
+        </select>
+      </div>
+    </div>
+    <div class="col text-right">
+      <button (click)="excelExport()" class="btn btn-info"><i class="fa fa-file-export"></i>导出excel</button>
     </div>
   </div>
-  <div class="col-md-1">
+  <hr/>
+  <div class="col-md-4">
     <div class="row">
-      <div class="text-left mt-1" style="color: tomato; font-size: large" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== 'all'">总学时：{{ this.getHours() }}</div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="row">
-      <label class="col-form-label text-right col-sm-5" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null"><code>*</code>课程表显示模式</label>
-      <select  class=" selectpicker form-control col-sm-5" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null" formControlName="displayMode" (change)="onModelChange()">
-        <option [value]="'big'">大节显示</option>
-        <option [value]="'small'">小节显示</option>
+      <input type="checkbox" name="isSelectWeek" id="isSelectWeek" (change)="setIsSelectWeek()" /><label class="ml-1 mt-2" for="isSelectWeek">按周显示</label>
+      <label class="col-form-label text-right col-sm-5" *ngIf="this.isSelectWeek"><code>*</code>请选择周数</label>
+      <select  class=" selectpicker form-control col-sm-3" *ngIf="this.isSelectWeek" formControlName="selectWeek" (change)="onSelectWeekChange()">
+        <option *ngFor="let week of getWeeksForSelectWeeks(this.weekNumber)" [value]="week">第{{ week }}周</option>
       </select>
     </div>
   </div>
-  <div class="col text-right">
-    <button (click)="excelExport()" class="btn btn-info"><i class="fa fa-file-export"></i>导出excel</button>
-  </div>
 </div>
-<hr/>
 <h1 class="text-center mb-5 title-pt" style="margin-top: 90px" *ngIf="!term">
   <label>请前往学期管理激活学期</label><br>
 </h1>
-<div class="row" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null && this.formGroup.get('displayMode')?.value === 'small' && term">
+<!-- 不选择周的小节显示 -->
+<div class="row" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null && this.formGroup.get('displayMode')?.value === 'small'&& !this.isSelectWeek && term">
   <div class="col-md-12">
     <table class="table table-striped table-bordered">
       <thead class="table-primary">
@@ -68,8 +81,8 @@
               <div *ngFor="let roomsAndWeeks of this.roomsAndWeeks[l][d][schedule.id]">
                 <div style="color: green; font-size: large" *ngIf="roomsAndWeeks.rooms.length !== 0"><label>{{ this.getWeeksForTimetable(roomsAndWeeks.weeks) }}</label>在<label *ngFor="let room of roomsAndWeeks.rooms">{{ room.name }}&nbsp;</label></div>
               </div>
-              <div>班级：<label *ngFor="let clazz of schedule.clazzes">{{ clazz.name }}&nbsp;</label></div>
-              <div>教师：<label>{{ schedule.teacher1.name }}&nbsp;</label>
+              <div><label *ngFor="let clazz of schedule.clazzes">{{ clazz.name }}&nbsp;</label></div>
+              <div><label>{{ schedule.teacher1.name }}&nbsp;</label>
                         <label>{{ schedule.teacher2.name }}&nbsp;</label>
               </div>
               <hr>
@@ -81,8 +94,8 @@
     </table>
   </div>
 </div>
-
-<div class="row" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null && this.formGroup.get('displayMode')?.value === 'big' && term">
+<!-- 不选择周的大节显示 -->
+<div class="row" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null && this.formGroup.get('displayMode')?.value === 'big'&& !this.isSelectWeek && term">
   <div class="col-md-12">
     <table class="table table-striped table-bordered">
       <thead class="table-primary">
@@ -106,6 +119,84 @@
               <div style="color: red">{{ schedule.course.name }}</div>
               <div *ngFor="let bigModelRoomsAndWeek of this.bigModelRoomsAndWeeks[l][d][schedule.id]">
                 <div style="color: green; font-size: large" *ngIf="bigModelRoomsAndWeek.rooms.length !== 0"><label>{{ this.getWeeksForTimetable(bigModelRoomsAndWeek.weeks) }}</label>在<label *ngFor="let room of bigModelRoomsAndWeek.rooms">{{ room.name }}&nbsp;</label></div>
+              </div>
+              <div><label *ngFor="let clazz of schedule.clazzes">{{ clazz.name }}&nbsp;</label></div>
+              <div><label>{{ schedule.teacher1.name }}&nbsp;</label>
+                <label>{{ schedule.teacher2.name }}&nbsp;</label>
+              </div>
+              <hr>
+            </div>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- 选择周的小节显示 -->
+<div class="row" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null && this.formGroup.get('displayMode')?.value === 'small' && this.isSelectWeek && term">
+  <div class="col-md-12">
+    <table class="table table-striped table-bordered">
+      <thead class="table-primary">
+      <tr>
+        <th class="col-md-1">{{ getWeeksForSelectWeeksShow(this.formGroup.get('selectWeek')?.value) }}</th>
+        <th class="col-md-1">周一</th>
+        <th class="col-md-1">周二</th>
+        <th class="col-md-1">周三</th>
+        <th class="col-md-1">周四</th>
+        <th class="col-md-1">周五</th>
+        <th class="col-md-1">周六</th>
+        <th class="col-md-1">周日</th>
+      </tr>
+      </thead>
+      <tbody >
+      <tr *ngFor="let lesson of lessons; index as l">
+        <td>第{{ lesson }}小节</td>
+        <td *ngFor="let day of days;index as d">
+          <div *ngIf="this.isShow[l][d]">
+            <div *ngFor="let schedule of this.smallModelContentForSelectWeek[l][d].schedules">
+              <div style="color: red">{{ schedule.course.name }}</div>
+              <div>
+                <div style="color: green; font-size: large"><label *ngFor="let room of smallModelContentForSelectWeek[l][d].rooms[schedule.id]">{{ room.name }}&nbsp;</label></div>
+              </div>
+              <div><label *ngFor="let clazz of schedule.clazzes">{{ clazz.name }}&nbsp;</label></div>
+              <div><label>{{ schedule.teacher1.name }}&nbsp;</label>
+                <label>{{ schedule.teacher2.name }}&nbsp;</label>
+              </div>
+              <hr>
+            </div>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- 选择周的大节显示 -->
+<div class="row" *ngIf="this.formGroup.get('selectedTeacherId')?.value !== null && this.formGroup.get('displayMode')?.value === 'big' && this.isSelectWeek && term">
+  <div class="col-md-12">
+    <table class="table table-striped table-bordered">
+      <thead class="table-primary">
+      <tr>
+        <th class="col-md-1">{{ getWeeksForSelectWeeksShow(this.formGroup.get('selectWeek')?.value) }}</th>
+        <th class="col-md-1">周一</th>
+        <th class="col-md-1">周二</th>
+        <th class="col-md-1">周三</th>
+        <th class="col-md-1">周四</th>
+        <th class="col-md-1">周五</th>
+        <th class="col-md-1">周六</th>
+        <th class="col-md-1">周日</th>
+      </tr>
+      </thead>
+      <tbody >
+      <tr *ngFor="let lesson of bigLessons; index as l">
+        <td>第{{ lesson }}大节</td>
+        <td *ngFor="let day of days;index as d">
+          <div *ngIf="this.isShowForBigModel[l][d]">
+            <div *ngFor="let schedule of this.bigModelContentForSelectWeek[l][d].schedules">
+              <div style="color: red">{{ schedule.course.name }}</div>
+              <div>
+                <div style="color: green; font-size: large"><label *ngFor="let room of this.bigModelContentForSelectWeek[l][d].rooms[schedule.id]">{{ room.name }}&nbsp;</label></div>
               </div>
               <div><label *ngFor="let clazz of schedule.clazzes">{{ clazz.name }}&nbsp;</label></div>
               <div><label>{{ schedule.teacher1.name }}&nbsp;</label>

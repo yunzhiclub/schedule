@@ -15,7 +15,7 @@ import {Clazz} from '../entity/clazz';
 import * as Excel from 'exceljs/dist/exceljs.min.js';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-const EXCEL_EXTENSION = '.xlsx';
+const EXCEL_EXTENSION = '.xls';
 
 declare const ExcelJS: any;
 
@@ -289,7 +289,7 @@ export class CommonService {
   }
 
   checkTermIsActivated(term: Term): void {
-    console.log('checkTermIsActivated', term);
+    // console.log('checkTermIsActivated', term);
     if (term === null) {
       this.error(() => {
         this.router.navigateByUrl('/schedule');
@@ -298,10 +298,10 @@ export class CommonService {
   }
 
   // tslint:disable-next-line:typedef
-  public generateExcel(bigModelContent: { rooms: Room[]; weeks: number[]; clazzes: Clazz[]; schedules: Schedule[] }[][],
+  public generateExcel(bigModelContent: {clazzes: Clazz[]; schedules: Schedule[] }[][],
                        bigModelRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
                        fileTeacherName: string | undefined, displayModel: any,
-                       content: { rooms: Room[]; weeks: number[]; clazzes: Clazz[]; schedules: Schedule[] }[][],
+                       content: {clazzes: Clazz[]; schedules: Schedule[] }[][],
                        roomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
                        teacherHours: number) {
     // Create workbook and worksheet
@@ -640,7 +640,7 @@ export class CommonService {
   }
 
   // tslint:disable-next-line:typedef
-  private getBigModelTimetable(bigModelContent: { rooms: Room[]; weeks: number[]; clazzes: Clazz[]; schedules: Schedule[] }[][],
+  private getBigModelTimetable(bigModelContent: {clazzes: Clazz[]; schedules: Schedule[] }[][],
                                bigModelRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][]): void {
     // 课程表初始化
     this.bigModelTimetableExcelInit();
@@ -686,7 +686,7 @@ export class CommonService {
     }
   }
 
-  private getSmallModelTimeTable(smallModelContent: { rooms: Room[]; weeks: number[]; clazzes: Clazz[]; schedules: Schedule[] }[][],
+  private getSmallModelTimeTable(smallModelContent: {clazzes: Clazz[]; schedules: Schedule[] }[][],
                                  smallModelRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][]): void {
     this.smallModelTimetableExcelInit();
     // 填充内容
