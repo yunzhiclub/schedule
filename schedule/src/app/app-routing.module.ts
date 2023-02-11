@@ -51,13 +51,13 @@ const routes: Routes = [
           title: '班级管理'
         }
       },
-      {
-        path: 'student',
-        loadChildren: () => import('./student/student.module').then(m => m.StudentModule),
-        data: {
-          title: '学生管理'
-        }
-      },
+      // {
+      //   path: 'student',
+      //   loadChildren: () => import('./student/student.module').then(m => m.StudentModule),
+      //   data: {
+      //     title: '学生管理'
+      //   }
+      // },
       {
         path: 'room',
         loadChildren: () => import('./room/room.module').then(m => m.RoomModule),

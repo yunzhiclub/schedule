@@ -26,11 +26,13 @@ export class EditComponent implements OnInit {
   formGroup = new FormGroup({
     name: new FormControl('', [Validators.required, YzValidator.notEmpty], this.yzAsyncValidators.clazzNameUnique()),
     entranceDate: new FormControl('', [Validators.required, YzValidator.notEmpty]),
+    studentNumber: new FormControl('', [Validators.required]),
   });
 
   keys = {
     name: 'name',
     entranceDate: 'entranceDate',
+    studentNumber: 'studentNumber',
   };
   clazz = {} as Clazz;
 
@@ -48,7 +50,8 @@ export class EditComponent implements OnInit {
   onSubmit(formGroup: FormGroup): void {
     const clazz = new Clazz({
       name: formGroup.get('name')?.value,
-      entranceDate: formGroup.get('entranceDate')?.value
+      entranceDate: formGroup.get('entranceDate')?.value,
+      studentNumber: formGroup.get('studentNumber')?.value,
     });
     this.clazzService.update(this.id, clazz)
       .subscribe(() => {
@@ -72,9 +75,11 @@ export class EditComponent implements OnInit {
     Assert.isNotNullOrUndefined(clazz,
       clazz.name,
       clazz.entranceDate,
+      clazz.studentNumber,
       '用户编辑条件校验失败');
     this.clazz = clazz;
     this.formGroup.get(this.keys.name)!.setValue(clazz.getName());
     this.formGroup.get(this.keys.entranceDate)!.setValue(clazz.getEntranceDate());
+    this.formGroup.get(this.keys.studentNumber)!.setValue(clazz.getStudentNumber());
   }
 }

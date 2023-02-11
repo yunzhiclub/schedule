@@ -33,7 +33,7 @@ public class ClazzServiceImpl implements ClazzService {
     @Override
     public Clazz add(Clazz clazz) {
         Assert.notEmpty(Arrays.asList(
-                clazz.getName(), clazz.getEntranceDate()
+                clazz.getName(), clazz.getEntranceDate(), clazz.getStudentNumber()
         ), "发生校验错误，请检查输入字段");
         clazz = this.clazzRepository.save(clazz);
         return clazz;
@@ -93,9 +93,11 @@ public class ClazzServiceImpl implements ClazzService {
     public Clazz update(Long id, Clazz clazz) {
         Assert.notNull(clazz.getName(), "name不能为null");
         Assert.notNull(clazz.getEntranceDate(), "entranceDate不能为null");
+        Assert.notNull(clazz.getStudentNumber(), "studentNumber不能为null");
         Clazz OldClazz = this.getById(id);
         OldClazz.setName(clazz.getName());
         OldClazz.setEntranceDate(clazz.getEntranceDate());
+        OldClazz.setStudentNumber(clazz.getStudentNumber());
         return this.clazzRepository.save(OldClazz);
     }
 

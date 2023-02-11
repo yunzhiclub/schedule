@@ -371,8 +371,6 @@ export class AddComponent implements OnInit {
         .subscribe(clazzIds => {
           // console.log('clazzIds', clazzIds);
           this.screenedClazzes = this.clazzes.filter(clazz => !clazzIds.includes(clazz.id));
-        }, error => {
-          // console.log('error', error);
         });
     }
   }
@@ -516,10 +514,6 @@ export class AddComponent implements OnInit {
     } else {
       this.smLessons.splice(this.smLessons.indexOf(smLesson), 1);
     }
-  }
-
-  onIsSmLessonsDetermineChange(): void {
-    this.isSmLessonsDetermine = !this.isSmLessonsDetermine;
   }
 
   onRoomChange(roomId: number): void {
@@ -749,10 +743,6 @@ export class AddComponent implements OnInit {
     return this.selectedWeeks.length === this.getEffectiveWeeks().length;
   }
 
-  isAllRoomChecked(): boolean {
-    return this.selectedRooms.length === this.getEffectiveRooms().length;
-  }
-
   checkAllWeek(): void {
     const effectiveWeeks = this.getEffectiveWeeks();
 
@@ -770,33 +760,9 @@ export class AddComponent implements OnInit {
       });
     }
   }
-
-  checkAllRoom(): void {
-    const effectiveRooms = this.getEffectiveRooms();
-
-    if (Array.from(new Set(this.selectedRooms)).length !== effectiveRooms.length) {
-      console.log('checkAllRoom2', Array.from(new Set(this.selectedRooms)), effectiveRooms);
-      effectiveRooms.forEach(roomId => {
-        if (!this.selectedRooms.includes(roomId)) {
-          this.onRoomChange(roomId);
-        }
-      });
-    } else {
-      [...this.selectedRooms].forEach(roomId => {
-        this.onRoomChange(roomId);
-      });
-    }
-  }
-
   private getEffectiveWeeks(): number[] {
     return this.weeks.filter(w => this.overtimeWeekNumber! <= w)
       .filter(w => !this.isWeekDisabled(w));
-  }
-
-  private getEffectiveRooms(): number[] {
-    return this.rooms
-      .filter(room => !this.isRoomDisabled(room.id!))
-      .map(room => room.id!);
   }
 
   getWeeksForShow(day: number, bigLesson: number): string {
