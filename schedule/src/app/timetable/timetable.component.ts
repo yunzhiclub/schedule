@@ -9,6 +9,7 @@ import {Clazz} from '../../entity/clazz';
 import {Term} from '../../entity/term';
 import {TermService} from '../../service/term.service';
 import {CommonService} from '../../service/common.service';
+import {config} from '../../conf/app.config';
 
 @Component({
   selector: 'app-timetable',
@@ -18,8 +19,12 @@ import {CommonService} from '../../service/common.service';
 export class TimetableComponent implements OnInit {
   formGroup = new FormGroup({
     selectedTeacherId: new FormControl(null, Validators.required),
-    displayMode: new FormControl(null, Validators.required)
+    displayMode: new FormControl(null, Validators.required),
+    selectWeek: new FormControl(null, Validators.required)
   });
+  alreadySelectWeek = 0;
+  weekNumber = config.weekNumber;
+  isSelectWeek: boolean | undefined;
   key = 1;
   term: Term | undefined;
   lessons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -34,8 +39,6 @@ export class TimetableComponent implements OnInit {
   isShow = [] as number[][];
   // 天节小单元中的内容
   content = {} as unknown as {
-    rooms: Room[];
-    weeks: number[];
     clazzes: Clazz[];
     schedules: Schedule[]
   }[][];
@@ -48,8 +51,16 @@ export class TimetableComponent implements OnInit {
   selectedTeacher: Teacher = new Teacher();
   bigLessons = [1, 2, 3, 4, 5];
   bigModelContent = {} as unknown as {
-    rooms: Room[];
-    weeks: number[];
+    clazzes: Clazz[];
+    schedules: Schedule[]
+  }[][];
+  bigModelContentForSelectWeek = {} as unknown as {
+    rooms: Room[][];
+    clazzes: Clazz[];
+    schedules: Schedule[]
+  }[][];
+  smallModelContentForSelectWeek = {} as unknown as {
+    rooms: Room[][];
     clazzes: Clazz[];
     schedules: Schedule[]
   }[][];
@@ -66,6 +77,7 @@ export class TimetableComponent implements OnInit {
               private commonService: CommonService) { }
 
   ngOnInit(): void {
+    console.log('isSelectWeek', this.formGroup.get('isSelectWeek')?.value);
     this.teacherService.getAll()
       .subscribe(allTeachers => {
         this.allTeachers.push({id: 'all' as unknown, name: '全部教师'} as Teacher);
@@ -101,7 +113,6 @@ export class TimetableComponent implements OnInit {
             this.onTeacherChange();
           });
       });
-    console.log('this.formGroup.get(\'selectedTeacherId\')?.value', this.formGroup.get('selectedTeacherId')?.value);
   }
   private initRoomsAndWeeks(): void {
     for (let i = 0; i < 11; i++) {
@@ -141,8 +152,6 @@ export class TimetableComponent implements OnInit {
       this.content[i] = [];
       for (let j = 0; j < 7; j++) {
         this.content[i][j] = {
-          rooms: [],
-          weeks: [],
           clazzes: [],
           schedules: []
         };
@@ -152,8 +161,54 @@ export class TimetableComponent implements OnInit {
       this.bigModelContent[i] = [];
       for (let j = 0; j < 7; j++) {
         this.bigModelContent[i][j] = {
+          clazzes: [],
+          schedules: []
+        };
+      }
+    }
+    for (let i = 0; i < 5; i++) {
+      this.bigModelContentForSelectWeek[i] = [];
+      for (let j = 0; j < 7; j++) {
+        this.bigModelContentForSelectWeek[i][j] = {
+          rooms: [] = [],
+          clazzes: [],
+          schedules: []
+        };
+        for (const schedule of this.allSchedulesInCurrentTerm) {
+          this.bigModelContentForSelectWeek[i][j].rooms[schedule.id] = [];
+        }
+      }
+    }
+    for (let i = 0; i < 11; i++) {
+      this.smallModelContentForSelectWeek[i] = [];
+      for (let j = 0; j < 7; j++) {
+        this.smallModelContentForSelectWeek[i][j] = {
+          rooms: [] = [],
+          clazzes: [],
+          schedules: []
+        };
+        for (const schedule of this.allSchedulesInCurrentTerm) {
+          this.smallModelContentForSelectWeek[i][j].rooms[schedule.id] = [];
+        }
+      }
+    }
+  }
+  private intBigModelContentForSelectWeek(): void {
+    for (let i = 0; i < 5; i++) {
+      this.bigModelContentForSelectWeek[i] = [];
+      for (let j = 0; j < 7; j++) {
+        this.bigModelContentForSelectWeek[i][j] = {
           rooms: [],
-          weeks: [],
+          clazzes: [],
+          schedules: []
+        };
+      }
+    }
+    for (let i = 0; i < 11; i++) {
+      this.smallModelContentForSelectWeek[i] = [];
+      for (let j = 0; j < 7; j++) {
+        this.smallModelContentForSelectWeek[i][j] = {
+          rooms: [],
           clazzes: [],
           schedules: []
         };
@@ -177,7 +232,7 @@ export class TimetableComponent implements OnInit {
   }
 
   onTeacherChange(): void {
-    console.log('this.formGroup.get(\'selectedTeacherId\')?.value', this.formGroup.get('selectedTeacherId')?.value);
+    // this.formGroup.get('selectWeek')?.setValue(null);
     // 重新选择教师后,将教室与周的组置空
     this.initRoomsAndWeeks();
     // 重新选择教师后,将内容置空
@@ -229,6 +284,7 @@ export class TimetableComponent implements OnInit {
     this.setIsShowForBigModel();
     this.setBigModelContent(this.content);
     this.setBigModelRoomsAndWeeks(this.roomsAndWeeks);
+    this.setBigModelContentForSelectWeek();
   }
   private setContent(schedule: Schedule, lesson: number, day: number, week: number, rooms: Room[], scheduleId: number): void {
     if (!this.whetherSchedulesIncludeSchedule(this.content[lesson][day].schedules, schedule)) {
@@ -244,7 +300,7 @@ export class TimetableComponent implements OnInit {
       }
     }
   }
-  private setBigModelContent(content: { rooms: Room[]; weeks: number[]; clazzes: Clazz[]; schedules: Schedule[] }[][]): void {
+  private setBigModelContent(content: {clazzes: Clazz[]; schedules: Schedule[] }[][]): void {
     for (let l = 0; l < 11; l++) {
       for (let d = 0; d < 7; d++) {
         if (content[l][d].schedules.length !== 0) {
@@ -330,6 +386,7 @@ export class TimetableComponent implements OnInit {
     this.setIsShowForBigModel();
     this.setBigModelContent(this.content);
     this.setBigModelRoomsAndWeeks(this.roomsAndWeeks);
+    this.setBigModelContentForSelectWeek();
   }
 
   private whetherWeeksIncludeWeek(weeks: number[], newWeek: number): boolean {
@@ -522,5 +579,96 @@ export class TimetableComponent implements OnInit {
       counter = schedule.dispatches.length + counter;
     }
     return counter;
+  }
+
+  setIsSelectWeek(): void {
+    if (this.isSelectWeek === null) {
+      this.isSelectWeek = true;
+    } else {
+      this.isSelectWeek = !this.isSelectWeek;
+    }
+    console.log('isSelectWeek', this.isSelectWeek);
+    this.onSelectWeekChange();
+  }
+
+  onSelectWeekChange(): void {
+    this.intBigModelContentForSelectWeek();
+    console.log('alreadySelectWeek', this.formGroup.get('selectWeek')?.value);
+    this.termService.getCurrentTerm()
+      .subscribe((term: Term) => {
+        this.commonService.checkTermIsActivated(term);
+        this.term = term;
+        const seconds = +term.endTime - +term.startTime;
+        const days = Math.ceil(seconds / (60 * 60 * 24));
+        this.weekNumber = Math.ceil(days / 7);
+      });
+    this.setBigModelContentForSelectWeek();
+  }
+
+  getWeeksForSelectWeeks(weekNumber: number): number [] {
+    const  arr = [];
+    for (let i = 1; i <= weekNumber; i++) {
+      arr.push(i);
+    }
+    return arr;
+  }
+
+  getWeeksForSelectWeeksShow(value: any): string {
+    if (value === null) {
+      return '请选择周数';
+    } else {
+      return '第' + value + '周';
+    }
+  }
+
+  private setBigModelContentForSelectWeek(): void {
+    this.intBigModelContentForSelectWeek();
+    if ( this.formGroup.get('selectWeek')?.value !== null) {
+      for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 7; j++) {
+          console.log('this.formGroup.get(\'selectWeek\')?.value - 1', this.formGroup.get('selectWeek')?.value - 1);
+          for (const schedule of this.bigModelContent[i][j].schedules) {
+            // tslint:disable-next-line:prefer-for-of
+            for (let x = 0; x < this.bigModelRoomsAndWeeks[i][j][schedule.id].length; x++) {
+              if (this.bigModelRoomsAndWeeks[i][j][schedule.id][x].weeks.includes(this.formGroup.get('selectWeek')?.value - 1)) {
+                this.bigModelContentForSelectWeek[i][j].clazzes = this.bigModelContent[i][j].clazzes;
+                this.bigModelContentForSelectWeek[i][j].schedules.push(schedule);
+                this.bigModelContentForSelectWeek[i][j].rooms[schedule.id] = this.bigModelRoomsAndWeeks[i][j][schedule.id][x].rooms;
+              }
+            }
+          }
+        }
+      }
+      console.log('bigModelContentForSelectWeek', this.bigModelContentForSelectWeek);
+    }
+    this.setSmallModelContentForSelectWeek();
+  }
+
+  private setSmallModelContentForSelectWeek(): void {
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 7; j++) {
+        if (i === 0) {
+          this.smallModelContentForSelectWeek[0][j] = this.bigModelContentForSelectWeek[i][j];
+          this.smallModelContentForSelectWeek[1][j] = this.bigModelContentForSelectWeek[i][j];
+        }
+        if (i === 1) {
+          this.smallModelContentForSelectWeek[2][j] = this.bigModelContentForSelectWeek[i][j];
+          this.smallModelContentForSelectWeek[3][j] = this.bigModelContentForSelectWeek[i][j];
+        }
+        if (i === 2) {
+          this.smallModelContentForSelectWeek[4][j] = this.bigModelContentForSelectWeek[i][j];
+          this.smallModelContentForSelectWeek[5][j] = this.bigModelContentForSelectWeek[i][j];
+        }
+        if (i === 3) {
+          this.smallModelContentForSelectWeek[6][j] = this.bigModelContentForSelectWeek[i][j];
+          this.smallModelContentForSelectWeek[7][j] = this.bigModelContentForSelectWeek[i][j];
+        }
+        if (i === 4) {
+          this.smallModelContentForSelectWeek[8][j] = this.bigModelContentForSelectWeek[i][j];
+          this.smallModelContentForSelectWeek[9][j] = this.bigModelContentForSelectWeek[i][j];
+          this.smallModelContentForSelectWeek[10][j] = this.bigModelContentForSelectWeek[i][j];
+        }
+      }
+    }
   }
 }
