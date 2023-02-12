@@ -78,6 +78,7 @@
           <ul class="list-group list-group-horizontal ml-5">
             <button class="btn border list-group-item"
                     [ngClass]="{'bg-primary': !syncRecorder[day!][bigLesson!], 'text-white': !syncRecorder[day!][bigLesson!]}"
+                    [disabled]="isArrayHasNotEqualArray(tempData)"
                     (click)="onSync()">启用同步</button>
           </ul>
           <ul class="list-group list-group-horizontal">
