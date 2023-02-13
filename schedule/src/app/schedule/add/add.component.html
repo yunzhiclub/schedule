@@ -58,13 +58,6 @@
     <label class="col-sm-2 text-right col-form-label"><code>*</code>上课时间:</label>
     <div class="col-sm-10">
       <div class="dropdown">
-        <button class="btn btn-sm btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-          <span>{{pattern ? '定制选择' : '同步选择'}}</span>
-        </button>
-        <div class="dropdown-menu">
-          <button class="dropdown-item" type="button" (click)="updatePattern(false)">同步选择</button>
-          <button class="dropdown-item" type="button" (click)="updatePattern(true)">定制选择</button>
-        </div>
         <span class="ml-5 mr-5 font-weight-bold">当前学时:&nbsp;&nbsp;{{ selectedData.length}}</span>
         <span class="font-weight-bold">课程学时:&nbsp;&nbsp;{{ course?.hours}}</span>
       </div>
@@ -112,23 +105,25 @@
           <h5 class="modal-title">周{{days[day!]}}第{{bigLesson! + 1}}节</h5>
           <ul class="list-group list-group-horizontal ml-5">
             <button class="btn border list-group-item"
+                    [ngClass]="{'bg-primary': !syncRecorder[day!][bigLesson!], 'text-white': !syncRecorder[day!][bigLesson!]}"
+                    (click)="onSync()">启用同步</button>
+          </ul>
+          <ul class="list-group list-group-horizontal ml-5">
+            <button class="btn border list-group-item"
                     [ngClass]="{'bg-primary': isAllWeekChecked(), 'text-white': isAllWeekChecked()}"
                     (click)="checkAllWeek()"
-                    *ngIf="!pattern"
+                    *ngIf="!syncRecorder[day!][bigLesson!]"
             >周全选</button>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button class="btn border list-group-item" [ngClass]="{'bg-primary': smLessons.includes(0), 'text-white': smLessons.includes(0)}" (click)="onSmLessonsChange(0)" [disabled]="isSmLessonsDetermine">小节1</button>
             <button class="btn border list-group-item" [ngClass]="{'bg-primary': smLessons.includes(1), 'text-white': smLessons.includes(1)}" (click)="onSmLessonsChange(1)" [disabled]="isSmLessonsDetermine">小节2</button>
             <button class="btn border list-group-item" [ngClass]="{'bg-primary': smLessons.includes(2), 'text-white': smLessons.includes(2)}" (click)="onSmLessonsChange(2)" [disabled]="bigLesson !== 4 || isSmLessonsDetermine">小节3</button>
           </ul>
-<!--          <button class="btn btn-outline-primary btn-sm hide" (click)="onIsSmLessonsDetermineChange()">-->
-<!--            {{ isSmLessonsDetermine ? '修改' : '确定' }}小节选择-->
-<!--          </button>-->
         </div>
         <div class="modal-body">
           <div class=" row ">
             <span class="col-12">选择周:&nbsp;
-              <span class="text-muted" *ngIf="pattern" style="font-size: 0.7em">(选择某个周再选择对应教室，已占用周:&nbsp;{{getNotEmptyWeeks()}})</span>
+              <span class="text-muted" *ngIf="syncRecorder[day!][bigLesson!]" style="font-size: 0.7em">(选择某个周再选择对应教室，已占用周:&nbsp;{{getNotEmptyWeeks()}})</span>
             </span>
           </div>
           <ul class="list-group list-group-horizontal">
@@ -139,8 +134,8 @@
             </ng-container>
           </ul><br>
 
-          <div *ngIf="week !== undefined || !pattern">
-            <h6>选择教室<span class="text-muted" *ngIf="pattern" style="font-size: 0.7em">(周:{{week! + 1}})</span>:</h6>
+          <div *ngIf="week !== undefined || !syncRecorder[day!][bigLesson!]">
+            <h6>选择教室<span class="text-muted" *ngIf="syncRecorder[day!][bigLesson!]" style="font-size: 0.7em">(周:{{week! + 1}})</span>:</h6>
             <ul class="list-group list-group-horizontal">
               <ng-container *ngFor="let room of rooms" class="list-group-item">
                 <button [disabled]="isRoomDisabled(room.id!)" (click)="onRoomChange(room.id!)"
@@ -149,11 +144,6 @@
               </ng-container>
             </ul>
           </div>
-<!--          selectedWeeks{{selectedWeeks | json}}<br>-->
-<!--          selectedRooms{{selectedRooms | json}}<br>-->
-<!--          disabledWeeks{{disabledWeeks | json}}<br>-->
-<!--          disabledRooms{{disabledRooms | json}}<br>-->
-<!--          tempData{{tempData| json}}-->
           <br><br>
         </div>
         <div class="modal-footer">
