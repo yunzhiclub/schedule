@@ -89,6 +89,7 @@ export class WebsocketService {
     if (message === null || message === undefined) {
       return;
     }
+    console.log(message);
 
     this.stompClient$.pipe(filter(v => v !== null), first())
       .subscribe(stompClient => {

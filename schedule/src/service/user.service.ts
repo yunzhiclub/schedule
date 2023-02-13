@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {User} from '../entity/user';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
@@ -48,7 +48,7 @@ export class UserService {
   }
 
 
-  login(user: {password: string, username: string}): Observable<User> {
+  login(user: { password: string, username: string }): Observable<User> {
     // 新建Headers，并添加认证信息
     let headers = new HttpHeaders();
     // 添加 content-type
@@ -58,16 +58,9 @@ export class UserService {
       'Basic ' + btoa(user.username + ':' + encodeURIComponent(user.password)));
     // 发起get请求并返回
     return this.httpClient.get<User>(`${this.url}/login`, {headers})
-      .pipe(tap(data => {
-        console.log('登录返回结果', data);
-      }));
+      .pipe(tap(data => this.setCurrentLoginUser(data)));
   }
 
-
-  setIsLogin(isLogin: boolean): void {
-    window.sessionStorage.setItem(this.isLoginCacheKey, this.convertBooleanToString(isLogin));
-    this.isLogin.next(isLogin);
-  }
 
   /**
    * 字符串转换为boolean
@@ -92,9 +85,7 @@ export class UserService {
    * @param user 登录用户
    */
   setCurrentLoginUser(user: User | undefined): void {
-    if (user !== this.currentLoginUserSubject.value) {
-      this.currentLoginUserSubject.next(user);
-    }
+    this.currentLoginUserSubject.next(user);
     if (user === undefined) {
       this.router.navigateByUrl('/login').then();
     }
@@ -112,15 +103,14 @@ export class UserService {
             subscriber.next();
           },
           error: () => {
-            console.log('initCurrentLoginUser2', );
+            console.log('initCurrentLoginUser2');
             if (callback) {
               callback();
             }
             subscriber.error();
           },
           complete: () => {
-            console.log('initCurrentLoginUser3', );
-
+            console.log('initCurrentLoginUser3');
             if (callback) {
               callback();
             }
@@ -169,7 +159,9 @@ export class UserService {
   }
 
   logout(): Observable<void> {
-    return this.httpClient.get<void>(this.url + '/logout');
+    return this.httpClient.get<void>(`${this.url}/logout`).pipe(map(() => {
+      this.setCurrentLoginUser(undefined);
+    }));
   }
 
   /**

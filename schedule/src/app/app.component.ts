@@ -17,8 +17,7 @@ export class AppComponent implements OnInit {
   constructor(private config: NgSelectConfig,
               private router: Router,
               private userService: UserService,
-              private webSocketService: WebsocketService,
-              private xAuthTokenInterceptor: XAuthTokenInterceptor) {
+              private webSocketService: WebsocketService) {
     this.config.notFoundText = 'Custom not found';
     this.config.appendTo = 'body';
     this.config.bindValue = 'value';
@@ -36,10 +35,10 @@ export class AppComponent implements OnInit {
     // 登录用户改变时，重新将wsUuid与xAuthToken绑定
     this.userService.getCurrentLoginUser$()
       .subscribe(() => {
-        const token = this.xAuthTokenInterceptor.getToken();
+        const token = XAuthTokenInterceptor.getToken();
         if (token && this.token !== token) {
           this.token = token;
-          this.webSocketService.send('/ws/bind', this.xAuthTokenInterceptor.getToken());
+          this.webSocketService.send('/ws/bind', XAuthTokenInterceptor.getToken());
         }
       });
   }

@@ -1,6 +1,5 @@
 package com.yunzhi.schedule.service;
 
-import com.yunzhi.schedule.config.Encoder;
 import com.yunzhi.schedule.entity.ExpiredMap;
 import com.yunzhi.schedule.entity.User;
 import com.yunzhi.schedule.entity.WeChatUser;
@@ -29,7 +28,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.bind.ValidationException;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @Service
