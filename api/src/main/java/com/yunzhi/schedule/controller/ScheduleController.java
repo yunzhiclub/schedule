@@ -158,7 +158,8 @@ public class ScheduleController {
             Dispatch.LessonJsonView,
             Dispatch.DayJsonView,
             Dispatch.WeekJsonView,
-            Room.IdJsonView
+            Room.IdJsonView,
+            Room.NameJsonView
     {}
 
     public interface PageJsonView extends
