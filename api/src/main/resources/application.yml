@@ -3,6 +3,7 @@ spring:
     url: "jdbc:mysql://localhost:3310/schedule?useUnicode=true&characterEncoding=utf-8"
     username: "root"
     password: "root"
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     generate-ddl: true
     show-sql: true
@@ -19,3 +20,10 @@ spring:
       max-file-size: ${file.size:20MB}
       max-request-size: ${file.size:20MB}
 
+# 公众号配置， 换成自己的配置
+wx:
+  mp:
+    appid: wxaf7fe05a8ac03b66
+    secret: 57b48fcec2d5db1ad3a0810eae4cc658
+    token: yunzhi
+    aesKey: 123

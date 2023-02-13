@@ -3,11 +3,9 @@ package com.yunzhi.schedule.entity;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @SQLDelete(sql = "update `user` set deleted = 1 where id = ?")
@@ -17,6 +15,11 @@ public class User implements SoftDelete {
     @ApiModelProperty("id")
     @JsonView(IdJsonView.class)
     private Long id;
+
+    /**
+     * 密码加密
+     */
+    private static PasswordEncoder passwordEncoder;
 
     @ApiModelProperty("名称")
     @JsonView(NameJsonView.class)
@@ -33,6 +36,10 @@ public class User implements SoftDelete {
     @ApiModelProperty("是否已删除")
     private Boolean deleted = false;
 
+    @OneToOne(mappedBy = "user")
+    @JsonView(WeChatUserJsonView.class)
+    private WeChatUser weChatUser = null;
+
 
     public Long getId() {
         return id;
@@ -47,7 +54,13 @@ public class User implements SoftDelete {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        if (User.passwordEncoder == null) {
+            throw new RuntimeException("未设置User实体的passwordEncoder，请调用set方法设置");
+        }
+        this.password = User.passwordEncoder.encode(password);
+    }
+    public static void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        User.passwordEncoder = passwordEncoder;
     }
 
     public String getName() {
@@ -74,9 +87,19 @@ public class User implements SoftDelete {
         this.deleted = deleted;
     }
 
+    public WeChatUser getWeChatUser() {
+        return weChatUser;
+    }
+
+    public void setWeChatUser(WeChatUser weChatUser) {
+        this.weChatUser = weChatUser;
+    }
+
     public interface IdJsonView {}
     public interface NameJsonView {}
     public interface PhoneJsonView {}
     public interface PasswordJsonView {}
+
+    public interface WeChatUserJsonView {}
 
 }

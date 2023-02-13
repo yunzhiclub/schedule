@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonService} from '../../../service/common.service';
 import {UserService} from '../../../service/user.service';
+import {first} from "rxjs/operators";
 
 @Component({
   selector: 'app-login',
@@ -10,6 +11,10 @@ import {UserService} from '../../../service/user.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+
+  loginModel = 'username' as 'username' | 'wechat';
+
+  qrCodeSrc: string | undefined;
 
   // 正在倒计时
   countDowning = false;
@@ -50,12 +55,16 @@ export class LoginComponent implements OnInit {
       });
   }
 
-  login(): void {
+  onLogin(): void {
+    console.log('执行了login方法');
     const user = {
       username: this.loginForm.get('username')!.value as string,
       password: this.loginForm.get('password')!.value as string,
-      verificationCode: this.loginForm.get('verificationCode')!.value as string
     };
+    this.login(user);
+  }
+
+  login(user: {username: string, password: string}): void {
     this.userService.login(user)
       .subscribe((data) => {
         if (data) {
@@ -68,6 +77,21 @@ export class LoginComponent implements OnInit {
         }
       }, () => {
         this.errorInfo = '登录失败，请检查您填写的信息是否正确';
+      });
+  }
+
+  /**
+   * 微信扫码登录
+   */
+  onWeChatLogin(): void {
+    this.userService.getLoginQrCode()
+      .subscribe(src => {
+        this.qrCodeSrc = src;
+        this.loginModel = 'wechat';
+        this.userService.onScanLoginQrCode$.pipe(first()).subscribe(data => {
+          const uuid = data.body;
+          this.login({username: uuid, password: uuid});
+        });
       });
   }
 }
