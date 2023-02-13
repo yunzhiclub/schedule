@@ -6,10 +6,16 @@ import com.yunzhi.schedule.entity.vo.PasswordUser;
 import com.yunzhi.schedule.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.xml.bind.ValidationException;
+import java.security.Principal;
 
 
 @RestController
@@ -37,8 +43,8 @@ public class UserController {
 
     @GetMapping("me")
     @JsonView(GetByIdJsonView.class)
-    public User getCurrentLoginUser() {
-        return this.userService.getCurrentLoginUser();
+    public User getCurrentLoginUser(Principal principal) {
+        return principal == null ? null : this.userService.getCurrentLoginUser().get();
     }
 
     @PostMapping
@@ -50,14 +56,20 @@ public class UserController {
 
     @RequestMapping("login")
     @JsonView(GetByIdJsonView.class)
-    public User login() {
-        return this.userService.login();
+    public User login(Principal user) {
+        return this.userService.getByUsername(user.getName());
     }
 
-    @RequestMapping("logout")
-    public void logout() {
-        System.out.println("---------------------");
-        this.userService.logout();
+
+    @GetMapping("logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        // 获取用户认证信息
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 存在认证信息，注销
+        if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        }
     }
 
     /**
@@ -92,10 +104,32 @@ public class UserController {
         this.userService.updatePassword(user.getPassword(), user.getNewPassword());
     }
 
+    /**
+     * 生成绑定微信的二维码
+     * @param httpSession session
+     * @return 二维码对应的系统ID(用于触发扫码后的回调)
+     */
+    @GetMapping("generateBindQrCode")
+    public String generateBindQrCode(HttpSession httpSession) {
+        return this.userService.generateBindQrCode(httpSession.getId());
+    }
+
+    /**
+     * 获取登录的二维码
+     * @param wsAuthToken webSocket认证token
+     * @param httpSession session
+     * @return 二维码对应的系统ID(用于触发扫码后的回调)
+     */
+    @GetMapping("getLoginQrCode/{wsAuthToken}")
+    public String getLoginQrCode(@PathVariable String wsAuthToken, HttpSession httpSession) {
+        return this.userService.getLoginQrCode(wsAuthToken, httpSession);
+    }
+
     public interface GetByIdJsonView extends
             User.IdJsonView,
             User.NameJsonView,
-            User.PhoneJsonView
+            User.PhoneJsonView,
+            User.WeChatUserJsonView
     {}
 
 
