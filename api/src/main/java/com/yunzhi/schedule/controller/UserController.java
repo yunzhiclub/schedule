@@ -91,7 +91,7 @@ public class UserController {
      * @return boolean
      */
     @PostMapping("checkPasswordIsRight")
-    public boolean checkPasswordIsRight(@RequestBody User user) {
+    public boolean checkPasswordIsRight(@RequestBody PasswordUser user) {
         return this.userService.checkPasswordIsRight(user.getPassword());
     }
     /**
