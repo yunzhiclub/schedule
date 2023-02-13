@@ -73,7 +73,9 @@ export class UserService {
    * @param user 登录用户
    */
   setCurrentLoginUser(user: User | undefined): void {
+    console.log('setCurrentLoginUser1', user, this.currentLoginUserSubject.value);
     if (user !== this.currentLoginUserSubject.value) {
+      window.sessionStorage.setItem('userName', user!.name!);
       this.currentLoginUserSubject.next(user);
     }
     if (user === undefined) {
