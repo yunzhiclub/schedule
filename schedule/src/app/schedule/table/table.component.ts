@@ -43,11 +43,14 @@ export class TableComponent implements OnInit {
   // 教师2冲突时间
   conflictTimesOfTeacher2: {day: number, lesson: number, week: number}[] = [];
   // 选择的时间地点
-  selectedData: {day: number, smLesson: number, week: number, roomIds: number[]}[] = [];
+  selectedData: {day: number, smLesson: number, week: number, roomIds: number[], rooms?: Room[]}[] = [];
   // 临时时间地点
   tempData: number[][] = [];
+  tempDataOfRooms: Room[][] = [];
   // 记录每个天节的smLessons
   smLessonsRecorder = [] as number[][][];
+  // 记录每个天节的时间选择模式: true 定制选择 | false 同步选择 默认为定制选择
+  syncRecorder: (boolean)[][] = [];
 
 
   // 所有排课
@@ -63,6 +66,7 @@ export class TableComponent implements OnInit {
   isShowModel = false;
   // 当前学期
   term = {} as Term;
+  currentTerm = {} as Term;
   // 当前天
   day: number | undefined;
   // 当前节( < 5 的大节)
@@ -79,20 +83,19 @@ export class TableComponent implements OnInit {
   overtimeWeekNumber: number | undefined;
   // 选择的教室
   selectedRooms = [] as number[];
-  // 周记录器 同步模式使用
+  // 周记录器
   weeksRecorder = [] as number[][][];
+  // 教室Id记录器 同步模式使用
+  roomIdsRecorder = [] as number[][][];
   // 教室记录器 同步模式使用
-  roomsRecorder = [] as number[][][];
+  roomsRecorder = [] as Room[][][];
   // 不可用的周
   disabledWeeks = [] as number[];
   // 不可用的教室
   disabledRooms = [] as number[];
-  // 时间选择模式: true 分别选择 | false 同步选择 默认为同步选择
-  pattern = false;
   // 定制模式下非空的周 for model
   notEmptyWeeks = [] as number[];
-  // 非空的周 for table
-  notEmptyWeeksTable = [] as number[][][];
+
 
   constructor(private clazzService: ClazzService,
               private courseService: CourseService,
@@ -111,12 +114,14 @@ export class TableComponent implements OnInit {
     this.initTimes();
     // 初始化地点表
     this.initSites();
+    // 初始化临时数据
+    this.initTempData();
     // 初始化smLessons记录器
     this.initSmLessonsRecorder();
+    // 初始化模式记录器
+    this.initSyncRecoder();
     // 初始化周和教室记录器，同步模式使用
     this.initWeeksAndRoomsRecoder();
-    // 初始化非空周的表
-    this.initNotEmptyWeeksTable();
     // 请求数据
     this.getData();
   }
@@ -157,12 +162,11 @@ export class TableComponent implements OnInit {
       }
     }
   }
-
-  private initNotEmptyWeeksTable(): void {
+  private initSyncRecoder(): void {
     for (let i = 0; i < 7; i++) {
-      this.notEmptyWeeksTable[i] = [];
+      this.syncRecorder[i] = [];
       for (let j = 0; j < 5; j++) {
-        this.notEmptyWeeksTable[i][j] = [];
+        this.syncRecorder[i][j] = true;
       }
     }
   }
@@ -171,15 +175,18 @@ export class TableComponent implements OnInit {
   private initTempData(): void {
     for (let i = 0; i < this.weekNumber; i++) {
       this.tempData[i] = [] as number[];
+      this.tempDataOfRooms[i] = [] as Room[];
     }
   }
 
   private initWeeksAndRoomsRecoder(): void {
     for (let i = 0; i < 7; i++) {
       this.weeksRecorder[i] = [];
+      this.roomIdsRecorder[i] = [];
       this.roomsRecorder[i] = [];
       for (let j = 0; j < 5; j++) {
         this.weeksRecorder[i][j] = [];
+        this.roomIdsRecorder[i][j] = [];
         this.roomsRecorder[i][j] = [];
       }
     }
@@ -191,18 +198,16 @@ export class TableComponent implements OnInit {
    * @param bigLesson 大节
    */
   showModel(day: number, bigLesson: number): void {
-
-    console.log('showModel1', [...this.weeksRecorder], [...this.roomsRecorder]);
     this.day = day;
     this.bigLesson = bigLesson;
-    this.initTempData();
-    this.makeTempData();
-    // this.makeNotEmptyWeeks(); // notEmptyWeeks定制模式下用来提示用户
-    // 同步模式
-    if (!this.pattern) {
+    if (!this.syncRecorder[this.day!][this.bigLesson!]) {
       this.selectedWeeks = [...this.weeksRecorder[this.day][this.bigLesson]];
-      this.selectedRooms = [...this.roomsRecorder[this.day][this.bigLesson]];
+      this.selectedRooms = [...this.roomIdsRecorder[this.day][this.bigLesson]];
     } else {
+      console.log('showmodel');
+      this.initTempData();
+      this.makeTempData();
+      console.log(this.tempDataOfRooms);
       this.notEmptyWeeks = [];
       this.makeNotEmptyWeeks();
     }
@@ -232,25 +237,22 @@ export class TableComponent implements OnInit {
         this.course = schedule.course;
         this.dispatches = schedule.dispatches;
         this.makeSelectedData();
-        this.validateData();
         this.makeWeeksAndRoomsRecoder();
         this.makeSmLessonsRecorder();
-        this.makeNotEmptyWeeksTable();
 
         this.term = schedule.term;
         const term = this.term;
         let seconds = +term.endTime - +term.startTime;
         let days = Math.ceil(seconds / (60 * 60 * 24));
         this.weekNumber = Math.ceil(days / 7);
-        console.log('getData => weekNumber', this.weekNumber, days, seconds, term);
         this.termService.getCurrentTerm()
           .subscribe((currentTerm) => {
+            this.currentTerm = currentTerm;
             if (currentTerm.id === term.id) {
               const timestamp = Date.parse(new Date().toString()) / 1000;
               seconds = timestamp - +term.startTime;
               days = Math.floor(seconds / (60 * 60 * 24));
               this.overtimeWeekNumber = Math.floor(days / 7);
-              console.log('overtimeWeekNumber', this.overtimeWeekNumber);
             }
           });
 
@@ -273,9 +275,6 @@ export class TableComponent implements OnInit {
     this.makeConflictTimesOfClazzes();
     this.makeConflictTimesOfTeacher1();
     this.makeConflictTimesOfTeacher2();
-    // console.log('clazzes', this.conflictTimesOfClazzes);
-    // console.log('teacherId1', this.conflictTimesOfTeacher1);
-    // console.log('teacherId2', this.conflictTimesOfTeacher2);
   }
 
   // 需要 当前学期的schedules
@@ -355,16 +354,6 @@ export class TableComponent implements OnInit {
     });
   }
 
-
-  private makeNotEmptyWeeksTable(): void {
-    this.selectedData.forEach(data => {
-      const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
-      if (!this.notEmptyWeeksTable[data.day][bigLesson].includes(data.week)) {
-        this.notEmptyWeeksTable[data.day][bigLesson].push(data.week);
-      }
-    });
-  }
-
   private updateTimesAndSitesBySchedule(): void {
     this.selectedData.forEach(data => {
       this.times[data.day][data.smLesson][data.week] = true;
@@ -376,7 +365,6 @@ export class TableComponent implements OnInit {
   }
 
   private makeWeeks(): void {
-    console.log('makeWeeks', this.weekNumber.toString());
     this.weeks = Array.from(new Array(this.weekNumber).keys());
   }
 
@@ -390,6 +378,7 @@ export class TableComponent implements OnInit {
       const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
       if (data.day === this.day && bigLesson === this.bigLesson) {
         this.tempData[data.week] = data.roomIds;
+        this.tempDataOfRooms[data.week] = data.rooms!;
       }
     });
     this.smLessons = smLessons;
@@ -405,20 +394,20 @@ export class TableComponent implements OnInit {
         status = true;
       }
     });
-    if (!this.pattern) {
+    if (!this.syncRecorder[this.day!][this.bigLesson!]) {
       return status || this.disabledWeeks.includes(week);
     }
     return status;
   }
 
   isRoomDisabled(roomId: number): boolean {
-    if (this.pattern) {
+    if (this.syncRecorder[this.day!][this.bigLesson!]) {
       // 不支持张三小节1在教室1上课，李四小节2在教室1上课
       const smLessons = this.bigLesson === 4 ? [0, 1, 2] : [0, 1];
       let status = false;
-      console.log('isRoomDisabled', [...this.sites]);
       // @ts-ignore
       smLessons.forEach(smLesson => {
+        console.log('isRoomDisabled', this.week + '', this.sites);
         if (this.sites[this.day!][this.bigLesson! * 2 + smLesson][this.week!].includes(roomId)) {
           status = true;
         }
@@ -445,10 +434,50 @@ export class TableComponent implements OnInit {
       });
   }
 
+  onSync(): void {
+    this.syncRecorder[this.day!][this.bigLesson!] = !this.syncRecorder[this.day!][this.bigLesson!];
+    if (!this.syncRecorder[this.day!][this.bigLesson!]) {
+      // 取反后是同步模式
+      // 如果之前的数据是空
+      if (this.notEmptyWeeks.length === 0) {
+        this.selectedWeeks = [];
+        this.selectedRooms = [];
+      } else {
+        // 如果之前的数据是多个周，存在不同的周不同的教室
+        // 如果之前的数据是多个周，不存在不同的周不同的教室
+        if (this.isArrayHasNotEqualArray(this.tempData)) {
+          this.selectedWeeks = this.notEmptyWeeks;
+          this.selectedRooms = [];
+        } else {
+          this.selectedWeeks = this.notEmptyWeeks;
+          this.selectedRooms = [...this.tempData[this.notEmptyWeeks[0]]];
+        }
+      }
+      // 防止显示出错
+      this.week = undefined;
+      this.initTempData();
+      this.notEmptyWeeks = [];
+    } else {
+      // 取反后是定制模式(如果是同步模式切换到定制模式，当没有已选中教室则从selectedData获取)
+      if (this.selectedRooms.length > 0) {
+        this.notEmptyWeeks = [...this.selectedWeeks];
+        this.selectedWeeks.forEach(week => {
+          this.tempData[week] = [...this.selectedRooms]; // 每个周对应不同， 必须用 ...
+        });
+      } else {
+        this.makeTempData();
+        this.makeNotEmptyWeeks();
+      }
+      // 防止显示出错
+      this.selectedWeeks = [];
+    }
+  }
+
+
   private makeSelectedData(): void {
     this.dispatches.forEach(dispatch => {
       const roomIds = dispatch.rooms.map(room => room.id!);
-      this.selectedData.push({day: dispatch.day!, smLesson: dispatch.lesson!, week: dispatch.week!, roomIds});
+      this.selectedData.push({day: dispatch.day!, smLesson: dispatch.lesson!, week: dispatch.week!, roomIds, rooms: dispatch.rooms});
     });
   }
 
@@ -468,31 +497,6 @@ export class TableComponent implements OnInit {
   }
 
   /**
-   * 对selectedData进行验证，确保不存在类似于第一周在教室1/2上课，第二周在教室3/4上课的情况
-   */
-  private validateData(): void {
-    // true代表数据正确
-    let status = true;
-    this.selectedData.forEach(data1 => {
-      const bigLesson1 = data1.smLesson === 10 ? 4 : Math.floor(data1.smLesson / 2);
-      this.selectedData.forEach(data2 => {
-        const bigLesson2 = data2.smLesson === 10 ? 4 : Math.floor(data2.smLesson / 2);
-        if (status && (data1.day === data2.day) && (bigLesson1 === bigLesson2)) {
-          // 判断数组是否相等
-          const roomIds1 = data1.roomIds;
-          const roomIds2 = data2.roomIds;
-          status = (roomIds1.length === roomIds2.length) &&
-            (roomIds1.filter(t => roomIds2.includes(t)).length === roomIds1.length);
-        }
-      });
-    });
-    if (!status && !this.pattern) {
-      this.pattern = true;
-      // this.commonService.info(() => {}, '当前数据不支持同步模式，已自动为您切换为定制模式');
-    }
-  }
-
-  /**
    * 同步模式使用
    */
   private makeWeeksAndRoomsRecoder(): void {
@@ -501,26 +505,16 @@ export class TableComponent implements OnInit {
       if (!this.weeksRecorder[data.day][bigLesson].includes(data.week)) {
         this.weeksRecorder[data.day][bigLesson].push(data.week);
       }
-      if (this.roomsRecorder[data.day][bigLesson].length === 0) {
-        this.roomsRecorder[data.day][bigLesson] = [...data.roomIds];
+      if (this.roomIdsRecorder[data.day][bigLesson].length === 0) {
+        this.roomIdsRecorder[data.day][bigLesson] = [...data.roomIds];
+        this.roomsRecorder[data.day][bigLesson] = [...data.rooms!];
       }
     });
   }
 
 
   buttonActive(day: number, bigLesson: number): boolean {
-    if (this.pattern) {
-      let status = false;
-      this.selectedData.forEach(data => {
-        const bigLessonOfData = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
-        if (data.day === day && bigLesson === bigLessonOfData) {
-          status = true;
-        }
-      });
-      return status;
-    } else {
-      return this.weeksRecorder[day][bigLesson].length !== 0;
-    }
+    return this.weeksRecorder[day][bigLesson].length !== 0;
   }
 
   private makeNotEmptyWeeks(): void {
@@ -534,18 +528,50 @@ export class TableComponent implements OnInit {
   }
 
   getNotEmptyWeeks(): string {
-    return this.notEmptyWeeks.map(week => (week + 1)).sort((a, b) => a - b).join('、');
+    let arr;
+    if (this.syncRecorder[this.day!][this.bigLesson!]) {
+      arr = this.notEmptyWeeks;
+    } else {
+      arr = this.selectedWeeks;
+    }
+    return arr.map(week => (week + 1)).sort((a, b) => a - b).join('、');
   }
 
   getNotEmptyWeeksOfTable(day: number, bigLesson: number): string {
-    return this.notEmptyWeeksTable[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
+    return this.weeksRecorder[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
   }
 
   onWeekClick(week: number): void {
-    if (this.pattern) {
+    if (this.syncRecorder[this.day!][this.bigLesson!]) {
       this.week = week;
       this.selectedRooms = [];
       this.selectedRooms = this.tempData[this.week!].filter(() => true);
     }
   }
+
+
+  isArrayHasNotEqualArray(arr: number[][]): boolean {
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = i + 1; j < arr.length; j++) {
+        if (arr[i].length > 0 && arr[j].length > 0 && !this.isArrayEqual(arr[i], arr[j])) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  isArrayEqual(arr1: number[], arr2: number[]): boolean {
+    return arr1.length === arr2.length && arr1.sort().toString() === arr2.sort().toString();
+  }
+
+  getRoomsName(week: number): string {
+    const data = this.tempDataOfRooms[week];
+    if (data && data.length > 0) {
+      const names = data.map(room => room.name);
+      return names.join('、');
+    }
+    return '';
+  }
+
 }

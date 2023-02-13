@@ -10,7 +10,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  username: string | undefined = '';
+  username = '';
   title = environment.title;
 
   constructor( private userService: UserService,
@@ -19,8 +19,11 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService.currentLoginUser$.subscribe((user) => {
-      this.username = user?.name;
+      this.username = user?.name!;
     });
+    if (!this.username) {
+      this.username = window.sessionStorage.getItem('userName')!;
+    }
   }
   a(): void {
     window.location.reload();

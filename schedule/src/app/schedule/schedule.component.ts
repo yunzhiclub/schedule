@@ -19,7 +19,7 @@ import {TermService} from '../../service/term.service';
 export class ScheduleComponent implements OnInit {
 
   pageData = new Page<Schedule>();
-  params: Params = [];
+  params: Params = {};
   queryForm = new FormGroup({});
   keys = {
     page: 'page',
@@ -37,6 +37,8 @@ export class ScheduleComponent implements OnInit {
     { id: 3, name: 'Opel' },
     { id: 4, name: 'Audi' },
   ];
+  weekNumber: number | undefined;
+  overtimeWeekNumber: number | undefined;
   constructor(private commonService: CommonService,
               private route: ActivatedRoute,
               private termService: TermService,
@@ -55,7 +57,17 @@ export class ScheduleComponent implements OnInit {
     this.termService.getCurrentTerm()
       .subscribe((term: Term) => {
         this.term = term;
+
+        let seconds = +term.endTime - +term.startTime;
+        let days = Math.ceil(seconds / (60 * 60 * 24));
+        this.weekNumber = Math.ceil(days / 7);
+        const timestamp = Date.parse(new Date().toString()) / 1000;
+        seconds = timestamp - +term.startTime;
+        days = Math.floor(seconds / (60 * 60 * 24));
+        this.overtimeWeekNumber = Math.floor(days / 7);
+
         this.queryForm.get(this.keys.termId)?.setValue(term.id);
+        this.params = {termId: term.id};
         this.loadData();
       });
     this.termService.getAll()
