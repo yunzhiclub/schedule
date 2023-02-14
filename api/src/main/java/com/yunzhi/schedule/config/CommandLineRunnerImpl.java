@@ -53,18 +53,18 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (this.userRepository.findByPhoneAndDeletedFalse("13920618851") == null) {
-            User user = new User();
-            //角色为系统管理员
-            String password = "yunzhi";
-            user.setPhone("13920618851");
-            user.setName("张三");
-            user.setPassword(Encoder.getMD5Result(password));
-            this.userRepository.save(user);
-        }
-
-//        this.forHePanTest();
-        this.chen();
+//        if (this.userRepository.findByPhoneAndDeletedFalse("13920618851") == null) {
+//            User user = new User();
+//            //角色为系统管理员
+//            String password = "yunzhi";
+//            user.setPhone("13920618851");
+//            user.setName("张三");
+//            user.setPassword(Encoder.getMD5Result(password));
+//            this.userRepository.save(user);
+//        }
+//
+////        this.forHePanTest();
+//        this.chen();
     }
 
 

@@ -10,7 +10,9 @@ spring:
       hibernate:
         dialect: "org.hibernate.dialect.MySQL57Dialect"
     hibernate:
-      ddl-auto: "create"
+      ddl-auto: "validate"
+  flyway:
+    enabled: true
 
   # 上传文件大小限制
   servlet:
