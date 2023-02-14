@@ -40,7 +40,9 @@
               "node_modules/jquery/dist/jquery.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "node_modules/@fortawesome/fontawesome-free/js/all.js"
+              "node_modules/@fortawesome/fontawesome-free/js/all.js",
+              "./src/assets/sockjs.min.js",
+              "./src/assets/stomp.min.js"
             ]
           },
           "configurations": {
@@ -109,7 +111,9 @@
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "./src/assets/sockjs.min.js",
+              "./src/assets/stomp.min.js"
             ]
           }
         },

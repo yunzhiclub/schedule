@@ -1,28 +1,22 @@
-<form [formGroup]="loginForm" (ngSubmit)="login()">
-  <div class="form-group">
-    <label for="username"><code>*</code>手机号</label>
-    <input type="number" class="form-control" id="username" placeholder="请输入手机号" formControlName="username"/>
-  </div>
-  <div class="form-group">
-    <label for="password"><code>*</code>密码</label>
-    <input type="password" class="form-control" id="password" placeholder="请输入密码" formControlName="password"/>
-  </div>
-<!--  <div class="form-group" *ngIf="showValidateCode">-->
-<!--    <label for="verificationCode">验证码<code>*</code></label>-->
-<!--    <div class="input-group">-->
-<!--      <input type="text" class="form-control" id="verificationCode" placeholder="请输入验证码"-->
-<!--             formControlName="verificationCode"/>-->
-<!--      <div class="input-group-append">-->
-<!--        <app-verification-code></app-verification-code>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-  <ng-template [ngIf]="errorInfo">
-    <hr>
-    <small class="text-danger">{{ errorInfo }}</small>
-  </ng-template>
-  <hr>
-  <button [appYzSubmitButton]="{submitting: submitting}" type="submit" [disabled]="loginForm.invalid"
-          class="btn form-control btn-success">登录
-  </button>
+<form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+  <ng-container *ngIf="loginModel === 'username'">
+    <div class="form-group">
+      <label for="exampleInputEmail1"><code>*</code>手机号</label>
+      <input type="text" class="form-control" id="exampleInputEmail1"  placeholder="请输入手机号"  aria-describedby="emailHelp" formControlName="username">
+    </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1"><code>*</code>密码</label>
+      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="请输入密码" formControlName="password">
+    </div>
+    <ng-template [ngIf]="errorInfo">
+      <hr>
+      <small class="text-danger">{{ errorInfo }}</small>
+    </ng-template>
+    <button class="btn btn-block btn-primary" >登 录</button>
+    <button type="button" class="btn btn-block btn-success" (click)="onWeChatLogin()">微信登录</button>
+  </ng-container>
+  <ng-container *ngIf="loginModel === 'wechat'">
+    <img class="img-fluid" [src]="qrCodeSrc">
+    <button type="button" class="btn btn-block btn-primary" (click)="loginModel = 'username'">密码登录</button>
+  </ng-container>
 </form>

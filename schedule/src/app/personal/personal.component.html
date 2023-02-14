@@ -1,28 +1,51 @@
-<!--<div class="row">-->
-<!--  <div class="col-md-4">-->
+<div class="container-md" *ngIf="user">
+  <div class="row" style="margin-top: 10px;">
+    <div class="col-4 text-right"> 姓名:</div>
+    <div class="col-8 ">{{user.name }}</div>
+  </div>
+  <div class="row">
+    <div class="col-4 text-right">
+      手机号:
+    </div>
+    <div class="col-8">
+      {{user.phone }}
+    </div>
+    <br>
+  </div>
+  <div class="row">
+    <div class="col-4 text-right">
+      微信绑定:
+    </div>
+    <div class="col-8">
+      <span *ngIf="user.weChatUser?.openid" class="text-success">是</span>
+      <span *ngIf="!user.weChatUser?.openid" class="text-secondary">否</span>
+    </div>
+    <br>
+  </div>
+  <div class="offset-4 col-4" style="margin-top: 20px">
+    <button class="btn btn-success btn-sm" (click)="onBindWeChat()">
+      <i class="fab fa-weixin"></i>绑定微信
+    </button>
 <!--    <a class="btn btn-primary btn-sm" [routerLink]="'edit'"><i class="fas fa-edit"></i>修改个人信息</a>-->
 <!--    <a class="btn btn-primary btn-sm" [routerLink]="'modifyPassword'"><i class="fas fa-edit"></i>修改密码</a>-->
-<!--  </div>-->
-<!--</div>-->
-<h4>我的信息</h4>
-<hr>
-<div class="row">
-  <div class="col-md-3">
-    <table class="table border mt-2">
-      <tbody>
-      <tr>
-        <td class="border-right">姓名</td>
-        <td>
-          {{ this.user.name }}
-        </td>
-      </tr>
-      <tr>
-        <td class="border-right">手机号</td>
-        <td>
-          {{ this.user.phone }}
-        </td>
-      </tr>
-      </tbody>
-    </table>
   </div>
 </div>
+
+<app-yz-modal *ngIf="isShowQrCode" width="400px">
+  <div class="row">
+    <div class="col text-center">
+      请打开微信扫描二维码
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-center">
+      <img class="img-thumbnail" [src]="qrCodeSrc"/>
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-12 text-right">
+      <button class="btn btn-primary" (click)="onClose()">关闭</button>
+    </div>
+  </div>
+</app-yz-modal>
+

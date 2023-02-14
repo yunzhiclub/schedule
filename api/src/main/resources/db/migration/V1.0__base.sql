@@ -1,4 +1,3 @@
-mysqldump: [Warning] Using a password on the command line interface can be insecure.
 -- MySQL dump 10.13  Distrib 5.7.41, for Linux (x86_64)
 --
 -- Host: localhost    Database: schedule
@@ -20,10 +19,9 @@ mysqldump: [Warning] Using a password on the command line interface can be insec
 -- Table structure for table `clazz`
 --
 
-DROP TABLE IF EXISTS `clazz`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `clazz` (
+CREATE TABLE IF NOT EXISTS  `clazz` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `deleted` bit(1) DEFAULT NULL,
   `entrance_date` bigint(20) DEFAULT NULL,
@@ -47,10 +45,9 @@ UNLOCK TABLES;
 -- Table structure for table `course`
 --
 
-DROP TABLE IF EXISTS `course`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `course` (
+CREATE TABLE IF NOT EXISTS `course` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `deleted` bit(1) DEFAULT NULL,
   `hours` varchar(255) DEFAULT NULL,
@@ -73,10 +70,9 @@ UNLOCK TABLES;
 -- Table structure for table `dispatch`
 --
 
-DROP TABLE IF EXISTS `dispatch`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `dispatch` (
+CREATE TABLE IF NOT EXISTS `dispatch` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `day` bigint(20) DEFAULT NULL,
   `deleted` bit(1) DEFAULT NULL,
@@ -103,10 +99,9 @@ UNLOCK TABLES;
 -- Table structure for table `dispatch_rooms`
 --
 
-DROP TABLE IF EXISTS `dispatch_rooms`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `dispatch_rooms` (
+CREATE TABLE IF NOT EXISTS `dispatch_rooms` (
   `dispatches_id` bigint(20) NOT NULL,
   `rooms_id` bigint(20) NOT NULL,
   KEY `FKdi2ak74w7eg0l3qbiu67bu5pv` (`rooms_id`),
@@ -130,10 +125,9 @@ UNLOCK TABLES;
 -- Table structure for table `room`
 --
 
-DROP TABLE IF EXISTS `room`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `room` (
+CREATE TABLE IF NOT EXISTS `room` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `capacity` varchar(255) DEFAULT NULL,
   `deleted` bit(1) DEFAULT NULL,
@@ -156,10 +150,9 @@ UNLOCK TABLES;
 -- Table structure for table `schedule`
 --
 
-DROP TABLE IF EXISTS `schedule`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `schedule` (
+CREATE TABLE IF NOT EXISTS `schedule` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `deleted` bit(1) DEFAULT NULL,
   `course_id` bigint(20) DEFAULT NULL,
@@ -192,10 +185,9 @@ UNLOCK TABLES;
 -- Table structure for table `schedule_clazzes`
 --
 
-DROP TABLE IF EXISTS `schedule_clazzes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `schedule_clazzes` (
+CREATE TABLE IF NOT EXISTS `schedule_clazzes` (
   `schedule_id` bigint(20) NOT NULL,
   `clazzes_id` bigint(20) NOT NULL,
   KEY `FK9fcvkjbw27cpewms3wgxhgwas` (`clazzes_id`),
@@ -219,10 +211,9 @@ UNLOCK TABLES;
 -- Table structure for table `student`
 --
 
-DROP TABLE IF EXISTS `student`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `student` (
+CREATE TABLE IF NOT EXISTS `student` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `deleted` bit(1) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -249,10 +240,9 @@ UNLOCK TABLES;
 -- Table structure for table `teacher`
 --
 
-DROP TABLE IF EXISTS `teacher`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `teacher` (
+CREATE TABLE IF NOT EXISTS `teacher` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `deleted` bit(1) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -276,10 +266,9 @@ UNLOCK TABLES;
 -- Table structure for table `term`
 --
 
-DROP TABLE IF EXISTS `term`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `term` (
+CREATE TABLE IF NOT EXISTS `term` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `deleted` bit(1) DEFAULT NULL,
   `end_time` bigint(20) DEFAULT NULL,
@@ -304,10 +293,9 @@ UNLOCK TABLES;
 -- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `deleted` bit(1) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -323,7 +311,6 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,_binary '\0','张三','66b7d0d1aec30c327bb58e7990683dcf','13920618851');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -336,4 +323,40 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-13 13:03:45
+
+--
+-- Table structure for table `we_chat_user`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE IF Not Exists `we_chat_user` (
+                                `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                `app_id` varchar(255) NOT NULL,
+                                `openid` varchar(255) NOT NULL,
+                                `user_id` bigint(20) DEFAULT NULL,
+                                PRIMARY KEY (`id`),
+                                KEY `FKl6b1o9nvptb0jaw7r6chkrcvn` (`user_id`),
+                                CONSTRAINT `FKl6b1o9nvptb0jaw7r6chkrcvn` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `we_chat_user`
+--
+
+LOCK TABLES `we_chat_user` WRITE;
+/*!40000 ALTER TABLE `we_chat_user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `we_chat_user` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2023-02-14  6:17:10

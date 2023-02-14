@@ -21,9 +21,6 @@ export class HeaderComponent implements OnInit {
     this.userService.currentLoginUser$.subscribe((user) => {
       this.username = user?.name!;
     });
-    if (!this.username) {
-      this.username = window.sessionStorage.getItem('userName')!;
-    }
   }
   a(): void {
     window.location.reload();
