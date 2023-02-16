@@ -57,7 +57,7 @@ export class EditComponent implements OnInit {
   days = ['一', '二', '三', '四', '五', '六', '日'];
   // 是否展示模态框
   isShowModel = false;
-  // 当前学期
+  // 当前排课学期
   term = {} as Term;
   // 当前天
   day: number | undefined;
@@ -75,7 +75,7 @@ export class EditComponent implements OnInit {
   overtimeWeekNumber: number | undefined;
   // 选择的教室
   selectedRooms = [] as number[];
-  // 周记录器 同步模式使用
+  // 周记录器
   weeksRecorder = [] as number[][][];
   // 教室记录器 同步模式使用
   roomsRecorder = [] as number[][][];

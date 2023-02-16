@@ -21,6 +21,7 @@
     "@angular/router": "~11.0.9",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@ng-select/ng-select": "^6.1.0",
+    "@stomp/rx-stomp": "^1.2.0",
     "@yunzhi/ng-mock-api": "0.0.5",
     "@yunzhi/utils": "0.0.5",
     "angular-ng-autocomplete": "^2.0.12",
@@ -33,7 +34,9 @@
     "popper.js": "^1.16.1",
     "rxjs": "~6.6.0",
     "sweetalert2": "^9.17.4",
+    "sockjs-client": "^1.6.1",
     "tslib": "^2.0.0",
+    "uuid": "^9.0.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

@@ -15,8 +15,7 @@ export class AttachmentService {
 
   private url = 'attachment';
 
-  constructor(private httpClient: HttpClient,
-              private xAuthTokenInterceptor: XAuthTokenInterceptor) {
+  constructor(private httpClient: HttpClient) {
   }
 
   /**
@@ -38,7 +37,7 @@ export class AttachmentService {
     console.log(filename);
     const link = document.createElement('a');
     link.setAttribute('href', ApiPrefixAndMergeMapInterceptor.getApiUrl(url)
-      + '?x-auth-token=' + this.xAuthTokenInterceptor.getToken()
+      + '?x-auth-token=' + XAuthTokenInterceptor.getToken()
       + '&filename=' + filename);
     link.setAttribute('target', '_blank');
     link.style.visibility = 'hidden';

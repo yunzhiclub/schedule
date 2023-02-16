@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {User} from '../entity/user';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {catchError, map, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn} from '@angular/forms';
 import {Random} from '../common/utils';
+import {WebsocketService} from './websocket.service';
+import {WebSocketData} from '../entity/web-socket-data';
 
 @Injectable({
   providedIn: 'root'
@@ -21,15 +23,32 @@ export class UserService {
   currentLoginUserSubject = new BehaviorSubject<User | null | undefined>(undefined);
   currentLoginUser$ = this.currentLoginUserSubject.asObservable();
 
+  /**
+   * 绑定用户二维码
+   */
+  private onScanBindUserQrCode = new Subject<WebSocketData>();
+  public onScanBindUserQrCode$ = this.onScanBindUserQrCode.asObservable() as Observable<WebSocketData>;
+
+  /**
+   * 登录二维码
+   */
+  private onScanLoginQrCode = new Subject<WebSocketData>();
+  public onScanLoginQrCode$ = this.onScanLoginQrCode.asObservable() as Observable<WebSocketData>;
+
   constructor(private httpClient: HttpClient,
-              private router: Router) {
+              private router: Router,
+              private websocketServer: WebsocketService) {
     const isLogin = window.sessionStorage.getItem(this.isLoginCacheKey) as string;
     this.isLogin = new BehaviorSubject(this.convertStringToBoolean(isLogin));
     this.isLogin$ = this.isLogin.asObservable();
+    this.websocketServer.autowiredUserService(this);
+    // 订阅的时候需要有user打头
+    this.websocketServer.register('/user/stomp/scanBindUserQrCode', this.onScanBindUserQrCode);
+    this.websocketServer.register('/user/stomp/scanLoginQrCode', this.onScanLoginQrCode);
   }
 
 
-  login(user: {password: string, username: string}): Observable<User> {
+  login(user: { password: string, username: string }): Observable<User> {
     // 新建Headers，并添加认证信息
     let headers = new HttpHeaders();
     // 添加 content-type
@@ -39,16 +58,9 @@ export class UserService {
       'Basic ' + btoa(user.username + ':' + encodeURIComponent(user.password)));
     // 发起get请求并返回
     return this.httpClient.get<User>(`${this.url}/login`, {headers})
-      .pipe(tap(data => {
-        console.log('登录返回结果', data);
-      }));
+      .pipe(tap(data => this.setCurrentLoginUser(data)));
   }
 
-
-  setIsLogin(isLogin: boolean): void {
-    window.sessionStorage.setItem(this.isLoginCacheKey, this.convertBooleanToString(isLogin));
-    this.isLogin.next(isLogin);
-  }
 
   /**
    * 字符串转换为boolean
@@ -73,9 +85,7 @@ export class UserService {
    * @param user 登录用户
    */
   setCurrentLoginUser(user: User | undefined): void {
-    if (user !== this.currentLoginUserSubject.value) {
-      this.currentLoginUserSubject.next(user);
-    }
+    this.currentLoginUserSubject.next(user);
     if (user === undefined) {
       this.router.navigateByUrl('/login').then();
     }
@@ -93,15 +103,14 @@ export class UserService {
             subscriber.next();
           },
           error: () => {
-            console.log('initCurrentLoginUser2', );
+            console.log('initCurrentLoginUser2');
             if (callback) {
               callback();
             }
             subscriber.error();
           },
           complete: () => {
-            console.log('initCurrentLoginUser3', );
-
+            console.log('initCurrentLoginUser3');
             if (callback) {
               callback();
             }
@@ -112,11 +121,33 @@ export class UserService {
   }
 
   /**
+   * 获取当前登录用户
+   */
+  getCurrentLoginUser$(): Observable<User | null | undefined> {
+    return this.currentLoginUser$;
+  }
+
+  /**
    * 为个人主页获取当前登录用户
    */
   getCurrentLoginUser(): Observable<User> {
     return this.httpClient.get<User>(`${this.url}/me`);
   }
+
+  /**
+   * 获取登录二维码
+   */
+  getLoginQrCode(): Observable<string> {
+    return this.httpClient.get<string>(`${this.url}/getLoginQrCode/${this.websocketServer.uuid}`);
+  }
+
+  /**
+   * 生成绑定的二维码
+   */
+  generateBindQrCode(): Observable<string> {
+    return this.httpClient.get<string>(`${this.url}/generateBindQrCode`);
+  }
+
 
   /**
    * 更新用户
@@ -128,7 +159,9 @@ export class UserService {
   }
 
   logout(): Observable<void> {
-    return this.httpClient.get<void>(this.url + '/logout');
+    return this.httpClient.get<void>(`${this.url}/logout`).pipe(map(() => {
+      this.setCurrentLoginUser(undefined);
+    }));
   }
 
   /**

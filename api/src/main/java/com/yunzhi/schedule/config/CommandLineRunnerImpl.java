@@ -59,12 +59,11 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
             String password = "yunzhi";
             user.setPhone("13920618851");
             user.setName("张三");
-            user.setPassword(Encoder.getMD5Result(password));
+            user.setPassword(password);
             this.userRepository.save(user);
         }
-
 //        this.forHePanTest();
-        this.chen();
+//        this.chen();
     }
 
 
