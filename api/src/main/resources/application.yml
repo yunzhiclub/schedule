@@ -12,6 +12,9 @@ spring:
         dialect: "org.hibernate.dialect.MySQL57Dialect"
     hibernate:
       ddl-auto: "create"
+  flyway:
+    enabled: false
+    baseline-on-migrate: true
 
   # 上传文件大小限制
   servlet:
