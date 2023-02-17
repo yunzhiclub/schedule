@@ -28,16 +28,16 @@ export class CommonService {
   workbook: ExcelJS.Workbook;
   worksheet: any;
   private menus = [
-    { name: '首页',      url: 'dashboard',  icon: 'fas fa-paper-plane'} as BaseMenu,
-    { name: '学期管理',   url: 'term',       icon: 'fas fa-school' } as BaseMenu,
-    { name: '教师管理',   url: 'teacher',    icon: 'fas fa-chalkboard-teacher' } as BaseMenu,
-    { name: '班级管理',   url: 'clazz',      icon: 'fas fa-university' } as BaseMenu,
+    {name: '首页', url: 'dashboard', icon: 'fas fa-paper-plane'} as BaseMenu,
+    {name: '学期管理', url: 'term', icon: 'fas fa-school'} as BaseMenu,
+    {name: '教师管理', url: 'teacher', icon: 'fas fa-chalkboard-teacher'} as BaseMenu,
+    {name: '班级管理', url: 'clazz', icon: 'fas fa-university'} as BaseMenu,
     // { name: '学生管理',   url: 'student',    icon: 'fas fa-user-graduate' } as BaseMenu,
-    { name: '教室管理',   url: 'room',       icon: 'fas fa-warehouse' } as BaseMenu,
-    { name: '课程管理',   url: 'course',     icon: 'fas fa-book' } as BaseMenu,
-    { name: '排课管理',   url: 'schedule',   icon: 'fas fa-clock' } as BaseMenu,
-    { name: '课程表',     url: 'timetable',  icon: 'fas fa-table' } as BaseMenu,
-    { name: '个人中心',   url: 'personal',   icon: 'fas fa-user' } as BaseMenu,
+    {name: '教室管理', url: 'room', icon: 'fas fa-warehouse'} as BaseMenu,
+    {name: '课程管理', url: 'course', icon: 'fas fa-book'} as BaseMenu,
+    {name: '排课管理', url: 'schedule', icon: 'fas fa-clock'} as BaseMenu,
+    {name: '课程表', url: 'timetable', icon: 'fas fa-table'} as BaseMenu,
+    {name: '个人中心', url: 'personal', icon: 'fas fa-user'} as BaseMenu,
   ];
 
   /** 当前路由是否能后退观察者 */
@@ -129,7 +129,7 @@ export class CommonService {
    * @param param 查询参数
    */
   reloadByParam(params: { [header: string]: string | string[] | number | number[] | null | undefined; },
-                extra?: {forceReload?: boolean}): Promise<boolean> {
+                extra?: { forceReload?: boolean }): Promise<boolean> {
     const queryParams = CommonService.convertToRouteParams(params);
     if (extra && extra.forceReload) {
       queryParams._reloadId = randomNumber().toString();
@@ -189,6 +189,7 @@ export class CommonService {
       }
     });
   }
+
   /*
    * 操作失败提示框
    * @param callback  回调
@@ -279,6 +280,7 @@ export class CommonService {
   clearCurrentRoute(): void {
     this.routeStates.pop();
   }
+
   /**
    * 保存文件
    * @param blob 文件
@@ -298,12 +300,13 @@ export class CommonService {
   }
 
   // tslint:disable-next-line:typedef
-  public generateExcel(bigModelContent: {clazzes: Clazz[]; schedules: Schedule[] }[][],
+  public generateExcel(bigModelContent: { clazzes: Clazz[]; schedules: Schedule[] }[][],
                        bigModelRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
                        fileTeacherName: string | undefined, displayModel: any,
-                       content: {clazzes: Clazz[]; schedules: Schedule[] }[][],
+                       content: { clazzes: Clazz[]; schedules: Schedule[] }[][],
                        roomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
-                       teacherHours: number) {
+                       teacherHours: number,
+                       weekNumber: number) {
     // Create workbook and worksheet
     this.workbook = new Excel.Workbook();
 
@@ -319,11 +322,7 @@ export class CommonService {
     this.worksheet = this.workbook.addWorksheet('File');
     if (displayModel === 'big') {
       Model = '(大节)';
-      this.getBigModelTimetable(bigModelContent, bigModelRoomsAndWeeks);
-    }
-    if (displayModel === 'small') {
-      Model = '(小节)';
-      this.getSmallModelTimeTable(content, roomsAndWeeks);
+      this.getTimetable(bigModelContent, bigModelRoomsAndWeeks, weekNumber);
     }
 
     // 添加教师学时、学期名称等信息
@@ -341,6 +340,7 @@ export class CommonService {
       FileSaver.saveAs(blob, filename + EXCEL_EXTENSION);
     });
   }
+
   private getRoomsAndWeeksForExcel(scheduleOfRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[]): string {
     let result = '';
     for (const roomsAndWeeks of scheduleOfRoomsAndWeeks) {
@@ -356,6 +356,7 @@ export class CommonService {
     }
     return result;
   }
+
   private getClazzesForExcel(clazzes: Clazz[]): string {
     let result = '';
     for (const clazz of clazzes) {
@@ -367,6 +368,7 @@ export class CommonService {
     }
     return result;
   }
+
   private getRoomsForExcel(rooms: Room[]): string {
     let result = '';
     for (const room of rooms) {
@@ -378,6 +380,7 @@ export class CommonService {
     }
     return result;
   }
+
   private getWeeksForExcel(weeks: number[]): string {
     if (weeks.length === 1) {
       return (weeks[0] + 1).toString() + '周';
@@ -391,6 +394,7 @@ export class CommonService {
     result = this.weeksNotContinuous(weeks, minWeeks, maxWeeks);
     return result + '周';
   }
+
   private weeksNotContinuous(arr: number[], min: number, max: number): string {
     let a = true;
     let result = '';
@@ -430,6 +434,7 @@ export class CommonService {
     }
     return result;
   }
+
   // 冒泡排序(从小到大)
   private sortArr(arr: number[]): number[] {
     // 控制循环多少次
@@ -447,6 +452,7 @@ export class CommonService {
     }
     return arr;
   }
+
   // 判断数组是否连续
   private isArrayContinuous(arrs: number[], min: number, max: number): boolean {
     for (let i = min; i <= max; i++) {
@@ -456,6 +462,7 @@ export class CommonService {
     }
     return true;
   }
+
   // 找出数组中的最小值
   private arrayMin(arrs: number[]): number {
     let min = arrs[0];
@@ -466,6 +473,7 @@ export class CommonService {
     }
     return min;
   }
+
   // 找出数组中的最大值
   private arrayMax(arrs: number[]): number {
     let max = arrs[0];
@@ -476,174 +484,103 @@ export class CommonService {
     }
     return max;
   }
-  private bigModelTimetableExcelInit(): void {
+
+  private TimetableExcelInit(weekNumber: number): void {
+    console.log('weekNumber', weekNumber);
     const rowValues = [];
-    rowValues[1] = '天/节';
-    rowValues[2] = '周一';
-    rowValues[5] = '周二';
-    rowValues[8] = '周三';
-    rowValues[11] = '周四';
-    rowValues[14] = '周五';
-    rowValues[17] = '周六';
-    rowValues[20] = '周日';
+    rowValues[2] = '星期一';
+    rowValues[7] = '星期二';
+    rowValues[12] = '星期三';
+    rowValues[17] = '星期四';
+    rowValues[22] = '星期五';
+    rowValues[27] = '星期六';
+    rowValues[32] = '星期天';
     this.worksheet.addRow(rowValues);
-    const rows = [
-      ['第一大节'], [], [], [], [], [], [], [],
-      ['第二大节'], [], [], [], [], [], [], [],
-      ['第三大节'], [], [], [], [], [], [], [],
-      ['第四大节'], [], [], [], [], [], [], [],
-      ['第五大节'], [], [], [], [], [], [], [],
+    this.worksheet.mergeCells('B1:F1');
+    this.worksheet.mergeCells('G1:K1');
+    this.worksheet.mergeCells('L1:P1');
+    this.worksheet.mergeCells('Q1:U1');
+    this.worksheet.mergeCells('V1:Z1');
+    this.worksheet.mergeCells('AA1:AE1');
+    this.worksheet.mergeCells('AF1:AJ1');
+    this.worksheet.getCell('B1').style = {alignment: {wrapText: true, horizontal: 'center'}};
+    this.worksheet.getCell('G1').style = {alignment: {wrapText: true, horizontal: 'center'}};
+    this.worksheet.getCell('L1').style = {alignment: {wrapText: true, horizontal: 'center'}};
+    this.worksheet.getCell('Q1').style = {alignment: {wrapText: true, horizontal: 'center'}};
+    this.worksheet.getCell('V1').style = {alignment: {wrapText: true, horizontal: 'center'}};
+    this.worksheet.getCell('AA1').style = {alignment: {wrapText: true, horizontal: 'center'}};
+    this.worksheet.getCell('AF1').style = {alignment: {wrapText: true, horizontal: 'center'}};
+    const rowValues1 = [];
+    for (let i = 1; i < 37; i++) {
+      if (i === 1) {
+        rowValues1[i] = '周次';
+      }
+      if (i === 2 || i === 7 || i === 12 || i === 17 || i === 22 || i === 27 || i === 32) {
+        rowValues1[i] = '1,2(8:00～9:35)';
+      }
+      if (i === 3 || i === 8 || i === 13 || i === 18 || i === 23 || i === 28 || i === 33) {
+        rowValues1[i] = '3,4(10:05～11:40)';
+      }
+      if (i === 4 || i === 9 || i === 14 || i === 19 || i === 24 || i === 29 || i === 34) {
+        rowValues1[i] = '5,6(13:30～15:05)';
+      }
+      if (i === 5 || i === 10 || i === 15 || i === 20 || i === 25 || i === 30 || i === 35) {
+        rowValues1[i] = '7,8(15:25～17:00)';
+      }
+      if (i === 6 || i === 11 || i === 16 || i === 21 || i === 26 || i === 31 || i === 36) {
+        rowValues1[i] = '晚上(17:30～20:30)';
+      }
+    }
+    this.worksheet.addRow(rowValues1);
+    // 设置单元格自动换行、垂直居中
+    this.worksheet.getCell('A2').style = {alignment: {wrapText: true, vertical: 'middle', horizontal: 'center'}};
+    this.worksheet.getCell('B2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('C2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('D2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('E2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('F2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('G2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('H2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('I2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('J2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('K2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('L2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('M2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('N2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('O2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('P2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('Q2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('R2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('S2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('T2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('U2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('V2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('W2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('X2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('Y2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('Z2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('AA2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('AB2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('AC2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('AD2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('AE2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('AF2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('AG2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('AH2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('AI2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('AJ2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    // 设置冻结行和列的数量
+    this.worksheet.views = [
+      {state: 'frozen', xSplit: 1, ySplit: 2}
     ];
-    this.worksheet.addRows(rows);
-    this.worksheet.mergeCells('B1:D1');
-    this.worksheet.mergeCells('E1:G1');
-    this.worksheet.mergeCells('H1:J1');
-    this.worksheet.mergeCells('K1:M1');
-    this.worksheet.mergeCells('N1:P1');
-    this.worksheet.mergeCells('Q1:S1');
-    this.worksheet.mergeCells('T1:V1');
-
-    this.worksheet.mergeCells('A2', 'A9');
-    this.worksheet.mergeCells('A10', 'A17');
-    this.worksheet.mergeCells('A18', 'A25');
-    this.worksheet.mergeCells('A26', 'A33');
-    this.worksheet.mergeCells('A34', 'A41');
-
-    this.worksheet.mergeCells('B2', 'D9');
-    this.worksheet.mergeCells('E2', 'G9');
-    this.worksheet.mergeCells('H2', 'J9');
-    this.worksheet.mergeCells('K2', 'M9');
-    this.worksheet.mergeCells('N2', 'P9');
-    this.worksheet.mergeCells('Q2', 'S9');
-    this.worksheet.mergeCells('T2', 'V9');
-
-    this.worksheet.mergeCells('B10', 'D17');
-    this.worksheet.mergeCells('E10', 'G17');
-    this.worksheet.mergeCells('H10', 'J17');
-    this.worksheet.mergeCells('K10', 'M17');
-    this.worksheet.mergeCells('N10', 'P17');
-    this.worksheet.mergeCells('Q10', 'S17');
-    this.worksheet.mergeCells('T10', 'V17');
-
-    this.worksheet.mergeCells('B18', 'D25');
-    this.worksheet.mergeCells('E18', 'G25');
-    this.worksheet.mergeCells('H18', 'J25');
-    this.worksheet.mergeCells('K18', 'M25');
-    this.worksheet.mergeCells('N18', 'P25');
-    this.worksheet.mergeCells('Q18', 'S25');
-    this.worksheet.mergeCells('T18', 'V25');
-
-    this.worksheet.mergeCells('B26', 'D33');
-    this.worksheet.mergeCells('E26', 'G33');
-    this.worksheet.mergeCells('H26', 'J33');
-    this.worksheet.mergeCells('K26', 'M33');
-    this.worksheet.mergeCells('N26', 'P33');
-    this.worksheet.mergeCells('Q26', 'S33');
-    this.worksheet.mergeCells('T26', 'V33');
-
-    this.worksheet.mergeCells('B34', 'D41');
-    this.worksheet.mergeCells('E34', 'G41');
-    this.worksheet.mergeCells('H34', 'J41');
-    this.worksheet.mergeCells('K34', 'M41');
-    this.worksheet.mergeCells('N34', 'P41');
-    this.worksheet.mergeCells('Q34', 'S41');
-    this.worksheet.mergeCells('T34', 'V41');
-  }
-  private smallModelTimetableExcelInit(): void {
-    const rowValues = [];
-    rowValues[1] = '天/节';
-    rowValues[2] = '周一';
-    rowValues[5] = '周二';
-    rowValues[8] = '周三';
-    rowValues[11] = '周四';
-    rowValues[14] = '周五';
-    rowValues[17] = '周六';
-    rowValues[20] = '周日';
-    this.worksheet.addRow(rowValues);
-    const rows = [
-      ['第1小节'], [], [], [], [], [], [], [],
-      ['第2小节'], [], [], [], [], [], [], [],
-      ['第3小节'], [], [], [], [], [], [], [],
-      ['第4小节'], [], [], [], [], [], [], [],
-      ['第5小节'], [], [], [], [], [], [], [],
-      ['第6小节'], [], [], [], [], [], [], [],
-      ['第7小节'], [], [], [], [], [], [], [],
-      ['第8小节'], [], [], [], [], [], [], [],
-      ['第9小节'], [], [], [], [], [], [], [],
-      ['第10小节'], [], [], [], [], [], [], [],
-      ['第11小节'], [], [], [], [], [], [], [],
-    ];
-    this.worksheet.addRows(rows);
-    this.worksheet.mergeCells('B1:D1');
-    this.worksheet.mergeCells('E1:G1');
-    this.worksheet.mergeCells('H1:J1');
-    this.worksheet.mergeCells('K1:M1');
-    this.worksheet.mergeCells('N1:P1');
-    this.worksheet.mergeCells('Q1:S1');
-    this.worksheet.mergeCells('T1:V1');
-
-    this.worksheet.mergeCells('A2', 'A9');
-    this.worksheet.mergeCells('A10', 'A17');
-    this.worksheet.mergeCells('A18', 'A25');
-    this.worksheet.mergeCells('A26', 'A33');
-    this.worksheet.mergeCells('A34', 'A41');
-    this.worksheet.mergeCells('A42', 'A49');
-    this.worksheet.mergeCells('A50', 'A57');
-    this.worksheet.mergeCells('A58', 'A65');
-    this.worksheet.mergeCells('A66', 'A73');
-    this.worksheet.mergeCells('A74', 'A81');
-    this.worksheet.mergeCells('A82', 'A89');
-
-    this.worksheet.mergeCells('B2', 'D9'); this.worksheet.mergeCells('E2', 'G9'); this.worksheet.mergeCells('H2', 'J9');
-    this.worksheet.mergeCells('K2', 'M9'); this.worksheet.mergeCells('N2', 'P9'); this.worksheet.mergeCells('Q2', 'S9');
-    this.worksheet.mergeCells('T2', 'V9');
-
-    this.worksheet.mergeCells('B10', 'D17'); this.worksheet.mergeCells('E10', 'G17'); this.worksheet.mergeCells('H10', 'J17');
-    this.worksheet.mergeCells('K10', 'M17'); this.worksheet.mergeCells('N10', 'P17'); this.worksheet.mergeCells('Q10', 'S17');
-    this.worksheet.mergeCells('T10', 'V17');
-
-    this.worksheet.mergeCells('B18', 'D25'); this.worksheet.mergeCells('E18', 'G25'); this.worksheet.mergeCells('H18', 'J25');
-    this.worksheet.mergeCells('K18', 'M25'); this.worksheet.mergeCells('N18', 'P25'); this.worksheet.mergeCells('Q18', 'S25');
-    this.worksheet.mergeCells('T18', 'V25');
-
-    this.worksheet.mergeCells('B26', 'D33'); this.worksheet.mergeCells('E26', 'G33'); this.worksheet.mergeCells('H26', 'J33');
-    this.worksheet.mergeCells('K26', 'M33'); this.worksheet.mergeCells('N26', 'P33'); this.worksheet.mergeCells('Q26', 'S33');
-    this.worksheet.mergeCells('T26', 'V33');
-
-    this.worksheet.mergeCells('B34', 'D41'); this.worksheet.mergeCells('E34', 'G41'); this.worksheet.mergeCells('H34', 'J41');
-    this.worksheet.mergeCells('K34', 'M41'); this.worksheet.mergeCells('N34', 'P41'); this.worksheet.mergeCells('Q34', 'S41');
-    this.worksheet.mergeCells('T34', 'V41');
-
-    this.worksheet.mergeCells('B42', 'D49'); this.worksheet.mergeCells('E42', 'G49'); this.worksheet.mergeCells('H42', 'J49');
-    this.worksheet.mergeCells('K42', 'M49'); this.worksheet.mergeCells('N42', 'P49'); this.worksheet.mergeCells('Q42', 'S49');
-    this.worksheet.mergeCells('T42', 'V49');
-
-    this.worksheet.mergeCells('B50', 'D57'); this.worksheet.mergeCells('E50', 'G57'); this.worksheet.mergeCells('H50', 'J57');
-    this.worksheet.mergeCells('K50', 'M57'); this.worksheet.mergeCells('N50', 'P57'); this.worksheet.mergeCells('Q50', 'S57');
-    this.worksheet.mergeCells('T50', 'V57');
-
-    this.worksheet.mergeCells('B58', 'D65'); this.worksheet.mergeCells('E58', 'G65'); this.worksheet.mergeCells('H58', 'J65');
-    this.worksheet.mergeCells('K58', 'M65'); this.worksheet.mergeCells('N58', 'P65'); this.worksheet.mergeCells('Q58', 'S65');
-    this.worksheet.mergeCells('T58', 'V65');
-
-    this.worksheet.mergeCells('B66', 'D73'); this.worksheet.mergeCells('E66', 'G73'); this.worksheet.mergeCells('H66', 'J73');
-    this.worksheet.mergeCells('K66', 'M73'); this.worksheet.mergeCells('N66', 'P73'); this.worksheet.mergeCells('Q66', 'S73');
-    this.worksheet.mergeCells('T66', 'V73');
-
-    this.worksheet.mergeCells('B74', 'D81'); this.worksheet.mergeCells('E74', 'G81'); this.worksheet.mergeCells('H74', 'J81');
-    this.worksheet.mergeCells('K74', 'M81'); this.worksheet.mergeCells('N74', 'P81'); this.worksheet.mergeCells('Q74', 'S81');
-    this.worksheet.mergeCells('T74', 'V81');
-
-    this.worksheet.mergeCells('B82', 'D89'); this.worksheet.mergeCells('E82', 'G89'); this.worksheet.mergeCells('H82', 'J89');
-    this.worksheet.mergeCells('K82', 'M89'); this.worksheet.mergeCells('N82', 'P89'); this.worksheet.mergeCells('Q82', 'S89');
-    this.worksheet.mergeCells('T82', 'V89');
   }
 
   // tslint:disable-next-line:typedef
-  private getBigModelTimetable(bigModelContent: {clazzes: Clazz[]; schedules: Schedule[] }[][],
-                               bigModelRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][]): void {
+  private getTimetable(bigModelContent: { clazzes: Clazz[]; schedules: Schedule[] }[][],
+                       bigModelRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
+                       weekNumber: number): void {
     // 课程表初始化
-    this.bigModelTimetableExcelInit();
+    this.TimetableExcelInit(weekNumber);
     // 填充内容
     console.log('bigModelContent', bigModelContent);
     for (let l = 0; l < 5; l++) {
@@ -651,20 +588,46 @@ export class CommonService {
         if (bigModelContent[l][d].schedules.length > 0) {
           let cellRow = '';
           let cellCol = '';
-          if (l === 0) { cellRow = '2'; }
-          if (l === 1) { cellRow = '10'; }
-          if (l === 2) { cellRow = '18'; }
-          if (l === 3) { cellRow = '26'; }
-          if (l === 4) { cellRow = '34'; }
-          if (d === 0) { cellCol = 'B'; }
-          if (d === 1) { cellCol = 'E'; }
-          if (d === 2) { cellCol = 'H'; }
-          if (d === 3) { cellCol = 'K'; }
-          if (d === 4) { cellCol = 'M'; }
-          if (d === 5) { cellCol = 'Q'; }
-          if (d === 6) { cellCol = 'T'; }
+          if (l === 0) {
+            cellRow = '2';
+          }
+          if (l === 1) {
+            cellRow = '3';
+          }
+          if (l === 2) {
+            cellRow = '4';
+          }
+          if (l === 3) {
+            cellRow = '5';
+          }
+          if (l === 4) {
+            cellRow = '6';
+          }
+          if (d === 0) {
+            cellCol = 'B';
+          }
+          if (d === 1) {
+            cellCol = 'C';
+          }
+          if (d === 2) {
+            cellCol = 'D';
+          }
+          if (d === 3) {
+            cellCol = 'E';
+          }
+          if (d === 4) {
+            cellCol = 'F';
+          }
+          if (d === 5) {
+            cellCol = 'G';
+          }
+          if (d === 6) {
+            cellCol = 'H';
+          }
           const cellName = cellCol + cellRow;
           const content = this.worksheet.getCell(cellName);
+          // 设置单元格自动换行、垂直居中
+          content.style = {alignment: {wrapText: true, vertical: 'middle'}};
           content.value = '';
           for (const schedule of bigModelContent[l][d].schedules) {
             if (content.value === '') {
@@ -676,56 +639,6 @@ export class CommonService {
             } else {
               content.value = content.value + '\n\n' + schedule.course.name + '\n'
                 + this.getRoomsAndWeeksForExcel(bigModelRoomsAndWeeks[l][d][schedule.id]) + '\n'
-                + this.getClazzesForExcel(schedule.clazzes) + '\n'
-                + schedule.teacher1.name + '、'
-                + schedule.teacher2.name;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  private getSmallModelTimeTable(smallModelContent: {clazzes: Clazz[]; schedules: Schedule[] }[][],
-                                 smallModelRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][]): void {
-    this.smallModelTimetableExcelInit();
-    // 填充内容
-    for (let l = 0; l < 11; l++) {
-      for (let d = 0; d < 7; d++) {
-        if (smallModelContent[l][d].schedules.length > 0) {
-          let cellRow = '';
-          let cellCol = '';
-          if (l === 0) { cellRow = '2'; }
-          if (l === 1) { cellRow = '10'; }
-          if (l === 2) { cellRow = '18'; }
-          if (l === 3) { cellRow = '26'; }
-          if (l === 4) { cellRow = '34'; }
-          if (l === 5) { cellRow = '42'; }
-          if (l === 6) { cellRow = '50'; }
-          if (l === 7) { cellRow = '58'; }
-          if (l === 8) { cellRow = '66'; }
-          if (l === 9) { cellRow = '74'; }
-          if (l === 10) { cellRow = '82'; }
-          if (d === 0) { cellCol = 'B'; }
-          if (d === 1) { cellCol = 'E'; }
-          if (d === 2) { cellCol = 'H'; }
-          if (d === 3) { cellCol = 'K'; }
-          if (d === 4) { cellCol = 'M'; }
-          if (d === 5) { cellCol = 'Q'; }
-          if (d === 6) { cellCol = 'T'; }
-          const cellName = cellCol + cellRow;
-          const content = this.worksheet.getCell(cellName);
-          content.value = '';
-          for (const schedule of smallModelContent[l][d].schedules) {
-            if (content.value === '') {
-              content.value = content.value + schedule.course.name + '\n'
-                + this.getRoomsAndWeeksForExcel(smallModelRoomsAndWeeks[l][d][schedule.id]) + '\n'
-                + this.getClazzesForExcel(schedule.clazzes) + '\n'
-                + schedule.teacher1.name + '、'
-                + schedule.teacher2.name;
-            } else {
-              content.value = content.value + '\n\n' + schedule.course.name + '\n'
-                + this.getRoomsAndWeeksForExcel(smallModelRoomsAndWeeks[l][d][schedule.id]) + '\n'
                 + this.getClazzesForExcel(schedule.clazzes) + '\n'
                 + schedule.teacher1.name + '、'
                 + schedule.teacher2.name;

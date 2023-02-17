@@ -113,6 +113,7 @@ export class TimetableComponent implements OnInit {
             this.onTeacherChange();
           });
       });
+    this.onSelectWeekChange();
   }
   private initRoomsAndWeeks(): void {
     for (let i = 0; i < 11; i++) {
@@ -471,7 +472,8 @@ export class TimetableComponent implements OnInit {
       displayModel,
       this.content,
       this.roomsAndWeeks,
-      this.getHours());
+      this.getHours(),
+      this.weekNumber);
   }
 
   getWeeksForTimetable(weeks: number[]): string {
@@ -626,7 +628,6 @@ export class TimetableComponent implements OnInit {
     if ( this.formGroup.get('selectWeek')?.value !== null) {
       for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 7; j++) {
-          console.log('this.formGroup.get(\'selectWeek\')?.value - 1', this.formGroup.get('selectWeek')?.value - 1);
           for (const schedule of this.bigModelContent[i][j].schedules) {
             // tslint:disable-next-line:prefer-for-of
             for (let x = 0; x < this.bigModelRoomsAndWeeks[i][j][schedule.id].length; x++) {
