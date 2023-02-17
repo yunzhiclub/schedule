@@ -300,11 +300,9 @@ export class CommonService {
   }
 
   // tslint:disable-next-line:typedef
-  public generateExcel(bigModelContent: { clazzes: Clazz[]; schedules: Schedule[] }[][],
-                       bigModelRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
-                       fileTeacherName: string | undefined, displayModel: any,
-                       content: { clazzes: Clazz[]; schedules: Schedule[] }[][],
-                       roomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
+  public generateExcel(Content: { clazzes: Clazz[]; schedules: Schedule[] }[][],
+                       RoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
+                       fileTeacherName: string | undefined,
                        teacherHours: number,
                        weekNumber: number) {
     // Create workbook and worksheet
@@ -318,45 +316,17 @@ export class CommonService {
     this.workbook.lastPrinted = new Date();
 
     // Add a Worksheet
-    let Model = '';
     this.worksheet = this.workbook.addWorksheet('File');
-    if (displayModel === 'big') {
-      Model = '(大节)';
-      this.getTimetable(bigModelContent, bigModelRoomsAndWeeks, weekNumber);
-    }
-
-    // 添加教师学时、学期名称等信息
-    if (fileTeacherName !== '所有教师') {
-      this.worksheet.mergeCells('W1:Y9');
-      this.worksheet.getCell('W1').value = fileTeacherName + '的总学时：' + teacherHours;
-    }
-
+    this.getTimetable(Content, RoomsAndWeeks, weekNumber);
 
     // Generate Excel File
     this.workbook.xlsx.writeBuffer().then((data: BlobPart) => {
       const blob = new Blob([data], {type: EXCEL_TYPE});
       // Given name
-      const filename = fileTeacherName + '的课程表' + Model;
+      const filename = fileTeacherName + '的课程表';
       FileSaver.saveAs(blob, filename + EXCEL_EXTENSION);
     });
   }
-
-  private getRoomsAndWeeksForExcel(scheduleOfRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[]): string {
-    let result = '';
-    for (const roomsAndWeeks of scheduleOfRoomsAndWeeks) {
-      if (roomsAndWeeks.rooms.length > 0) {
-        const weeks = this.getWeeksForExcel(roomsAndWeeks.weeks);
-        const rooms = this.getRoomsForExcel(roomsAndWeeks.rooms);
-        if (result === '') {
-          result = result + weeks + '在' + rooms;
-        } else {
-          result = result + '\n' + weeks + '在' + rooms;
-        }
-      }
-    }
-    return result;
-  }
-
   private getClazzesForExcel(clazzes: Clazz[]): string {
     let result = '';
     for (const clazz of clazzes) {
@@ -380,113 +350,7 @@ export class CommonService {
     }
     return result;
   }
-
-  private getWeeksForExcel(weeks: number[]): string {
-    if (weeks.length === 1) {
-      return (weeks[0] + 1).toString() + '周';
-    }
-    let result = '';
-    const minWeeks = this.arrayMin(weeks);
-    const maxWeeks = this.arrayMax(weeks);
-    if (this.isArrayContinuous(weeks, minWeeks, maxWeeks)) {
-      return (minWeeks + 1) + '-' + (maxWeeks + 1) + '周';
-    }
-    result = this.weeksNotContinuous(weeks, minWeeks, maxWeeks);
-    return result + '周';
-  }
-
-  private weeksNotContinuous(arr: number[], min: number, max: number): string {
-    let a = true;
-    let result = '';
-    const sortArr = this.sortArr(arr);
-    for (let i = 0; i < sortArr.length - 1; i++) {
-      if (sortArr[i] + 1 !== sortArr[i + 1]) {
-        if (a) {
-          if (min !== sortArr[i]) {
-            result = result + (min + 1) + '-' + (sortArr[i] + 1) + '、';
-          } else {
-            result = result + (min + 1) + '、';
-          }
-          a = !a;
-        }
-        this.key = i + 1;
-        let b = true;
-        for (let j = this.key; j < sortArr.length - 1; j++) {
-          if (sortArr[j] + 1 !== sortArr[j + 1]) {
-            if (b) {
-              if (sortArr[this.key] !== sortArr[j]) {
-                result = result + (sortArr[this.key] + 1) + '-' + (sortArr[j] + 1) + '、';
-              } else {
-                result = result + (sortArr[this.key] + 1) + '、';
-              }
-              b = !b;
-            }
-          }
-        }
-      }
-      if (i === sortArr.length - 2) {
-        if (sortArr[this.key] !== max) {
-          result = result + (sortArr[this.key] + 1) + '-' + (max + 1);
-        } else {
-          result = result + (max + 1);
-        }
-      }
-    }
-    return result;
-  }
-
-  // 冒泡排序(从小到大)
-  private sortArr(arr: number[]): number[] {
-    // 控制循环多少次
-    for (let i = 0; i < arr.length - 1; i++) {
-      // 控制比较
-      for (let j = 0; j < arr.length; j++) {
-        // 一次循环中，如果前者大于后者就交换位置，所以第一次循环最大的就在最后
-        if (arr[j] > arr[j + 1]) {
-          // 交换位置
-          const element = arr[j];
-          arr[j] = arr[j + 1];
-          arr[j + 1] = element;
-        }
-      }
-    }
-    return arr;
-  }
-
-  // 判断数组是否连续
-  private isArrayContinuous(arrs: number[], min: number, max: number): boolean {
-    for (let i = min; i <= max; i++) {
-      if (!arrs.includes(i)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  // 找出数组中的最小值
-  private arrayMin(arrs: number[]): number {
-    let min = arrs[0];
-    for (let i = 1, ilen = arrs.length; i < ilen; i += 1) {
-      if (arrs[i] < min) {
-        min = arrs[i];
-      }
-    }
-    return min;
-  }
-
-  // 找出数组中的最大值
-  private arrayMax(arrs: number[]): number {
-    let max = arrs[0];
-    for (let i = 1, ilen = arrs.length; i < ilen; i += 1) {
-      if (arrs[i] > max) {
-        max = arrs[i];
-      }
-    }
-    return max;
-  }
-
   private TimetableExcelInit(weekNumber: number): void {
-    console.log('weekNumber', weekNumber);
     const rowValues = [];
     rowValues[2] = '星期一';
     rowValues[7] = '星期二';
@@ -503,13 +367,13 @@ export class CommonService {
     this.worksheet.mergeCells('V1:Z1');
     this.worksheet.mergeCells('AA1:AE1');
     this.worksheet.mergeCells('AF1:AJ1');
-    this.worksheet.getCell('B1').style = {alignment: {wrapText: true, horizontal: 'center'}};
-    this.worksheet.getCell('G1').style = {alignment: {wrapText: true, horizontal: 'center'}};
-    this.worksheet.getCell('L1').style = {alignment: {wrapText: true, horizontal: 'center'}};
-    this.worksheet.getCell('Q1').style = {alignment: {wrapText: true, horizontal: 'center'}};
-    this.worksheet.getCell('V1').style = {alignment: {wrapText: true, horizontal: 'center'}};
-    this.worksheet.getCell('AA1').style = {alignment: {wrapText: true, horizontal: 'center'}};
-    this.worksheet.getCell('AF1').style = {alignment: {wrapText: true, horizontal: 'center'}};
+    this.worksheet.getCell('B1').style = {alignment: {wrapText: true, horizontal: 'center'}, font: {bold: true}};
+    this.worksheet.getCell('G1').style = {alignment: {wrapText: true, horizontal: 'center'}, font: {bold: true}};
+    this.worksheet.getCell('L1').style = {alignment: {wrapText: true, horizontal: 'center'}, font: {bold: true}};
+    this.worksheet.getCell('Q1').style = {alignment: {wrapText: true, horizontal: 'center'}, font: {bold: true}};
+    this.worksheet.getCell('V1').style = {alignment: {wrapText: true, horizontal: 'center'}, font: {bold: true}};
+    this.worksheet.getCell('AA1').style = {alignment: {wrapText: true, horizontal: 'center'}, font: {bold: true}};
+    this.worksheet.getCell('AF1').style = {alignment: {wrapText: true, horizontal: 'center'}, font: {bold: true}};
     const rowValues1 = [];
     for (let i = 1; i < 37; i++) {
       if (i === 1) {
@@ -533,115 +397,126 @@ export class CommonService {
     }
     this.worksheet.addRow(rowValues1);
     // 设置单元格自动换行、垂直居中
-    this.worksheet.getCell('A2').style = {alignment: {wrapText: true, vertical: 'middle', horizontal: 'center'}};
-    this.worksheet.getCell('B2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('C2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('D2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('E2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('F2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('G2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('H2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('I2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('J2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('K2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('L2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('M2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('N2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('O2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('P2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('Q2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('R2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('S2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('T2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('U2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('V2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('W2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('X2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('Y2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('Z2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('AA2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('AB2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('AC2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('AD2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('AE2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('AF2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('AG2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('AH2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('AI2').style = {alignment: {wrapText: true, vertical: 'middle'}};
-    this.worksheet.getCell('AJ2').style = {alignment: {wrapText: true, vertical: 'middle'}};
+    this.worksheet.getCell('A2').style = {alignment: {wrapText: true, vertical: 'middle', horizontal: 'center'}, font: {bold: true}};
+    this.worksheet.getCell('B2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('C2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('D2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('E2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('F2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('G2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('H2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('I2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('J2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('K2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('L2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('M2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('N2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('O2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('P2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('Q2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('R2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('S2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('T2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('U2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('V2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('W2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('X2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('Y2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('Z2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('AA2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('AB2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('AC2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('AD2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('AE2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('AF2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('AG2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('AH2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('AI2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
+    this.worksheet.getCell('AJ2').style = {alignment: {wrapText: true, vertical: 'middle'}, font: {bold: true}};
     // 设置冻结行和列的数量
     this.worksheet.views = [
       {state: 'frozen', xSplit: 1, ySplit: 2}
     ];
+    // 设置周数
+    for (let i = 1; i <= weekNumber; i++) {
+      const cellName = 'A' + (i + 2);
+      this.worksheet.getCell(cellName).value = i;
+      this.worksheet.getCell(cellName).style = {alignment: {wrapText: true, vertical: 'middle', horizontal: 'center'},
+                                                     font: {bold: true, size: 16 }};
+    }
   }
 
-  // tslint:disable-next-line:typedef
-  private getTimetable(bigModelContent: { clazzes: Clazz[]; schedules: Schedule[] }[][],
-                       bigModelRoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
+  private getTimetable(Content: { clazzes: Clazz[]; schedules: Schedule[] }[][],
+                       RoomsAndWeeks: { rooms: Room[]; weeks: number[] }[][][][],
                        weekNumber: number): void {
     // 课程表初始化
     this.TimetableExcelInit(weekNumber);
     // 填充内容
-    console.log('bigModelContent', bigModelContent);
+    console.log('bigModelContent', Content);
     for (let l = 0; l < 5; l++) {
       for (let d = 0; d < 7; d++) {
-        if (bigModelContent[l][d].schedules.length > 0) {
+        if (Content[l][d].schedules.length > 0) {
           let cellRow = '';
           let cellCol = '';
-          if (l === 0) {
-            cellRow = '2';
-          }
-          if (l === 1) {
-            cellRow = '3';
-          }
-          if (l === 2) {
-            cellRow = '4';
-          }
-          if (l === 3) {
-            cellRow = '5';
-          }
-          if (l === 4) {
-            cellRow = '6';
-          }
-          if (d === 0) {
-            cellCol = 'B';
-          }
-          if (d === 1) {
-            cellCol = 'C';
-          }
-          if (d === 2) {
-            cellCol = 'D';
-          }
-          if (d === 3) {
-            cellCol = 'E';
-          }
-          if (d === 4) {
-            cellCol = 'F';
-          }
-          if (d === 5) {
-            cellCol = 'G';
-          }
-          if (d === 6) {
-            cellCol = 'H';
-          }
-          const cellName = cellCol + cellRow;
-          const content = this.worksheet.getCell(cellName);
-          // 设置单元格自动换行、垂直居中
-          content.style = {alignment: {wrapText: true, vertical: 'middle'}};
-          content.value = '';
-          for (const schedule of bigModelContent[l][d].schedules) {
-            if (content.value === '') {
-              content.value = content.value + schedule.course.name + '\n'
-                + this.getRoomsAndWeeksForExcel(bigModelRoomsAndWeeks[l][d][schedule.id]) + '\n'
-                + this.getClazzesForExcel(schedule.clazzes) + '\n'
-                + schedule.teacher1.name + '、'
-                + schedule.teacher2.name;
-            } else {
-              content.value = content.value + '\n\n' + schedule.course.name + '\n'
-                + this.getRoomsAndWeeksForExcel(bigModelRoomsAndWeeks[l][d][schedule.id]) + '\n'
-                + this.getClazzesForExcel(schedule.clazzes) + '\n'
-                + schedule.teacher1.name + '、'
-                + schedule.teacher2.name;
+          if (l === 0 && d === 0) { cellCol = 'B'; }
+          if (l === 1 && d === 0) { cellCol = 'C'; }
+          if (l === 2 && d === 0) { cellCol = 'D'; }
+          if (l === 3 && d === 0) { cellCol = 'E'; }
+          if (l === 4 && d === 0) { cellCol = 'F'; }
+          if (l === 0 && d === 1) { cellCol = 'G'; }
+          if (l === 1 && d === 1) { cellCol = 'H'; }
+          if (l === 2 && d === 1) { cellCol = 'I'; }
+          if (l === 3 && d === 1) { cellCol = 'J'; }
+          if (l === 4 && d === 1) { cellCol = 'K'; }
+          if (l === 0 && d === 2) { cellCol = 'L'; }
+          if (l === 1 && d === 2) { cellCol = 'M'; }
+          if (l === 2 && d === 2) { cellCol = 'N'; }
+          if (l === 3 && d === 2) { cellCol = 'O'; }
+          if (l === 4 && d === 2) { cellCol = 'P'; }
+          if (l === 0 && d === 3) { cellCol = 'Q'; }
+          if (l === 1 && d === 3) { cellCol = 'R'; }
+          if (l === 2 && d === 3) { cellCol = 'S'; }
+          if (l === 3 && d === 3) { cellCol = 'T'; }
+          if (l === 4 && d === 3) { cellCol = 'U'; }
+          if (l === 0 && d === 4) { cellCol = 'V'; }
+          if (l === 1 && d === 4) { cellCol = 'W'; }
+          if (l === 2 && d === 4) { cellCol = 'X'; }
+          if (l === 3 && d === 4) { cellCol = 'Y'; }
+          if (l === 4 && d === 4) { cellCol = 'Z'; }
+          if (l === 0 && d === 5) { cellCol = 'AA'; }
+          if (l === 1 && d === 5) { cellCol = 'AB'; }
+          if (l === 2 && d === 5) { cellCol = 'AC'; }
+          if (l === 3 && d === 5) { cellCol = 'AD'; }
+          if (l === 4 && d === 5) { cellCol = 'AE'; }
+          if (l === 0 && d === 6) { cellCol = 'AF'; }
+          if (l === 1 && d === 6) { cellCol = 'AG'; }
+          if (l === 2 && d === 6) { cellCol = 'AH'; }
+          if (l === 3 && d === 6) { cellCol = 'AI'; }
+          if (l === 4 && d === 6) { cellCol = 'AJ'; }
+          for (const schedule of Content[l][d].schedules) {
+            // tslint:disable-next-line:prefer-for-of
+            for (let x = 0; x < RoomsAndWeeks[l][d][schedule.id].length; x++) {
+              for (const week of RoomsAndWeeks[l][d][schedule.id][x].weeks) {
+                cellRow = (week + 3).toString();
+                const cellName = cellCol + cellRow;
+                const content = this.worksheet.getCell(cellName);
+                // 设置单元格自动换行、垂直居中
+                content.style = {alignment: {wrapText: true, vertical: 'middle'}};
+                // content.value = '';
+                if (content.value === null) {
+                  content.value = schedule.course.name + '\n'
+                    + this.getRoomsForExcel(RoomsAndWeeks[l][d][schedule.id][x].rooms) + '\n'
+                    + this.getClazzesForExcel(schedule.clazzes) + '\n'
+                    + schedule.teacher1.name + '、'
+                    + schedule.teacher2.name;
+                } else {
+                  content.value = content.value + '\n\n' + schedule.course.name + '\n'
+                    + this.getRoomsForExcel(RoomsAndWeeks[l][d][schedule.id][x].rooms) + '\n'
+                    + this.getClazzesForExcel(schedule.clazzes) + '\n'
+                    + schedule.teacher1.name + '、'
+                    + schedule.teacher2.name;
+                }
+              }
             }
           }
         }
