@@ -48,11 +48,7 @@ public class ClazzController {
             @RequestParam(required = false, defaultValue = "") String name,
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
-        Page<Clazz> clazzPage = this.clazzService.page(name, pageable);
-        clazzPage.getContent().forEach(clazz -> {
-            clazz.setStudents(clazz.getStudents().stream().filter(student -> !student.getDeleted()).collect(Collectors.toList()));
-        });
-        return clazzPage;
+        return this.clazzService.page(name, pageable);
     }
 
     @GetMapping("clazzNameUnique")
@@ -122,10 +118,8 @@ public class ClazzController {
     private class PageJsonView implements
             Clazz.IdJsonView,
             Clazz.NameJsonView,
-            Clazz.StudentsJsonView,
             Clazz.EntranceDateJsonView,
-            Clazz.StudentNumberJsonView,
-            Student.IdJsonView
+            Clazz.StudentNumberJsonView
     {}
     private class GetByIdJsonView implements
             Clazz.IdJsonView,

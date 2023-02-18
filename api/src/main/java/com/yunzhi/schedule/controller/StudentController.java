@@ -15,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+/**
+ * 此项目学生模块已禁用
+ */
 @RestController
 @RequestMapping("student")
 public class StudentController {
