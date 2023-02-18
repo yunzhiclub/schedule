@@ -113,6 +113,14 @@ export class TimetableComponent implements OnInit {
             this.onTeacherChange();
           });
       });
+    this.termService.getCurrentTerm()
+      .subscribe((term: Term) => {
+        this.commonService.checkTermIsActivated(term);
+        this.term = term;
+        const seconds = +term.endTime - +term.startTime;
+        const days = Math.ceil(seconds / (60 * 60 * 24));
+        this.weekNumber = Math.ceil(days / 7);
+      });
   }
   private initRoomsAndWeeks(): void {
     for (let i = 0; i < 11; i++) {
@@ -464,14 +472,11 @@ export class TimetableComponent implements OnInit {
   }
 
   excelExport(): void {
-    const displayModel = this.formGroup.get('displayMode')?.value;
     this.commonService.generateExcel(this.bigModelContent,
       this.bigModelRoomsAndWeeks,
       this.fileTeacherName,
-      displayModel,
-      this.content,
-      this.roomsAndWeeks,
-      this.getHours());
+      this.getHours(),
+      this.weekNumber);
   }
 
   getWeeksForTimetable(weeks: number[]): string {
@@ -594,14 +599,6 @@ export class TimetableComponent implements OnInit {
   onSelectWeekChange(): void {
     this.intBigModelContentForSelectWeek();
     console.log('alreadySelectWeek', this.formGroup.get('selectWeek')?.value);
-    this.termService.getCurrentTerm()
-      .subscribe((term: Term) => {
-        this.commonService.checkTermIsActivated(term);
-        this.term = term;
-        const seconds = +term.endTime - +term.startTime;
-        const days = Math.ceil(seconds / (60 * 60 * 24));
-        this.weekNumber = Math.ceil(days / 7);
-      });
     this.setBigModelContentForSelectWeek();
   }
 
@@ -626,7 +623,6 @@ export class TimetableComponent implements OnInit {
     if ( this.formGroup.get('selectWeek')?.value !== null) {
       for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 7; j++) {
-          console.log('this.formGroup.get(\'selectWeek\')?.value - 1', this.formGroup.get('selectWeek')?.value - 1);
           for (const schedule of this.bigModelContent[i][j].schedules) {
             // tslint:disable-next-line:prefer-for-of
             for (let x = 0; x < this.bigModelRoomsAndWeeks[i][j][schedule.id].length; x++) {
@@ -670,5 +666,17 @@ export class TimetableComponent implements OnInit {
         }
       }
     }
+  }
+
+  turnToArr(weekNumber: number): number [] {
+    const arr = [];
+    for (let i = 1; i <= weekNumber; i++) {
+      arr.push(i);
+    }
+    return arr;
+  }
+
+  setSelectWeek(week: number): void {
+    this.formGroup.get('selectWeek')?.setValue(week);
   }
 }
