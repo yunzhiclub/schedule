@@ -201,6 +201,8 @@ export class EditComponent implements OnInit {
     this.week = undefined;
     this.selectedRooms = [];
     this.selectedWeeks = [];
+    this.disabledRooms = [];
+    this.disabledWeeks = [];
     this.initTempData();
   }
   /**
@@ -248,13 +250,12 @@ export class EditComponent implements OnInit {
         this.selectedWeeks = [];
         this.selectedRooms = [];
       } else {
+        this.notEmptyWeeks.forEach(week => this.onWeekChange(week));
         // 如果之前的数据是多个周，存在不同的周不同的教室
         // 如果之前的数据是多个周，不存在不同的周不同的教室
         if (this.isArrayHasNotEqualArray(this.tempData)) {
-          this.selectedWeeks = this.notEmptyWeeks;
           this.selectedRooms = [];
         } else {
-          this.selectedWeeks = this.notEmptyWeeks;
           this.selectedRooms = [...this.tempData[this.notEmptyWeeks[0]]];
         }
       }

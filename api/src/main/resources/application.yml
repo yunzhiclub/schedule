@@ -16,6 +16,7 @@ spring:
     enabled: false
     baseline-on-migrate: true
 
+
   # 上传文件大小限制
   servlet:
     multipart:

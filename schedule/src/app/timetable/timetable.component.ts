@@ -80,25 +80,11 @@ export class TimetableComponent implements OnInit {
     console.log('isSelectWeek', this.formGroup.get('isSelectWeek')?.value);
     this.teacherService.getAll()
       .subscribe(allTeachers => {
+        console.log('ngOnInit', allTeachers);
+        this.allTeachers = [];
         this.allTeachers.push({id: 'all' as unknown, name: '全部教师'} as Teacher);
         allTeachers.forEach(teacher => this.allTeachers.push(teacher));
-        // todo: this.allTeachers = allTeachers;
     });
-    // this.scheduleService.getSchedulesInCurrentTerm()
-    //   .subscribe(allSchedulesInCurrentTerm => {
-    //     this.allSchedulesInCurrentTerm = allSchedulesInCurrentTerm;
-    //     // console.log('allSchedulesInCurrentTerm', this.allSchedulesInCurrentTerm);
-    //   });
-    // this.termService.getCurrentTerm()
-    //   .subscribe(currentTerm => {
-    //     this.term = currentTerm;
-    //   });
-    // this.initIsShow();
-    // this.initContent();
-    // this.initRoomsAndWeeks();
-    // this.formGroup?.get('selectedTeacherId')?.setValue('all');
-    // this.formGroup?.get('displayMode')?.setValue('big');
-    // todo: 确定数据返回
     this.scheduleService.getSchedulesInCurrentTerm()
       .subscribe(allSchedulesInCurrentTerm => {
         this.allSchedulesInCurrentTerm = allSchedulesInCurrentTerm;
@@ -115,7 +101,7 @@ export class TimetableComponent implements OnInit {
       });
     this.termService.getCurrentTerm()
       .subscribe((term: Term) => {
-        this.commonService.checkTermIsActivated(term);
+        // this.commonService.checkTermIsActivated(term);
         this.term = term;
         const seconds = +term.endTime - +term.startTime;
         const days = Math.ceil(seconds / (60 * 60 * 24));
@@ -262,7 +248,6 @@ export class TimetableComponent implements OnInit {
 
   private getSelectedTeacher(): void {
     for (const teacher of this.allTeachers) {
-      // todo: if (teacher.id.toString() === this.formGroup.get('selectedTeacherId')?.value) {
       if (teacher.id.toString() === this.formGroup.get('selectedTeacherId')?.value + '') {
         this.selectedTeacher = teacher;
         this.fileTeacherName = this.selectedTeacher.name;
@@ -618,7 +603,7 @@ export class TimetableComponent implements OnInit {
     }
   }
 
-  private setBigModelContentForSelectWeek(): void {
+  public setBigModelContentForSelectWeek(): void {
     this.intBigModelContentForSelectWeek();
     if ( this.formGroup.get('selectWeek')?.value !== null) {
       for (let i = 0; i < 5; i++) {

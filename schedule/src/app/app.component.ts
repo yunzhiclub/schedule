@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
               private router: Router,
               private userService: UserService,
               private webSocketService: WebsocketService) {
-    this.config.notFoundText = 'Custom not found';
+    this.config.notFoundText = '未找到';
     this.config.appendTo = 'body';
     this.config.bindValue = 'value';
   }
