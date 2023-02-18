@@ -62,8 +62,8 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
             user.setPassword(password);
             this.userRepository.save(user);
         }
-        this.forHePanTest();
-//        this.chen();
+//        this.forHePanTest();
+        this.chen();
     }
 
 
