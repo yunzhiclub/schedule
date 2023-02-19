@@ -91,7 +91,7 @@
 
     <div class="row col-sm-12">
       <div class="col text-right">
-        <button type="submit" (click)="onSubmit()" [disabled]="!canSubmit()" class="btn btn-primary">确定</button>
+        <button type="submit" (click)="onSubmit()" [disabled]="selectedData.length <= 0" class="btn btn-primary">确定</button>
       </div>
     </div>
   </div>

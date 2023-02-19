@@ -565,6 +565,10 @@ export class EditComponent implements OnInit {
     }
   }
   onSubmit(): void {
+    if (!this.canSubmit()) {
+      this.commonService.error(() => {}, '当前学时与课程学时不相等');
+      return;
+    }
     const dispatches = [] as Dispatch[];
     this.selectedData.forEach((data) => {
       const rooms = data.roomIds.map(roomId => {

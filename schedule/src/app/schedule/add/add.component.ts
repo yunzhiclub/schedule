@@ -663,6 +663,10 @@ export class AddComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (!this.canSubmit()) {
+      this.commonService.error(() => {}, '当前学时与课程学时不相等');
+      return ;
+    }
     console.log('onSubmit is called');
     const course = new Course({id: this.formGroup.get('courseId')?.value});
     const clazzes = this.formGroup.get('clazzIds')?.value.map((clazzId: number) => {
