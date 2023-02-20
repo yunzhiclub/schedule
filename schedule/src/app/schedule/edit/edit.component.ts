@@ -180,8 +180,12 @@ export class EditComponent implements OnInit {
     this.bigLesson = bigLesson;
     if (!this.syncRecorder[this.day][this.bigLesson]) {
       // 同步模式
-      this.selectedWeeks = [...this.weeksRecorder[this.day][this.bigLesson]];
-      this.selectedRooms = [...this.roomsRecorder[this.day][this.bigLesson]];
+      this.weeksRecorder[this.day][this.bigLesson].forEach(week => {
+        this.onWeekChange(week);
+      });
+      this.roomsRecorder[this.day][this.bigLesson].forEach(room => {
+        this.onRoomChange(room);
+      });
     } else {
       // 定制模式
       this.initTempData();
@@ -297,6 +301,7 @@ export class EditComponent implements OnInit {
   private getData(): void {
     this.scheduleService.getById(this.scheduleId!)
       .subscribe((schedule) => {
+        // console.log('getData', schedule);
         this.schedule = schedule;
         this.clazzIds = schedule.clazzes.map(clazz => clazz.id);
         this.teacher1 = schedule.teacher1;
@@ -353,7 +358,6 @@ export class EditComponent implements OnInit {
     this.makeConflictTimes();
     this.makeTimes();
     this.updateTimesAndSitesBySchedule();
-    console.log(this.times, this.sites);
   }
   /**
    *  生成班级冲突时间
@@ -383,7 +387,6 @@ export class EditComponent implements OnInit {
         });
       }
     });
-    // console.log('teacher1Id', this.conflictTimesOfTeacher1);
   }
   private makeConflictTimesOfTeacher2(): void {
     const teacher2Id = this.teacher2.id;
@@ -394,7 +397,6 @@ export class EditComponent implements OnInit {
         });
       }
     });
-    // console.log('teacher2Id', this.conflictTimesOfTeacher2);
   }
   private makeTimes(): void {
     this.conflictTimesOfClazzes.forEach(conflictTime => {
@@ -425,8 +427,7 @@ export class EditComponent implements OnInit {
       // this.updateTempData();
       this.week = week;
       this.selectedRooms = [];
-      console.log('onWeekChange', week.toString(), [...this.tempData]);
-      this.selectedRooms = [...this.tempData[this.week!]];
+      this.selectedRooms = this.tempData[this.week!];
     } else {
       this.changeSelectedWeeks(week);
     }
@@ -565,6 +566,10 @@ export class EditComponent implements OnInit {
     }
   }
   onSubmit(): void {
+    if (!this.canSubmit()) {
+      this.commonService.error(() => {}, '当前学时与课程学时不相等');
+      return;
+    }
     const dispatches = [] as Dispatch[];
     this.selectedData.forEach((data) => {
       const rooms = data.roomIds.map(roomId => {
@@ -575,7 +580,6 @@ export class EditComponent implements OnInit {
     this.schedule.dispatches = dispatches;
     this.scheduleService.edit(this.schedule.id, dispatches)
       .subscribe((schedule) => {
-        console.log('edit submit', schedule);
         this.commonService.success(() => this.router.navigateByUrl('/schedule'));
       });
   }
@@ -605,20 +609,13 @@ export class EditComponent implements OnInit {
   private makeWeeksAndRoomsRecoder(): void {
     this.selectedData.forEach((data) => {
       const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
-      this.day = data.day;
-      this.bigLesson = bigLesson;
       if (!this.weeksRecorder[data.day][bigLesson].includes(data.week)) {
         this.weeksRecorder[data.day][bigLesson].push(data.week);
-        this.onWeekChange(data.week);
       }
       if (this.roomsRecorder[data.day][bigLesson].length === 0) {
         this.roomsRecorder[data.day][bigLesson] = [...data.roomIds];
-        data.roomIds.forEach(roomId => {
-          this.onRoomChange(roomId);
-        });
       }
     });
-    this.week = undefined;
   }
   canSubmit(): boolean {
     const course = this.course;
@@ -668,8 +665,8 @@ export class EditComponent implements OnInit {
     return this.weeks.filter(w => this.overtimeWeekNumber! <= w)
       .filter(w => !this.isWeekDisabled(w));
   }
-  getWeeksForShow(day: number, bigLesson: number): string {
-    return this.weeksRecorder[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
+  getWeeksForShow(day: number, bigLesson: number): number[] {
+    return this.weeksRecorder[day][bigLesson].sort((a, b) => a - b);
   }
   private initSyncRecoder(): void {
     for (let i = 0; i < 7; i++) {
@@ -678,5 +675,9 @@ export class EditComponent implements OnInit {
         this.syncRecorder[i][j] = true;
       }
     }
+  }
+
+  getWeeks(weeksForShow: number[]): string {
+    return this.commonService.getWeeksForTimetable(weeksForShow);
   }
 }

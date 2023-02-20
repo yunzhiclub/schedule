@@ -58,10 +58,12 @@ export class CourseDetailComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.initData();
     const courseId = this.route.snapshot.params.courseId;
     this.courseId = courseId;
     this.courseService.getForCourseDetail(courseId)
       .subscribe((course) => {
+        console.warn('getForCourseDetail', course);
         this.schedules = course.schedules;
         this.termService.getCurrentTerm()
           .subscribe((currentTerm) => {
@@ -75,7 +77,6 @@ export class CourseDetailComponent implements OnInit {
             const days = Math.ceil(seconds / (60 * 60 * 24));
             this.weekNumber = Math.ceil(days / 7);
             this.makeSelectedData();
-            console.log('selectedData', this.selectedData);
             this.makeNotEmptyWeeksTable();
             this.makeWeeks();
           });
@@ -93,8 +94,8 @@ export class CourseDetailComponent implements OnInit {
     });
     return status;
   }
-  getNotEmptyWeeksOfTable(day: number, bigLesson: number): string {
-    return this.notEmptyWeeksTable[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
+  getNotEmptyWeeksOfTable(day: number, bigLesson: number): number[] {
+    return this.notEmptyWeeksTable[day][bigLesson].sort((a, b) => a - b);
   }
 
 
@@ -133,9 +134,9 @@ export class CourseDetailComponent implements OnInit {
     this.day = day;
     this.bigLesson = bigLesson;
     this.makeCurrentData();
-    console.log('currentData1', this.currentData[7][0], this.currentData[7][1]);
-    console.log('currentData2', this.currentData[8][0], this.currentData[8][1]);
-    console.log('currentData3', this.currentData[9][0], this.currentData[9][1]);
+    // console.log('currentData1', this.currentData[7][0], this.currentData[7][1]);
+    // console.log('currentData2', this.currentData[8][0], this.currentData[8][1]);
+    // console.log('currentData3', this.currentData[9][0], this.currentData[9][1]);
   }
 
   private makeCurrentData(): void {
@@ -150,6 +151,7 @@ export class CourseDetailComponent implements OnInit {
 
   private makeWeeks(): void {
     this.weeks = Array.from(new Array(this.weekNumber).keys());
+    console.log('makeweeks', this.weeks);
   }
 
   private makeSelectedData(): void {
@@ -187,5 +189,14 @@ export class CourseDetailComponent implements OnInit {
     for (let i = 0; i < this.weekNumber; i++) {
       this.currentData[i] = [];
     }
+  }
+
+  initData(): void {
+    this.initCurrentData();
+    this.initNotEmptyWeeksTable();
+  }
+
+  getWeeks(notEmptyWeeksOfTable: number[]): string {
+    return this.commonService.getWeeksForTimetable(notEmptyWeeksOfTable);
   }
 }

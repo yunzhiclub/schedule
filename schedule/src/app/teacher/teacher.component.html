@@ -39,7 +39,7 @@
     <td>{{ teacher.name }}</td>
     <td>{{ teacher.phone }}</td>
     <td>{{ teacher.sex | sex}}</td>
-    <td>{{ teacher.getHours(termId ? termId : 0)}}</td>
+    <td>{{ teacher.getHours(termId)}}</td>
     <td>
       <a class="btn btn-sm btn-primary" [routerLink]="'/teacher/edit/' + teacher.id"><i class="fas fa-edit"></i>编辑</a>
       <a class="btn btn-sm btn-danger" (click)="onDelete(teacher.id)"><i class="fas fa-trash"></i>删除</a>

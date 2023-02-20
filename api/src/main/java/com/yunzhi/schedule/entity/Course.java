@@ -3,6 +3,7 @@ package com.yunzhi.schedule.entity;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class Course implements SoftDelete {
     @ApiModelProperty("排课")
     @JsonView(SchedulesJsonView.class)
     @OneToMany(mappedBy = "course")
+    @Where(clause = "deleted = false")
     private List<Schedule> schedules = new ArrayList<>();
 
     @ApiModelProperty("是否已删除")

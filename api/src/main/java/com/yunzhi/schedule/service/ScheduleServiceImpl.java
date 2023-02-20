@@ -37,12 +37,12 @@ public class ScheduleServiceImpl implements ScheduleService{
     @Override
     public List<Schedule> getSchedulesByTerm(Term term) {
         List<Schedule> schedules = this.scheduleRepository.findSchedulesByTermAndDeletedFalse(term);
-        schedules.forEach(schedule -> {
-            schedule.setDispatches(schedule.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
-            schedule.getDispatches().forEach(dispatch -> {
-                dispatch.setRooms(dispatch.getRooms().stream().filter(room -> !room.getDeleted()).collect(Collectors.toList()));
-            });
-        });
+//        schedules.forEach(schedule -> {
+//            schedule.setDispatches(schedule.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
+//            schedule.getDispatches().forEach(dispatch -> {
+//                dispatch.setRooms(dispatch.getRooms().stream().filter(room -> !room.getDeleted()).collect(Collectors.toList()));
+//            });
+//        });
         return schedules;
     }
 

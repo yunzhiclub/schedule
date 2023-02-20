@@ -71,6 +71,7 @@ export class RoomDetailComponent implements OnInit {
     this.roomId = this.route.snapshot.params.roomId;
     this.roomService.getForRoomDetail(this.roomId)
       .subscribe((room) => {
+        console.log('getForRoomDetail', room);
         this.room = room;
         this.dispatches = room.dispatches;
         this.termService.getCurrentTerm()
@@ -187,8 +188,8 @@ export class RoomDetailComponent implements OnInit {
     this.makeCurrentData();
   }
 
-  getNotEmptyWeeksOfTable(day: number, bigLesson: number): string {
-    return this.notEmptyWeeksTable[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
+  getNotEmptyWeeksOfTable(day: number, bigLesson: number): number[] {
+    return this.notEmptyWeeksTable[day][bigLesson].sort((a, b) => a - b);
   }
 
   getCourseName(week: number): string {
@@ -221,5 +222,9 @@ export class RoomDetailComponent implements OnInit {
       return '第' + smLessonsIndex.map(index => index + 1 + this.bigLesson! * 2).sort((a, b) => a - b).join('、') + '小节';
     }
     return '';
+  }
+
+  getWeeks(notEmptyWeeksOfTable: number[]): string {
+    return this.commonService.getWeeksForTimetable(notEmptyWeeksOfTable);
   }
 }

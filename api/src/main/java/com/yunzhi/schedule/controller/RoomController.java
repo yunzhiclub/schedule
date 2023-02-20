@@ -115,22 +115,22 @@ public class RoomController {
     @JsonView(GetForRoomDetail.class)
     public Room getForRoomDetail(@PathVariable Long roomId) {
         Room room = this.roomService.getById(roomId);
-        List<Schedule> schedules = new ArrayList<>();
-        room.setDispatches(room.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
-        room.getDispatches().forEach(dispatch -> {
-            if (!schedules.contains(dispatch.getSchedule())) {
-                schedules.add(dispatch.getSchedule());
-            }
-        });
-        schedules.forEach(schedule -> {
-            schedule.setClazzes(schedule.getClazzes().stream().filter(clazz -> !clazz.getDeleted()).collect(Collectors.toList()));
-            if (schedule.getTeacher1().getDeleted()) {
-                schedule.setTeacher1(new Teacher());
-            }
-            if (schedule.getTeacher2().getDeleted()) {
-                schedule.setTeacher2(new Teacher());
-            }
-        });
+//        List<Schedule> schedules = new ArrayList<>();
+//        room.setDispatches(room.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
+//        room.getDispatches().forEach(dispatch -> {
+//            if (!schedules.contains(dispatch.getSchedule())) {
+//                schedules.add(dispatch.getSchedule());
+//            }
+//        });
+//        schedules.forEach(schedule -> {
+//            schedule.setClazzes(schedule.getClazzes().stream().filter(clazz -> !clazz.getDeleted()).collect(Collectors.toList()));
+//            if (schedule.getTeacher1().getDeleted()) {
+//                schedule.setTeacher1(new Teacher());
+//            }
+//            if (schedule.getTeacher2().getDeleted()) {
+//                schedule.setTeacher2(new Teacher());
+//            }
+//        });
         return room;
     }
 

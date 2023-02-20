@@ -52,7 +52,7 @@
               <div class="list-group">
                 <button class="list-group-item" [ngClass]="{'list-group-item-primary': buttonActive(d, bigLesson)}" (click)="showModel(d, bigLesson)">
 <!--                  <h6>周{{day}}第{{bigLesson! + 1}}节</h6>-->
-                  <span *ngIf="weeksRecorder[d][bigLesson].length">周: {{getWeeksForShow(d, bigLesson)}}</span>
+                  <span *ngIf="weeksRecorder[d][bigLesson].length">{{ this.getWeeks(getWeeksForShow(d, bigLesson)) }}</span>
                 </button>
               </div>
             </td>
@@ -62,7 +62,7 @@
       </div>
       <div class="row col-sm-12">
         <div class="col">
-          <button style="float: right;" type="submit" (click)="onSubmit()" [disabled]="!canSubmit()" class="btn btn-primary mr-3"><i class="fas fa-save"></i>保存</button>
+          <button style="float: right;" type="submit" (click)="onSubmit()" [disabled]="selectedData.length <= 0" class="btn btn-primary mr-3"><i class="fas fa-save"></i>保存</button>
           <a style="float: right;" class="btn btn-primary" routerLink="../../">返回</a>
         </div>
       </div>

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -34,7 +35,7 @@ public class CourseServiceImpl implements CourseService{
 
     @Override
     public Course getById(Long id) {
-        return this.courseRepository.findById(id).get();
+        return this.courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
     }
 
     @Override
