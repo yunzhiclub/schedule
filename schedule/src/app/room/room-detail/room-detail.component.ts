@@ -71,6 +71,7 @@ export class RoomDetailComponent implements OnInit {
     this.roomId = this.route.snapshot.params.roomId;
     this.roomService.getForRoomDetail(this.roomId)
       .subscribe((room) => {
+        console.log('getForRoomDetail', room);
         this.room = room;
         this.dispatches = room.dispatches;
         this.termService.getCurrentTerm()

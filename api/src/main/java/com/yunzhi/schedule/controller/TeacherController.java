@@ -46,18 +46,18 @@ public class TeacherController {
             @SortDefault.SortDefaults(@SortDefault(sort = "id", direction = Sort.Direction.DESC))
             Pageable pageable) {
         Page<Teacher> teacherPage = this.teacherService.page(name, phone, pageable);
-        teacherPage.getContent().forEach(teacher -> {
-            teacher.getSchedules1().forEach(schedule -> {
-                if (!schedule.getDeleted()) {
-                    schedule.setDispatches(schedule.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
-                }
-            });
-            teacher.getSchedules2().forEach(schedule -> {
-                if (!schedule.getDeleted()) {
-                    schedule.setDispatches(schedule.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
-                }
-            });
-        });
+//        teacherPage.getContent().forEach(teacher -> {
+//            teacher.getSchedules1().forEach(schedule -> {
+//                if (!schedule.getDeleted()) {
+//                    schedule.setDispatches(schedule.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
+//                }
+//            });
+//            teacher.getSchedules2().forEach(schedule -> {
+//                if (!schedule.getDeleted()) {
+//                    schedule.setDispatches(schedule.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
+//                }
+//            });
+//        });
         return teacherPage;
     }
 

@@ -25,7 +25,7 @@ export class Teacher {
     this.phone = data.phone;
     this.schedules1 = data.schedules1 ? data.schedules1 : [];
     this.schedules2 = data.schedules2 ? data.schedules2 : [];
-    this.schedules = Array.from(new Set([...this.schedules1, ...this.schedules2]));
+    this.schedules = [...this.schedules1, ...this.schedules2];
   }
 
   /**

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class Dispatch implements SoftDelete {
     @ManyToMany
     @ApiModelProperty("对应教室")
     @JsonView(RoomsJsonView.class)
+    @Where(clause = "deleted = false")
     private List<Room> rooms = new ArrayList<>();
 
     @ApiModelProperty("是否已删除")

@@ -301,6 +301,7 @@ export class EditComponent implements OnInit {
   private getData(): void {
     this.scheduleService.getById(this.scheduleId!)
       .subscribe((schedule) => {
+        // console.log('getData', schedule);
         this.schedule = schedule;
         this.clazzIds = schedule.clazzes.map(clazz => clazz.id);
         this.teacher1 = schedule.teacher1;

@@ -47,6 +47,7 @@ export class TeacherComponent implements OnInit {
         searchName: params[this.keys.searchName],
         searchPhone: params[this.keys.searchPhone]})
         .subscribe(data => {
+          console.log('ngOnInit', data);
           this.setData(data);
         });
     });
