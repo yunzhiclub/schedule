@@ -52,7 +52,7 @@
               <div class="list-group">
                 <button class="list-group-item" [ngClass]="{'list-group-item-primary': buttonActive(d, bigLesson)}" (click)="showModel(d, bigLesson)">
 <!--                  <h6>周{{day}}第{{bigLesson! + 1}}节</h6>-->
-                  <span *ngIf="weeksRecorder[d][bigLesson].length">周: {{getWeeksForShow(d, bigLesson)}}</span>
+                  <span *ngIf="weeksRecorder[d][bigLesson].length">{{ this.getWeeks(getWeeksForShow(d, bigLesson)) }}</span>
                 </button>
               </div>
             </td>

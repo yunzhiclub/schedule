@@ -31,7 +31,7 @@
         <td  *ngFor="let bigLesson of bigLessons" class="col-sm-1 container-fluid">
           <div class="list-group">
             <button data-toggle="modal" data-target="#staticBackdrop" class="list-group-item" [ngClass]="{'list-group-item-primary': buttonActive(d, bigLesson)}" (click)="showModel(d, bigLesson)">
-              <span *ngIf="weeksRecorder[d][bigLesson].length">周: {{getNotEmptyWeeksOfTable(d, bigLesson)}}</span>
+              <span *ngIf="weeksRecorder[d][bigLesson].length">{{ this.getWeeks(getNotEmptyWeeksOfTable(d, bigLesson)) }}</span>
             </button>
           </div>
         </td>
