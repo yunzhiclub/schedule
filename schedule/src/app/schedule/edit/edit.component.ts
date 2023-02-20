@@ -180,8 +180,12 @@ export class EditComponent implements OnInit {
     this.bigLesson = bigLesson;
     if (!this.syncRecorder[this.day][this.bigLesson]) {
       // 同步模式
-      this.selectedWeeks = [...this.weeksRecorder[this.day][this.bigLesson]];
-      this.selectedRooms = [...this.roomsRecorder[this.day][this.bigLesson]];
+      this.weeksRecorder[this.day][this.bigLesson].forEach(week => {
+        this.onWeekChange(week);
+      });
+      this.roomsRecorder[this.day][this.bigLesson].forEach(room => {
+        this.onRoomChange(room);
+      });
     } else {
       // 定制模式
       this.initTempData();
@@ -353,7 +357,6 @@ export class EditComponent implements OnInit {
     this.makeConflictTimes();
     this.makeTimes();
     this.updateTimesAndSitesBySchedule();
-    console.log(this.times, this.sites);
   }
   /**
    *  生成班级冲突时间
@@ -383,7 +386,6 @@ export class EditComponent implements OnInit {
         });
       }
     });
-    // console.log('teacher1Id', this.conflictTimesOfTeacher1);
   }
   private makeConflictTimesOfTeacher2(): void {
     const teacher2Id = this.teacher2.id;
@@ -394,7 +396,6 @@ export class EditComponent implements OnInit {
         });
       }
     });
-    // console.log('teacher2Id', this.conflictTimesOfTeacher2);
   }
   private makeTimes(): void {
     this.conflictTimesOfClazzes.forEach(conflictTime => {
@@ -425,8 +426,7 @@ export class EditComponent implements OnInit {
       // this.updateTempData();
       this.week = week;
       this.selectedRooms = [];
-      console.log('onWeekChange', week.toString(), [...this.tempData]);
-      this.selectedRooms = [...this.tempData[this.week!]];
+      this.selectedRooms = this.tempData[this.week!];
     } else {
       this.changeSelectedWeeks(week);
     }
@@ -579,7 +579,6 @@ export class EditComponent implements OnInit {
     this.schedule.dispatches = dispatches;
     this.scheduleService.edit(this.schedule.id, dispatches)
       .subscribe((schedule) => {
-        console.log('edit submit', schedule);
         this.commonService.success(() => this.router.navigateByUrl('/schedule'));
       });
   }
@@ -609,20 +608,13 @@ export class EditComponent implements OnInit {
   private makeWeeksAndRoomsRecoder(): void {
     this.selectedData.forEach((data) => {
       const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
-      this.day = data.day;
-      this.bigLesson = bigLesson;
       if (!this.weeksRecorder[data.day][bigLesson].includes(data.week)) {
         this.weeksRecorder[data.day][bigLesson].push(data.week);
-        this.onWeekChange(data.week);
       }
       if (this.roomsRecorder[data.day][bigLesson].length === 0) {
         this.roomsRecorder[data.day][bigLesson] = [...data.roomIds];
-        data.roomIds.forEach(roomId => {
-          this.onRoomChange(roomId);
-        });
       }
     });
-    this.week = undefined;
   }
   canSubmit(): boolean {
     const course = this.course;

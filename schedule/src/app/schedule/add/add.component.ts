@@ -245,8 +245,12 @@ export class AddComponent implements OnInit {
     this.bigLesson = bigLesson;
     if (!this.syncRecorder[this.day][this.bigLesson]) {
       // 同步模式
-      this.selectedWeeks = [...this.weeksRecorder[this.day][this.bigLesson]];
-      this.selectedRooms = [...this.roomsRecorder[this.day][this.bigLesson]];
+      this.weeksRecorder[this.day][this.bigLesson].forEach(week => {
+        this.onWeekChange(week);
+      });
+      this.roomsRecorder[this.day][this.bigLesson].forEach(room => {
+        this.onRoomChange(room);
+      });
     } else {
       // 定制模式
       this.initTempData();
@@ -310,11 +314,9 @@ export class AddComponent implements OnInit {
   }
 
   private getData(): void {
-    console.log('getData');
     this.termService.getCurrentTerm()
       .subscribe((term: Term) => {
         this.commonService.checkTermIsActivated(term);
-        console.log('getData2');
         this.term = term;
         let seconds = +term.endTime - +term.startTime;
         let days = Math.ceil(seconds / (60 * 60 * 24));
@@ -382,7 +384,6 @@ export class AddComponent implements OnInit {
       // 选择课程，请求已选择该课程的班级clazzIds, 并在clazzes中筛选掉这些班级
       this.clazzService.clazzesHaveSelectCourse(this.formGroup.get('courseId')?.value)
         .subscribe(clazzIds => {
-          // console.log('clazzIds', clazzIds);
           this.screenedClazzes = this.clazzes.filter(clazz => !clazzIds.includes(clazz.id));
         });
     }
@@ -397,17 +398,11 @@ export class AddComponent implements OnInit {
   private makeWeeksAndRoomsRecoder(): void {
     this.selectedData.forEach((data) => {
       const bigLesson = data.smLesson === 10 ? 4 : Math.floor(data.smLesson / 2);
-      this.day = data.day;
-      this.bigLesson = bigLesson;
       if (!this.weeksRecorder[data.day][bigLesson].includes(data.week)) {
         this.weeksRecorder[data.day][bigLesson].push(data.week);
-        this.onWeekChange(data.week);
       }
       if (this.roomsRecorder[data.day][bigLesson].length === 0) {
         this.roomsRecorder[data.day][bigLesson] = [...data.roomIds];
-        data.roomIds.forEach(roomId => {
-          this.onRoomChange(roomId);
-        });
       }
     });
   }
@@ -468,7 +463,6 @@ export class AddComponent implements OnInit {
         });
       }
     });
-    // console.log('teacher1Id', this.conflictTimesOfTeacher1);
   }
 
   private makeConflictTimesOfTeacher2(): void {
@@ -480,7 +474,6 @@ export class AddComponent implements OnInit {
         });
       }
     });
-    // console.log('teacher2Id', this.conflictTimesOfTeacher2);
   }
 
   private makeTimes(): void {
@@ -667,7 +660,6 @@ export class AddComponent implements OnInit {
       this.commonService.error(() => {}, '当前学时与课程学时不相等');
       return ;
     }
-    console.log('onSubmit is called');
     const course = new Course({id: this.formGroup.get('courseId')?.value});
     const clazzes = this.formGroup.get('clazzIds')?.value.map((clazzId: number) => {
       return new Clazz({id: clazzId});
