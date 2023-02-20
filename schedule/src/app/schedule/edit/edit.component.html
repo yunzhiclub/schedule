@@ -1,23 +1,23 @@
 <!-- 选择课程 -->
 <div class="form-group row mb-0">
-  <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>课程</label>
+  <label class="col-sm-2 text-right col-form-label"><code>*</code>课程</label>
   <div class="col-sm">
-    <input type="text" class="disabled mt-1" disabled [value]="course.name">
+    <input type="text"  style="width: 162px" class="disabled mt-1" disabled [value]="course.name">
   </div>
 </div>
 <div class="form-group row mb-0" *ngFor="let clazz of this.schedule.clazzes; index as x">
-  <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>班级{{ x + 1 }}</label>
+  <label class="col-sm-2 text-right col-form-label"><code>*</code>班级{{ x + 1 }}</label>
   <div class="col-sm">
-    <input type="text" class="disabled mt-1" disabled [value]="clazz.name">
+    <input type="text" style="width: 162px" class="disabled mt-1" disabled [value]="clazz.name">
   </div>
 </div>
 <div class="form-group row">
-  <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>教师</label>
+  <label class="col-sm-2 text-right col-form-label"><code>*</code>教师</label>
   <div class="col-sm-2">
-    <input type="text" class="disabled mt-1" disabled [value]="this.teacher1.name">
+    <input type="text" class="disabled mt-1" style="width: 162px" disabled [value]="this.teacher1.name">
   </div>
   <div class="col-sm-2">
-    <input type="text" class="disabled mt-1" disabled [value]="this.teacher2.name">
+    <input type="text" class="disabled mt-1" style="width: 162px" disabled [value]="this.teacher2.name">
   </div>
   <a routerLink="editClazzesAndTeachers" class="ml-2 btn btn-success">编辑班级/教师信息</a>
 </div>

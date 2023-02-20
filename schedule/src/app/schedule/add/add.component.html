@@ -63,9 +63,8 @@
       </div>
     </div>
 
-
     <label class="col-sm-2 mt-3"></label>
-    <div class="col-sm mt-3">
+    <div class="col-sm-9 mt-3">
       <table class="table  table-bordered">
         <thead>
           <tr>
@@ -90,8 +89,12 @@
     </div>
 
     <div class="row col-sm-12">
-      <div class="col text-right">
-        <button type="submit" (click)="onSubmit()" [disabled]="selectedData.length <= 0" class="btn btn-primary">确定</button>
+<!--      <div class="col text-right">-->
+<!--        <button type="submit" (click)="onSubmit()" [disabled]="selectedData.length <= 0" class="btn btn-primary">确定</button>-->
+<!--      </div>-->
+      <div class="col mr-5">
+        <button style="float: right;" type="submit" (click)="onSubmit()" [disabled]="selectedData.length <= 0" class="btn btn-primary mr-3"><i class="fas fa-save"></i>保存</button>
+        <a style="float: right;" class="btn btn-primary" routerLink="../../">返回</a>
       </div>
     </div>
   </div>

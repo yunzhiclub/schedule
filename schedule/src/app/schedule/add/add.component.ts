@@ -657,7 +657,34 @@ export class AddComponent implements OnInit {
 
   onSubmit(): void {
     if (!this.canSubmit()) {
-      this.commonService.error(() => {}, '当前学时与课程学时不相等');
+      this.commonService.confirm((confirm = false) => {
+        if (confirm) {
+          const course1 = new Course({id: this.formGroup.get('courseId')?.value});
+          const clazzes1 = this.formGroup.get('clazzIds')?.value.map((clazzId: number) => {
+            return new Clazz({id: clazzId});
+          });
+          const teacher1Id1 = this.formGroup.get('teacher1Id')?.value;
+          const teacher2Id1 = this.formGroup.get('teacher2Id')?.value;
+          const schedule1 = new Schedule();
+          schedule1.course = course1;
+          schedule1.clazzes = clazzes1;
+          schedule1.term = this.term;
+          schedule1.teacher1 = new Teacher({id: teacher1Id1});
+          schedule1.teacher2 = new Teacher({id: teacher2Id1});
+          this.selectedData.forEach((data) => {
+            const rooms = data.roomIds.map(roomId => {
+              return new Room({id: roomId});
+            });
+            schedule1.dispatches.push(new Dispatch({day: data.day, lesson: data.smLesson, week: data.week, rooms}));
+          });
+          this.scheduleService.add(schedule1)
+            .subscribe(() => {
+              this.commonService.success(() => this.router.navigateByUrl('/schedule'));
+            });
+        } else {
+          return ;
+        }
+      }, '当前学时与课程学时不相等，确定要保存吗？');
       return ;
     }
     const course = new Course({id: this.formGroup.get('courseId')?.value});

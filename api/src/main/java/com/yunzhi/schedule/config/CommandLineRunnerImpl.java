@@ -64,7 +64,7 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         }
 //        this.forHePanTest();
         this.chen();
-    }
+    }   
 
 
     private void forHePanTest() {
