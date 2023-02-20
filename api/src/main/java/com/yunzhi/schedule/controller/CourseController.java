@@ -99,6 +99,7 @@ public class CourseController {
     @JsonView(GetForCourseDetailJsonView.class)
     public Course getForCourseDetail(@PathVariable Long courseId) {
         Course course = this.courseService.getById(courseId);
+        course.setSchedules(course.getSchedules().stream().filter(schedule -> !schedule.getDeleted()).collect(Collectors.toList()));
         course.getSchedules().forEach(schedule -> {
             schedule.setClazzes(schedule.getClazzes().stream().filter(clazz -> !clazz.getDeleted()).collect(Collectors.toList()));
             schedule.setDispatches(schedule.getDispatches().stream().filter(dispatch -> !dispatch.getDeleted()).collect(Collectors.toList()));
