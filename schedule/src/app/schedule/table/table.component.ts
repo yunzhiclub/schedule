@@ -537,8 +537,8 @@ export class TableComponent implements OnInit {
     return arr.map(week => (week + 1)).sort((a, b) => a - b).join('、');
   }
 
-  getNotEmptyWeeksOfTable(day: number, bigLesson: number): string {
-    return this.weeksRecorder[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
+  getNotEmptyWeeksOfTable(day: number, bigLesson: number): number[] {
+    return this.weeksRecorder[day][bigLesson].sort((a, b) => a - b);
   }
 
   onWeekClick(week: number): void {
@@ -574,4 +574,7 @@ export class TableComponent implements OnInit {
     return '';
   }
 
+  getWeeks(notEmptyWeeksOfTable: number[]): string {
+    return this.commonService.getWeeksForTimetable(notEmptyWeeksOfTable);
+  }
 }

@@ -94,8 +94,8 @@ export class CourseDetailComponent implements OnInit {
     });
     return status;
   }
-  getNotEmptyWeeksOfTable(day: number, bigLesson: number): string {
-    return this.notEmptyWeeksTable[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
+  getNotEmptyWeeksOfTable(day: number, bigLesson: number): number[] {
+    return this.notEmptyWeeksTable[day][bigLesson].sort((a, b) => a - b);
   }
 
 
@@ -194,5 +194,9 @@ export class CourseDetailComponent implements OnInit {
   initData(): void {
     this.initCurrentData();
     this.initNotEmptyWeeksTable();
+  }
+
+  getWeeks(notEmptyWeeksOfTable: number[]): string {
+    return this.commonService.getWeeksForTimetable(notEmptyWeeksOfTable);
   }
 }

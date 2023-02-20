@@ -759,8 +759,8 @@ export class AddComponent implements OnInit {
       .filter(w => !this.isWeekDisabled(w));
   }
 
-  getWeeksForShow(day: number, bigLesson: number): string {
-    return this.weeksRecorder[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
+  getWeeksForShow(day: number, bigLesson: number): number[] {
+    return this.weeksRecorder[day][bigLesson].sort((a, b) => a - b);
   }
 
   onSync(): void {
@@ -815,5 +815,9 @@ export class AddComponent implements OnInit {
 
   isArrayEqual(arr1: number[], arr2: number[]): boolean {
     return arr1.length === arr2.length && arr1.sort().toString() === arr2.sort().toString();
+  }
+
+  getWeeks(weeksForShow: number[]): string {
+    return this.commonService.getWeeksForTimetable(weeksForShow);
   }
 }

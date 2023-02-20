@@ -672,8 +672,8 @@ export class EditComponent implements OnInit {
     return this.weeks.filter(w => this.overtimeWeekNumber! <= w)
       .filter(w => !this.isWeekDisabled(w));
   }
-  getWeeksForShow(day: number, bigLesson: number): string {
-    return this.weeksRecorder[day][bigLesson].map(week => week + 1).sort((a, b) => a - b).join('、');
+  getWeeksForShow(day: number, bigLesson: number): number[] {
+    return this.weeksRecorder[day][bigLesson].sort((a, b) => a - b);
   }
   private initSyncRecoder(): void {
     for (let i = 0; i < 7; i++) {
@@ -682,5 +682,9 @@ export class EditComponent implements OnInit {
         this.syncRecorder[i][j] = true;
       }
     }
+  }
+
+  getWeeks(weeksForShow: number[]): string {
+    return this.commonService.getWeeksForTimetable(weeksForShow);
   }
 }
