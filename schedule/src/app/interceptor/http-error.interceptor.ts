@@ -4,7 +4,7 @@ import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {CommonService} from '../../service/common.service';
 import {UserService} from '../../service/user.service';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 
 /**
  * HTTP请求错误拦截器.

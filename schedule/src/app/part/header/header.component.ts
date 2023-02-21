@@ -31,15 +31,15 @@ export class HeaderComponent implements OnInit {
     this.userService.logout()
       .subscribe(() => {
         window.sessionStorage.removeItem('login');
-        this.commonService.success(() => {
-          this.router.navigateByUrl('/login').then();
-          }, '' , '已注销');
+        this.router.navigateByUrl('/login').then();
+        // this.commonService.success(() => {
+        //   this.router.navigateByUrl('/login').then();
+        //   }, '' , '已注销');
       },
         () => {
-          this.router.navigateByUrl('/login').then();
-        },
-        () => {
-          this.router.navigateByUrl('/login').then();
+          this.commonService.error(() => {
+            this.router.navigateByUrl('/login').then();
+            }, '' , '注销失败');
         });
   }
 }
