@@ -1,12 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 
 import { TimetableService } from './timetable.service';
+import {TestModule} from '../app/test/test.module';
 
 describe('TimetableService', () => {
   let service: TimetableService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      imports: [
+        TestModule
+      ]
+    });
     service = TestBed.inject(TimetableService);
   });
 
