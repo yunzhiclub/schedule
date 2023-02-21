@@ -8,7 +8,7 @@
 name: Maven test and install
 
 on:
-  [push, pull_request]
+  []
 
 jobs:
   spring-boot:
@@ -29,9 +29,9 @@ jobs:
       uses: mirromutth/mysql-action@v1.1
       with:
         mysql version: 5.7
-        mysql database: work-review
-        mysql user: db-username
-        mysql password: db-password
+        mysql database: schedule
+        mysql user: root
+        mysql password: root
     - name: set PR_NUMBER
       run: |
         echo PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }') >> $GITHUB_ENV
