@@ -86,7 +86,7 @@ jobs:
       run: cat $GITHUB_EVENT_PATH
       
     - name: Build with Maven
-      run: cd api && mvn install
+      run: cd api && mvn --batch-mode --update-snapshots package
     
 
   notify:
