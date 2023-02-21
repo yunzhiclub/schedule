@@ -5,7 +5,7 @@ env:
   JAVA_VERSION: '8.0.312+7'                  # set this to the Java version to use
   DISTRIBUTION: adopt                  # set this to the Java distribution
   
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
 #   angular:
