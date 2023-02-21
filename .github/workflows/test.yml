@@ -65,8 +65,8 @@ jobs:
       with:
         host port: 3310 # Optional, default value is 3306. The port of host
         container port: 3306 # Optional, default value is 3306. The port of container
-        character set server: 'utf8mb4'
-        collation server: 'utf8mb4_unicode_ci'
+        character set server: utf8mb4
+        collation server: utf8mb4_unicode_ci
         mysql version: 5.7
         mysql database: schedule
         mysql user: root
