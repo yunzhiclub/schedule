@@ -1,0 +1,62 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Ng Test and Build
+
+on:
+  pull_request:
+
+jobs:
+  angular:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.7.0
+      with:
+        access_token: ${{ github.token }}
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: Use Node.js 12.8
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.8
+    - name: set PR_NUMBER
+      run: |
+        echo PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }') >> $GITHUB_ENV
+        echo PR_TITLE=$(jq --raw-output .pull_request.title "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
+        echo PR_URL=$(jq --raw-output .pull_request._links.html.href "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
+        echo PR_USER=$(jq --raw-output .pull_request.user.login "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
+        echo YZ_DESCRIPTION=$(jq --raw-output .repository.description "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
+        echo YZ_HTML_URL=$(jq --raw-output .repository.html_url "$GITHUB_EVENT_PATH") >> $GITHUB_ENV
+    - name: print env
+      run: printenv
+    - name: npm install
+      run: |
+        cd workhome-review
+        npm install --no-optional  --no-package-lock
+        node_modules/@angular/cli/bin/ng --version
+    - name: ng lint
+      run: cd workhome-review && node_modules/@angular/cli/bin/ng lint
+    - name: ng test
+      run: cd workhome-review && node_modules/@angular/cli/bin/ng test --watch=false --browsers=ChromeHeadless --sourceMap=false    
+    - name: ng build
+      run: cd workhome-review && node_modules/@angular/cli/bin/ng build --prod
+    - name: angular build success
+      if: ${{ success() }}
+      uses: fifsky/dingtalk-action@master
+      with:
+        url: https://oapi.dingtalk.com/robot/send?access_token=dbea3917f87c122d45295dfb22f85d6377226e8e00a5482153b2439375fdd778
+        type: markdown
+        content: |
+          # 💯👨‍💻 Success 🎈🎈🎈
+          > Angular Build [#${{ env.PR_NUMBER }} ${{ env.PR_TITLE }}](${{ env.PR_URL }}) of [${{ env.YZ_DESCRIPTION }}](${{ env.YZ_HTML_URL }}) by ${{ env.PR_USER }} success
+    - name: angular build failure
+      if: ${{ failure() }}
+      uses: fifsky/dingtalk-action@master
+      with:
+        url: https://oapi.dingtalk.com/robot/send?access_token=dbea3917f87c122d45295dfb22f85d6377226e8e00a5482153b2439375fdd778
+        type: markdown
+        content: |
+          # 💤🤷‍♀️  failure 💣💣
+          > Angular Build of [#${{ env.PR_NUMBER }} ${{ env.PR_TITLE }}](${{ env.PR_URL }}) of [${{ env.YZ_DESCRIPTION }}](${{ env.YZ_HTML_URL }}) by ${{ env.PR_USER }} failure
