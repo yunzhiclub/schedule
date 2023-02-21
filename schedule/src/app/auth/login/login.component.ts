@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonService} from '../../../service/common.service';
 import {UserService} from '../../../service/user.service';
-import {first} from "rxjs/operators";
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',

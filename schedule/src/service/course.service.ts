@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import {Page} from '../common/page';
-import {Room} from '../entity/room';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {Course} from '../entity/course';
-import {Clazz} from "../entity/clazz";
 import {Assert} from '../common/utils';
 
 @Injectable({

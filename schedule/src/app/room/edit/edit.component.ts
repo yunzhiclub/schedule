@@ -5,8 +5,8 @@ import {CommonService} from '../../../service/common.service';
 import {HttpClient} from '@angular/common/http';
 import {RoomService} from '../../../service/room.service';
 import {Assert} from '@yunzhi/ng-mock-api';
-import {YzValidator} from "../../validator/yz-validator";
-import {YzAsyncValidators} from "../../validator/yz-async.validators";
+import {YzValidator} from '../../validator/yz-validator';
+import {YzAsyncValidators} from '../../validator/yz-async.validators';
 
 @Component({
   selector: 'app-edit',
