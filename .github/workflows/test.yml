@@ -65,7 +65,7 @@ jobs:
       with:
         java-version: ${{ env.JAVA_VERSION }}
         distribution: ${{ env.DISTRIBUTION }}
-        cache: 'gradle'
+        cache: 'maven'
       
     - name: Setup MySQL
       uses: mirromutth/mysql-action@v1.1
