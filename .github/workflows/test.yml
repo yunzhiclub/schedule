@@ -9,7 +9,7 @@ on: [push, pull_request]
 
 jobs:
   angular:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
 
     steps:
     - name: Cancel Previous Runs
