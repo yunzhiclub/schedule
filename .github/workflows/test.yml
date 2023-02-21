@@ -69,9 +69,8 @@ jobs:
         collation server: utf8mb4_unicode_ci
         mysql version: 5.7
         mysql database: schedule
-        mysql user: root
-        mysql password: root
-      
+        mysql root password: root
+        
 #     - name: build mysql
 #       run: |
 #           docker pull mysql:5.7
