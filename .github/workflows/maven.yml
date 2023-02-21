@@ -8,7 +8,7 @@
 name: Maven test and install
 
 on:
-  [push, pull_request]
+  [pull_request]
 
 jobs:
   spring-boot:
