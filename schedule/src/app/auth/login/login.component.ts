@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonService} from '../../../service/common.service';
 import {UserService} from '../../../service/user.service';
-import {first} from "rxjs/operators";
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -70,7 +70,8 @@ export class LoginComponent implements OnInit {
         if (data) {
           window.sessionStorage.setItem('login', 'true');
           this.userService.initCurrentLoginUser(() => {
-            this.commonService.success(() => this.router.navigateByUrl('/dashboard').then());
+            // this.commonService.success(() => this.router.navigateByUrl('/dashboard').then());
+            this.router.navigateByUrl('/dashboard').then();
           }).subscribe();
         } else {
           this.commonService.error(() => {}, '登录失败，请检查您填写的信息是否正确');

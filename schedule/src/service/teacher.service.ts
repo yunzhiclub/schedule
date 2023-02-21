@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {Page} from '../common/page';
 import {map} from 'rxjs/operators';
 import {Teacher} from '../entity/teacher';
-import {CommonService} from "./common.service";
+import {CommonService} from './common.service';
 
 @Injectable({
   providedIn: 'root'

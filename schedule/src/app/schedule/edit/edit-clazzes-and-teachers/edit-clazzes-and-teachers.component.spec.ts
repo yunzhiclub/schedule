@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EditClazzesAndTeachersComponent } from './edit-clazzes-and-teachers.component';
+import {TestModule} from '../../../test/test.module';
 
 describe('EditClazzesAndTeachersComponent', () => {
   let component: EditClazzesAndTeachersComponent;
@@ -8,7 +9,10 @@ describe('EditClazzesAndTeachersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EditClazzesAndTeachersComponent ]
+      declarations: [ EditClazzesAndTeachersComponent ],
+      imports: [
+        TestModule
+      ]
     })
     .compileComponents();
   });

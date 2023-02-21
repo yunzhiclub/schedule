@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {PipeModule} from '../pipe/pipe.module';
 import {RouterTestingModule} from '@angular/router/testing';
-import {HttpClientModule} from '@angular/common/http';
-import {ActivatedRoute} from '@angular/router';
+import {ReactiveFormsModule} from '@angular/forms';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 
 
@@ -12,14 +11,16 @@ import {ActivatedRoute} from '@angular/router';
   imports: [
     PipeModule,
     RouterTestingModule,
-    HttpClientModule
+    HttpClientTestingModule,
+    ReactiveFormsModule
   ],
   providers: [
   ],
   exports: [
     PipeModule,
     RouterTestingModule,
-    HttpClientModule,
+    HttpClientTestingModule,
+    ReactiveFormsModule
   ]
 })
 export class TestModule { }

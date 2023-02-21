@@ -6,7 +6,7 @@ describe('XAuthTokenInterceptor', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       XAuthTokenInterceptor
-      ]
+    ]
   }));
 
   it('should be created', () => {

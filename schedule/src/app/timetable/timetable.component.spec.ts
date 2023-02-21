@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TimetableComponent } from './timetable.component';
+import {TestModule} from '../test/test.module';
 
 describe('TimetableComponent', () => {
   let component: TimetableComponent;
@@ -8,7 +9,10 @@ describe('TimetableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TimetableComponent ]
+      declarations: [ TimetableComponent ],
+      imports: [
+        TestModule
+      ]
     })
     .compileComponents();
   });
