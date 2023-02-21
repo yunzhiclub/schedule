@@ -99,13 +99,26 @@ export class TimetableComponent implements OnInit {
             this.onTeacherChange();
           });
       });
-    this.termService.getCurrentTerm()
-      .subscribe((term: Term) => {
-        // this.commonService.checkTermIsActivated(term);
-        this.term = term;
-        const seconds = +term.endTime - +term.startTime;
-        const days = Math.ceil(seconds / (60 * 60 * 24));
-        this.weekNumber = Math.ceil(days / 7);
+    this.termService.getAll()
+      .subscribe(allTerms => {
+        let x = 0;
+        for (const term of allTerms) {
+          if (term.state === true) {
+            x++;
+          }
+        }
+        if (x <= 1) {
+          this.termService.getCurrentTerm()
+            .subscribe((term: Term) => {
+              // this.commonService.checkTermIsActivated(term);
+              this.term = term;
+              const seconds = +term.endTime - +term.startTime;
+              const days = Math.ceil(seconds / (60 * 60 * 24));
+              this.weekNumber = Math.ceil(days / 7);
+            });
+        } else {
+          this.commonService.info(() => {}, '获取到多个激活学期,请检查学期管理');
+        }
       });
   }
   private initRoomsAndWeeks(): void {

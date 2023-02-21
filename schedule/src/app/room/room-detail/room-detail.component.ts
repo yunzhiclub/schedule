@@ -74,22 +74,35 @@ export class RoomDetailComponent implements OnInit {
         console.log('getForRoomDetail', room);
         this.room = room;
         this.dispatches = room.dispatches;
-        this.termService.getCurrentTerm()
-          .subscribe((currentTerm) => {
-            if (currentTerm === undefined || currentTerm === null) {
-              this.commonService.info(() => {
-                this.router.navigateByUrl('/room');
-              }, '当前无激活学期');
+        this.termService.getAll()
+          .subscribe(allTerms => {
+            let x = 0;
+            for (const term of allTerms) {
+              if (term.state === true) {
+                x++;
+              }
             }
-            this.term = currentTerm;
-            const seconds = +currentTerm.endTime - +currentTerm.startTime;
-            const days = Math.ceil(seconds / (60 * 60 * 24));
-            this.weekNumber = Math.ceil(days / 7);
-            this.makeFilteredDispatches();
-            this.makeSelectedData();
-            this.makeSmLessonsRecorder();
-            this.makeNotEmptyWeeksTable();
-            this.makeWeeks();
+            if (x <= 1) {
+              this.termService.getCurrentTerm()
+                .subscribe((currentTerm) => {
+                  if (currentTerm === undefined || currentTerm === null) {
+                    this.commonService.info(() => {
+                      this.router.navigateByUrl('/room');
+                    }, '当前无激活学期');
+                  }
+                  this.term = currentTerm;
+                  const seconds = +currentTerm.endTime - +currentTerm.startTime;
+                  const days = Math.ceil(seconds / (60 * 60 * 24));
+                  this.weekNumber = Math.ceil(days / 7);
+                  this.makeFilteredDispatches();
+                  this.makeSelectedData();
+                  this.makeSmLessonsRecorder();
+                  this.makeNotEmptyWeeksTable();
+                  this.makeWeeks();
+                });
+            } else {
+              this.commonService.info(() => this.router.navigateByUrl('room'), '获取到多个激活学期,请检查学期管理');
+            }
           });
       });
   }

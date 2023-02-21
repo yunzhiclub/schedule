@@ -54,25 +54,35 @@ export class ScheduleComponent implements OnInit {
       this.params = params;
       this.loadData();
     });
-    this.termService.getCurrentTerm()
-      .subscribe((term: Term) => {
-        this.term = term;
-
-        let seconds = +term.endTime - +term.startTime;
-        let days = Math.ceil(seconds / (60 * 60 * 24));
-        this.weekNumber = Math.ceil(days / 7);
-        const timestamp = Date.parse(new Date().toString()) / 1000;
-        seconds = timestamp - +term.startTime;
-        days = Math.floor(seconds / (60 * 60 * 24));
-        this.overtimeWeekNumber = Math.floor(days / 7);
-
-        this.queryForm.get(this.keys.termId)?.setValue(term.id);
-        this.params = {termId: term.id};
-        this.loadData();
-      });
     this.termService.getAll()
       .subscribe(terms => {
         this.terms = terms;
+        let x = 0;
+        for (const term of terms) {
+          if (term.state === true) {
+            x++;
+          }
+        }
+        if (x <= 1) {
+          this.termService.getCurrentTerm()
+            .subscribe((term: Term) => {
+              this.term = term;
+
+              let seconds = +term.endTime - +term.startTime;
+              let days = Math.ceil(seconds / (60 * 60 * 24));
+              this.weekNumber = Math.ceil(days / 7);
+              const timestamp = Date.parse(new Date().toString()) / 1000;
+              seconds = timestamp - +term.startTime;
+              days = Math.floor(seconds / (60 * 60 * 24));
+              this.overtimeWeekNumber = Math.floor(days / 7);
+
+              this.queryForm.get(this.keys.termId)?.setValue(term.id);
+              this.params = {termId: term.id};
+              this.loadData();
+            });
+        } else {
+          this.commonService.info(() => {}, '获取到多个激活学期,请检查学期管理');
+        }
       });
   }
   private loadData(): void {
