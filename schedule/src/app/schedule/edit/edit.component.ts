@@ -567,7 +567,24 @@ export class EditComponent implements OnInit {
   }
   onSubmit(): void {
     if (!this.canSubmit()) {
-      this.commonService.error(() => {}, '当前学时与课程学时不相等');
+      this.commonService.confirm((confirm = false) => {
+        if (confirm) {
+          const dispatches1 = [] as Dispatch[];
+          this.selectedData.forEach((data) => {
+            const rooms = data.roomIds.map(roomId => {
+              return new Room({id: roomId});
+            });
+            dispatches1.push(new Dispatch({day: data.day, lesson: data.smLesson, week: data.week, rooms}));
+          });
+          this.schedule.dispatches = dispatches1;
+          this.scheduleService.edit(this.schedule.id, dispatches1)
+            .subscribe((schedule) => {
+              this.commonService.success(() => this.router.navigateByUrl('/schedule'));
+            });
+        } else {
+          return ;
+        }
+      }, '当前学时与课程学时不相等');
       return;
     }
     const dispatches = [] as Dispatch[];
