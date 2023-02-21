@@ -216,7 +216,7 @@ export class EditComponent implements OnInit {
     this.deleteSelectedData();
     if (this.syncRecorder[this.day!][this.bigLesson!]) {
       if (this.smLessons.length !== 0) {
-        this.weeksRecorder[this.day!][this.bigLesson!] = [...this.selectedWeeks];
+        this.weeksRecorder[this.day!][this.bigLesson!] = [...this.notEmptyWeeks];
       } else {
         this.weeksRecorder[this.day!][this.bigLesson!] = [];
       }
