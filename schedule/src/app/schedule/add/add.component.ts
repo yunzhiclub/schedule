@@ -384,7 +384,7 @@ export class AddComponent implements OnInit {
       // 选择课程，请求已选择该课程的班级clazzIds, 并在clazzes中筛选掉这些班级
       this.clazzService.clazzesHaveSelectCourse(this.formGroup.get('courseId')?.value)
         .subscribe(clazzIds => {
-          this.screenedClazzes = this.clazzes.filter(clazz => !clazzIds.includes(clazz.id));
+          this.screenedClazzes = this.commonService.sortByName(this.clazzes.filter(clazz => !clazzIds.includes(clazz.id)));
         });
     }
   }
