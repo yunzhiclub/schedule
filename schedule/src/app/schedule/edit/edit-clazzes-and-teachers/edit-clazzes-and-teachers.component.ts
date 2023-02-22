@@ -42,7 +42,7 @@ export class EditClazzesAndTeachersComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private scheduleService: ScheduleService,
               private clazzService: ClazzService,
-              private commonService: CommonService,
+              public commonService: CommonService,
               private teacherService: TeacherService,
               private router: Router) { }
   formGroup = new FormGroup({
