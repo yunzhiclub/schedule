@@ -11,6 +11,7 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -85,8 +86,13 @@ public class TermController {
         return this.termService.activeTerm(termId);
     }
     @GetMapping("getCurrentTerm")
-    public Term getCurrentTerm() {
-        return this.termService.getCurrentTerm();
+    public Term getCurrentTerm(HttpServletResponse response) {
+        try {
+            return this.termService.getCurrentTerm();
+        } catch (Exception e) {
+            response.setStatus(512);
+        }
+        return new Term();
     }
 
     @GetMapping("getAll")
