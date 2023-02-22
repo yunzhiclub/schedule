@@ -9,15 +9,26 @@
   <div class="form-group row">
     <label class="col-sm-2 text-right col-form-label"><code>*</code>上课班级<br>(可多选)</label>
     <div class="col-sm">
-      <select class="select picker form-control col-sm-3" formControlName="clazzIds" id="clazzIds" style="width: 200px" multiple>
-        <option [value]="null">请选择班级</option>
-        <option *ngFor="let clazz of this.thirdFilerClazzes" [value]="clazz.id">{{ clazz.name }}</option>
-      </select>
+<!--      <select class="select picker form-control col-sm-3" formControlName="clazzIds" id="clazzIds" style="width: 200px" multiple>-->
+<!--        <option [value]="null">请选择班级</option>-->
+<!--        <option *ngFor="let clazz of thirdFilerClazzes" [value]="clazz.id">{{ clazz.name }}</option>-->
+<!--      </select>-->
+
+      <ng-select [items]="commonService.sortByName(thirdFilerClazzes)"
+                 bindLabel="name"
+                 bindValue="id"
+                 [multiple]="true"
+                 [closeOnSelect]="false"
+                 formControlName="clazzIds"
+                 placeholder="选择班级"
+                 style="width: 14em"
+      >
+      </ng-select>
     </div>
   </div>
   <div class="form-group row">
     <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>教师</label>
-    <div class="col-sm-2">
+    <div class="col-sm-2 mr-2">
 <!--      <select class="select picker form-control col-sm-12" style="width: 200px" formControlName="teacher1Id" id="teacher1Id" required>-->
 <!--        <option [value]="null">请选择教师1</option>-->
 <!--        <option *ngFor="let teacher of selectableTeachers" [value]="+teacher.id">{{teacher.name}}</option>-->
@@ -28,7 +39,7 @@
                  bindValue="id"
                  formControlName="teacher1Id"
                  placeholder="选择教师1"
-                 style="width: 12em"
+                 style="width: 14em"
       >
       </ng-select>
     </div>
@@ -43,7 +54,7 @@
                  bindValue="id"
                  formControlName="teacher2Id"
                  placeholder="选择教师2"
-                 style="width: 12em"
+                 style="width: 14em"
       >
       </ng-select>
     </div>
