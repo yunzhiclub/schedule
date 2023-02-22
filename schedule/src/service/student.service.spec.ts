@@ -8,9 +8,9 @@ describe('StudentService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [
-      TestModule
-    ]
+      imports: [
+        TestModule
+      ]
     });
     service = TestBed.inject(StudentService);
   });

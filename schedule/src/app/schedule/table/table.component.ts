@@ -255,7 +255,6 @@ export class TableComponent implements OnInit {
               this.overtimeWeekNumber = Math.floor(days / 7);
             }
           });
-
         this.makeWeeks();
         this.scheduleService.getSchedulesByTerm(schedule.term)
           .subscribe((schedules: Schedule[]) => {

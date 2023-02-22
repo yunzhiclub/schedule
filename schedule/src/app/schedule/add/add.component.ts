@@ -329,6 +329,10 @@ export class AddComponent implements OnInit {
         this.initSites();
         this.makeWeeks();
         this.makeWeeksAndRoomsRecoder();
+        this.scheduleService.getSchedulesInCurrentTerm()
+          .subscribe((schedules: Schedule[]) => {
+            this.schedules = schedules;
+          });
       });
 
     this.roomService.getAll()
@@ -336,22 +340,18 @@ export class AddComponent implements OnInit {
         this.rooms = rooms;
       });
 
-    this.scheduleService.getSchedulesInCurrentTerm()
-      .subscribe((schedules: Schedule[]) => {
-        this.schedules = schedules;
-      });
-
     this.courseService.getAll()
       .subscribe(allCourse => {
-        this.courses = allCourse;
+        // A - Z 排序
+        this.courses = this.commonService.sortByName(allCourse);
       });
     this.clazzService.getAll()
       .subscribe(allClazz => {
-        this.clazzes = allClazz;
+        this.clazzes = this.commonService.sortByName(allClazz);
       });
     this.teacherService.getAll()
       .subscribe(allTeacher => {
-        this.teachers = allTeacher;
+        this.teachers = this.commonService.sortByName(allTeacher);
       });
   }
 
@@ -384,7 +384,7 @@ export class AddComponent implements OnInit {
       // 选择课程，请求已选择该课程的班级clazzIds, 并在clazzes中筛选掉这些班级
       this.clazzService.clazzesHaveSelectCourse(this.formGroup.get('courseId')?.value)
         .subscribe(clazzIds => {
-          this.screenedClazzes = this.clazzes.filter(clazz => !clazzIds.includes(clazz.id));
+          this.screenedClazzes = this.commonService.sortByName(this.clazzes.filter(clazz => !clazzIds.includes(clazz.id)));
         });
     }
   }

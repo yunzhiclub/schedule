@@ -31,12 +31,6 @@ export class ScheduleComponent implements OnInit {
   };
   term = {} as Term;
   terms = [] as Term[];
-  cars = [
-    { id: 1, name: 'Volvo' },
-    { id: 2, name: 'Saab' },
-    { id: 3, name: 'Opel' },
-    { id: 4, name: 'Audi' },
-  ];
   weekNumber: number | undefined;
   overtimeWeekNumber: number | undefined;
   constructor(private commonService: CommonService,
@@ -54,10 +48,13 @@ export class ScheduleComponent implements OnInit {
       this.params = params;
       this.loadData();
     });
+    this.termService.getAll()
+      .subscribe(terms => {
+        this.terms = this.commonService.sortByName(terms);
+      });
     this.termService.getCurrentTerm()
       .subscribe((term: Term) => {
         this.term = term;
-
         let seconds = +term.endTime - +term.startTime;
         let days = Math.ceil(seconds / (60 * 60 * 24));
         this.weekNumber = Math.ceil(days / 7);
@@ -69,10 +66,6 @@ export class ScheduleComponent implements OnInit {
         this.queryForm.get(this.keys.termId)?.setValue(term.id);
         this.params = {termId: term.id};
         this.loadData();
-      });
-    this.termService.getAll()
-      .subscribe(terms => {
-        this.terms = terms;
       });
   }
   private loadData(): void {

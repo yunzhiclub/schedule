@@ -3,6 +3,6 @@
  */
 export interface WebSocketData {
   body: string;
-  command: "MESSAGE";
+  command: 'MESSAGE';
   headers: {[key: string]: string};
 }

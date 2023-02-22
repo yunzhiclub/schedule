@@ -4,7 +4,7 @@ import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {CommonService} from '../../service/common.service';
 import {UserService} from '../../service/user.service';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 
 /**
  * HTTP请求错误拦截器.
@@ -73,6 +73,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         break;
       case 502:
         this.showError(error, '服务器宕机');
+        break;
+      case 512:
+        this.showError(error, '获取到多个已激活学期');
         break;
       case 0:
         this.showError(error, '网络错误');

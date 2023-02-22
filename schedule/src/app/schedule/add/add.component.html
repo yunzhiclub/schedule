@@ -4,10 +4,18 @@
   <div class="form-group row">
     <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>课程</label>
     <div class="col-sm">
-      <select class="select picker form-control col-sm-3" style="width: 200px" formControlName="courseId" id="courseId" required>
-        <option [value]="null">请选择课程</option>
-        <option *ngFor="let course of courses" [value]="+course.id">{{course.name}}</option>
-      </select>
+<!--      <select class="select picker form-control col-sm-3" style="width: 200px" formControlName="courseId" id="courseId" required>-->
+<!--        <option [value]="null">请选择课程</option>-->
+<!--        <option *ngFor="let course of courses" [value]="+course.id">{{course.name}}</option>-->
+<!--      </select>-->
+      <ng-select [items]="courses"
+                 bindLabel="name"
+                 bindValue="id"
+                 formControlName="courseId"
+                 placeholder="选择课程"
+                 style="width: 14em"
+      >
+      </ng-select>
     </div>
   </div>
 
@@ -16,34 +24,61 @@
     <div class="form-group row">
       <label class="col-sm-2 text-right col-form-label"><code>*</code>上课班级<br>(可多选)</label>
       <div class="col-sm">
-        <select class="select picker form-control col-sm-3" style="width: 200px" formControlName="clazzIds" multiple id="klass">
-          <option [value]="null">请选择班级</option>
-          <option *ngFor="let clazz of screenedClazzes" [value]="+clazz.id">{{clazz.name}}</option>
-        </select>
+<!--        <select class="select picker form-control col-sm-3" style="width: 200px" formControlName="clazzIds" multiple id="klass">-->
+<!--          <option [value]="null">请选择班级</option>-->
+<!--          <option *ngFor="let clazz of screenedClazzes" [value]="+clazz.id">{{clazz.name}}</option>-->
+<!--        </select>-->
+
+        <ng-select [items]="screenedClazzes"
+                   bindLabel="name"
+                   bindValue="id"
+                   [multiple]="true"
+                   [closeOnSelect]="false"
+                   formControlName="clazzIds"
+                   placeholder="选择班级"
+                   style="width: 14em"
+        >
+        </ng-select>
       </div>
     </div>
-    <div class="form-group row">
-      <div class="offset-2 text-right">
-        <label style="font-size: 15px"><code>*</code>操作提示：Ctrl+鼠标左键可进行多选操作</label>
-      </div>
-    </div>
+<!--    <div class="form-group row">-->
+<!--      <div class="offset-2 text-right">-->
+<!--        <label style="font-size: 15px"><code>*</code>操作提示：Ctrl+鼠标左键可进行多选操作</label>-->
+<!--      </div>-->
+<!--    </div>-->
   </div>
 
   <!-- 选择教师 -->
   <div *ngIf="isShowTeacher()">
     <div class="form-group row">
       <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>教师</label>
-      <div class="col-sm-2">
-        <select class="select picker form-control col-sm-12" style="width: 200px" formControlName="teacher1Id" id="teacher1Id" required>
-          <option [value]="null">请选择教师1</option>
-          <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>
-        </select>
+      <div class="col-sm-2 mr-2">
+<!--        <select class="select picker form-control col-sm-12" style="width: 200px" formControlName="teacher1Id" id="teacher1Id" required>-->
+<!--          <option [value]="null">请选择教师1</option>-->
+<!--          <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>-->
+<!--        </select>-->
+        <ng-select [items]="teachers"
+                   bindLabel="name"
+                   bindValue="id"
+                   formControlName="teacher1Id"
+                   placeholder="选择教师1"
+                   style="width: 14em"
+        >
+        </ng-select>
       </div>
       <div class="col-sm-2">
-        <select class="select picker form-control col-sm-12" style="width: 200px; margin-top: 2px" formControlName="teacher2Id" id="teacher2Id" required>
-          <option [value]="null">请选择教师2</option>
-          <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>
-        </select>
+<!--        <select class="select picker form-control col-sm-12" style="width: 200px; margin-top: 2px" formControlName="teacher2Id" id="teacher2Id" required>-->
+<!--          <option [value]="null">请选择教师2</option>-->
+<!--          <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>-->
+<!--        </select>-->
+        <ng-select [items]="teachers"
+                   bindLabel="name"
+                   bindValue="id"
+                   formControlName="teacher2Id"
+                   placeholder="选择教师2"
+                   style="width: 14em"
+        >
+        </ng-select>
       </div>
       <div class="offset-2 col-sm-12">
         <small class="text-danger" *ngIf="formGroup.get('teacher1Id')!.touched && formGroup.get('teacher2Id')!.touched && isTeacherSame">

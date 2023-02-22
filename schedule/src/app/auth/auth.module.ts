@@ -4,7 +4,7 @@ import {LoginComponent} from './login/login.component';
 import {AuthRoutingModule} from './auth-routing.module';
 import {YzSubmitButtonModule} from '../func/yz-submit-button/yz-submit-button.module';
 import {ReactiveFormsModule} from '@angular/forms';
-import {AuthComponent} from "./auth.component";
+import {AuthComponent} from './auth.component';
 
 
 
