@@ -314,38 +314,25 @@ export class AddComponent implements OnInit {
   }
 
   private getData(): void {
-    this.termService.getAll()
-      .subscribe(allTerms => {
-        let x = 0;
-        for (const term of allTerms) {
-          if (term.state === true) {
-            x++;
-          }
-        }
-        if (x <= 1) {
-          this.termService.getCurrentTerm()
-            .subscribe((term: Term) => {
-              this.commonService.checkTermIsActivated(term);
-              this.term = term;
-              let seconds = +term.endTime - +term.startTime;
-              let days = Math.ceil(seconds / (60 * 60 * 24));
-              this.weekNumber = Math.ceil(days / 7);
-              const timestamp = Date.parse(new Date().toString()) / 1000;
-              seconds = timestamp - +term.startTime;
-              days = Math.floor(seconds / (60 * 60 * 24));
-              this.overtimeWeekNumber = Math.floor(days / 7);
-              this.initTimes();
-              this.initSites();
-              this.makeWeeks();
-              this.makeWeeksAndRoomsRecoder();
-              this.scheduleService.getSchedulesInCurrentTerm()
-                .subscribe((schedules: Schedule[]) => {
-                  this.schedules = schedules;
-                });
-            });
-        } else {
-          this.commonService.info(() => this.router.navigateByUrl('schedule'), '获取到多个激活学期,请检查学期管理');
-        }
+    this.termService.getCurrentTerm()
+      .subscribe((term: Term) => {
+        this.commonService.checkTermIsActivated(term);
+        this.term = term;
+        let seconds = +term.endTime - +term.startTime;
+        let days = Math.ceil(seconds / (60 * 60 * 24));
+        this.weekNumber = Math.ceil(days / 7);
+        const timestamp = Date.parse(new Date().toString()) / 1000;
+        seconds = timestamp - +term.startTime;
+        days = Math.floor(seconds / (60 * 60 * 24));
+        this.overtimeWeekNumber = Math.floor(days / 7);
+        this.initTimes();
+        this.initSites();
+        this.makeWeeks();
+        this.makeWeeksAndRoomsRecoder();
+        this.scheduleService.getSchedulesInCurrentTerm()
+          .subscribe((schedules: Schedule[]) => {
+            this.schedules = schedules;
+          });
       });
 
     this.roomService.getAll()
