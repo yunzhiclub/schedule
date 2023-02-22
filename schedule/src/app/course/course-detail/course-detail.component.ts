@@ -65,20 +65,33 @@ export class CourseDetailComponent implements OnInit {
       .subscribe((course) => {
         console.warn('getForCourseDetail', course);
         this.schedules = course.schedules;
-        this.termService.getCurrentTerm()
-          .subscribe((currentTerm) => {
-            if (currentTerm === undefined || currentTerm === null) {
-              this.commonService.info(() => {
-                this.router.navigateByUrl('/course').then();
-              }, '当前无激活学期');
+        this.termService.getAll()
+          .subscribe(allTerms => {
+            let x = 0;
+            for (const term of allTerms) {
+              if (term.state === true) {
+                x++;
+              }
             }
-            this.term = currentTerm;
-            const seconds = +currentTerm.endTime - +currentTerm.startTime;
-            const days = Math.ceil(seconds / (60 * 60 * 24));
-            this.weekNumber = Math.ceil(days / 7);
-            this.makeSelectedData();
-            this.makeNotEmptyWeeksTable();
-            this.makeWeeks();
+            if (x <= 1) {
+              this.termService.getCurrentTerm()
+                .subscribe((currentTerm) => {
+                  if (currentTerm === undefined || currentTerm === null) {
+                    this.commonService.info(() => {
+                      this.router.navigateByUrl('/course').then();
+                    }, '当前无激活学期');
+                  }
+                  this.term = currentTerm;
+                  const seconds = +currentTerm.endTime - +currentTerm.startTime;
+                  const days = Math.ceil(seconds / (60 * 60 * 24));
+                  this.weekNumber = Math.ceil(days / 7);
+                  this.makeSelectedData();
+                  this.makeNotEmptyWeeksTable();
+                  this.makeWeeks();
+                });
+            } else {
+              this.commonService.info(() => this.router.navigateByUrl('course'), '获取到多个激活学期,请检查学期管理');
+            }
           });
       });
 
