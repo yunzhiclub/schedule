@@ -37,7 +37,6 @@ CREATE TABLE IF NOT EXISTS  `clazz` (
 
 LOCK TABLES `clazz` WRITE;
 /*!40000 ALTER TABLE `clazz` DISABLE KEYS */;
-INSERT INTO `clazz` VALUES (1,_binary '\0',1672502400,'计科221',30),(2,_binary '\0',1672502400,'软件221',30),(3,_binary '\0',1672502400,'物联网221',30);
 /*!40000 ALTER TABLE `clazz` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -62,7 +61,6 @@ CREATE TABLE IF NOT EXISTS `course` (
 
 LOCK TABLES `course` WRITE;
 /*!40000 ALTER TABLE `course` DISABLE KEYS */;
-INSERT INTO `course` VALUES (1,_binary '\0','6','计算机组成原理'),(2,_binary '\0','6','汇编');
 /*!40000 ALTER TABLE `course` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,7 +89,6 @@ CREATE TABLE IF NOT EXISTS `dispatch` (
 
 LOCK TABLES `dispatch` WRITE;
 /*!40000 ALTER TABLE `dispatch` DISABLE KEYS */;
-INSERT INTO `dispatch` VALUES (1,1,_binary '\0',2,7,1),(2,1,_binary '\0',2,8,1),(3,1,_binary '\0',2,9,1),(4,1,_binary '\0',2,4,2),(5,1,_binary '\0',2,5,2),(6,1,_binary '\0',2,6,2),(7,1,_binary '\0',2,7,3),(8,1,_binary '\0',2,8,3),(9,1,_binary '\0',2,9,3);
 /*!40000 ALTER TABLE `dispatch` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -117,7 +114,6 @@ CREATE TABLE IF NOT EXISTS `dispatch_rooms` (
 
 LOCK TABLES `dispatch_rooms` WRITE;
 /*!40000 ALTER TABLE `dispatch_rooms` DISABLE KEYS */;
-INSERT INTO `dispatch_rooms` VALUES (1,1),(2,1),(3,1),(4,1),(5,1),(6,1),(7,2),(8,2),(9,2);
 /*!40000 ALTER TABLE `dispatch_rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,7 +138,6 @@ CREATE TABLE IF NOT EXISTS `room` (
 
 LOCK TABLES `room` WRITE;
 /*!40000 ALTER TABLE `room` DISABLE KEYS */;
-INSERT INTO `room` VALUES (1,'3904169421307329765',_binary '\0','A1'),(2,'7796746537806837926',_binary '\0','A2');
 /*!40000 ALTER TABLE `room` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -177,7 +172,6 @@ CREATE TABLE IF NOT EXISTS `schedule` (
 
 LOCK TABLES `schedule` WRITE;
 /*!40000 ALTER TABLE `schedule` DISABLE KEYS */;
-INSERT INTO `schedule` VALUES (1,_binary '\0',2,1,2,1),(2,_binary '\0',1,2,3,1),(3,_binary '\0',2,3,4,1);
 /*!40000 ALTER TABLE `schedule` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -203,7 +197,6 @@ CREATE TABLE IF NOT EXISTS `schedule_clazzes` (
 
 LOCK TABLES `schedule_clazzes` WRITE;
 /*!40000 ALTER TABLE `schedule_clazzes` DISABLE KEYS */;
-INSERT INTO `schedule_clazzes` VALUES (1,1),(2,2),(3,2);
 /*!40000 ALTER TABLE `schedule_clazzes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,7 +225,6 @@ CREATE TABLE IF NOT EXISTS `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
-INSERT INTO `student` VALUES (1,_binary '\0','学生1',_binary '','123123',1);
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -258,7 +250,6 @@ CREATE TABLE IF NOT EXISTS `teacher` (
 
 LOCK TABLES `teacher` WRITE;
 /*!40000 ALTER TABLE `teacher` DISABLE KEYS */;
-INSERT INTO `teacher` VALUES (1,_binary '\0','张三','13100000000',_binary ''),(2,_binary '\0','李四','13100000001',_binary '\0'),(3,_binary '\0','王五','13100000002',_binary '\0'),(4,_binary '\0','赵六','13100000003',_binary '\0');
 /*!40000 ALTER TABLE `teacher` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -285,7 +276,6 @@ CREATE TABLE IF NOT EXISTS `term` (
 
 LOCK TABLES `term` WRITE;
 /*!40000 ALTER TABLE `term` DISABLE KEYS */;
-INSERT INTO `term` VALUES (1,_binary '\0',1688140800,'已激活学期',1672502400,_binary ''),(2,_binary '\0',1688140800,'未激活学期',1672502400,_binary '\0');
 /*!40000 ALTER TABLE `term` ENABLE KEYS */;
 UNLOCK TABLES;
 
