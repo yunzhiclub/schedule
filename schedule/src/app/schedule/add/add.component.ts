@@ -343,7 +343,16 @@ export class AddComponent implements OnInit {
 
     this.courseService.getAll()
       .subscribe(allCourse => {
-        this.courses = allCourse;
+        // A - Z 排序
+        this.courses = allCourse.sort((a, b) => {
+          if (a.name! < b.name!) {
+            return -1;
+          } else if (a.name! > b.name!) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
       });
     this.clazzService.getAll()
       .subscribe(allClazz => {

@@ -4,10 +4,19 @@
   <div class="form-group row">
     <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>课程</label>
     <div class="col-sm">
-      <select class="select picker form-control col-sm-3" style="width: 200px" formControlName="courseId" id="courseId" required>
-        <option [value]="null">请选择课程</option>
-        <option *ngFor="let course of courses" [value]="+course.id">{{course.name}}</option>
-      </select>
+<!--      <select class="select picker form-control col-sm-3" style="width: 200px" formControlName="courseId" id="courseId" required>-->
+<!--        <option [value]="null">请选择课程</option>-->
+<!--        <option *ngFor="let course of courses" [value]="+course.id">{{course.name}}</option>-->
+<!--      </select>-->
+      <ng-select [items]="courses"
+                 bindLabel="name"
+                 bindValue="id"
+                 formControlName="courseId"
+                 placeholder="选择课程"
+                 style="width: 12em"
+                 (change)="onTeacherChange()"
+      >
+      </ng-select>
     </div>
   </div>
 
