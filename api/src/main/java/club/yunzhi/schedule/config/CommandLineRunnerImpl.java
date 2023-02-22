@@ -64,8 +64,8 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
             user.setPassword(password);
             this.userRepository.save(user);
         }
-//        this.forHePanTest();
-        this.chen();
+        this.forHePanTest();
+//        this.chen();
     }   
 
 
@@ -78,7 +78,7 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         this.addTerm("2023秋季学期", false, 1672502400L, 1688140800L);
         // 添加60条测试老师
         for (int i = 0; i < 54; i++) {
-            this.addTeacher("老师" + i, false,  "1688140800");
+            this.addTeacher("老师" + i, false,  "131000000" + (i + 10));
         }
         Teacher zhangsan = this.addTeacher("张三", true, "13100000001");
         Teacher lisi = this.addTeacher("李四", false, "13100000002");
@@ -86,6 +86,9 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         Teacher zhaoliu = this.addTeacher("赵六", true, "13100000004");
         Teacher sunqi = this.addTeacher("孙七", false, "13100000005");
         Teacher zhouba = this.addTeacher("周八", true, "13100000006");
+        Teacher huangjiu = this.addTeacher("黄九", false, "13100000007");
+        Teacher tianshi = this.addTeacher("田十", true, "13100000008");
+        Teacher mengshiyi = this.addTeacher("孟十一", false, "13100000009");
         // 添加60条测试班级
         for (int i = 0; i < 60; i++) {
             Clazz clazz =  this.addClazz("班级" + i, 1672502400L);
