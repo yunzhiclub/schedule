@@ -14,7 +14,6 @@
                  formControlName="courseId"
                  placeholder="选择课程"
                  style="width: 12em"
-                 (change)="onTeacherChange()"
       >
       </ng-select>
     </div>
@@ -43,16 +42,32 @@
     <div class="form-group row">
       <label class="col-sm-2 text-right col-form-label" style="width: 162px"><code>*</code>教师</label>
       <div class="col-sm-2">
-        <select class="select picker form-control col-sm-12" style="width: 200px" formControlName="teacher1Id" id="teacher1Id" required>
-          <option [value]="null">请选择教师1</option>
-          <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>
-        </select>
+<!--        <select class="select picker form-control col-sm-12" style="width: 200px" formControlName="teacher1Id" id="teacher1Id" required>-->
+<!--          <option [value]="null">请选择教师1</option>-->
+<!--          <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>-->
+<!--        </select>-->
+        <ng-select [items]="teachers"
+                   bindLabel="name"
+                   bindValue="id"
+                   formControlName="teacher1Id"
+                   placeholder="选择教师1"
+                   style="width: 12em"
+        >
+        </ng-select>
       </div>
       <div class="col-sm-2">
-        <select class="select picker form-control col-sm-12" style="width: 200px; margin-top: 2px" formControlName="teacher2Id" id="teacher2Id" required>
-          <option [value]="null">请选择教师2</option>
-          <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>
-        </select>
+<!--        <select class="select picker form-control col-sm-12" style="width: 200px; margin-top: 2px" formControlName="teacher2Id" id="teacher2Id" required>-->
+<!--          <option [value]="null">请选择教师2</option>-->
+<!--          <option *ngFor="let teacher of teachers" [value]="+teacher.id">{{teacher.name}}</option>-->
+<!--        </select>-->
+        <ng-select [items]="teachers"
+                   bindLabel="name"
+                   bindValue="id"
+                   formControlName="teacher2Id"
+                   placeholder="选择教师2"
+                   style="width: 12em"
+        >
+        </ng-select>
       </div>
       <div class="offset-2 col-sm-12">
         <small class="text-danger" *ngIf="formGroup.get('teacher1Id')!.touched && formGroup.get('teacher2Id')!.touched && isTeacherSame">
