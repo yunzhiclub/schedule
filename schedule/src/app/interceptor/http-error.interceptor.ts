@@ -74,6 +74,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       case 502:
         this.showError(error, '服务器宕机');
         break;
+      case 512:
+        this.showError(error, '获取到多个已激活学期');
+        break;
       case 0:
         this.showError(error, '网络错误');
         break;

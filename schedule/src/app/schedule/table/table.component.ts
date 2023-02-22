@@ -245,27 +245,14 @@ export class TableComponent implements OnInit {
         let seconds = +term.endTime - +term.startTime;
         let days = Math.ceil(seconds / (60 * 60 * 24));
         this.weekNumber = Math.ceil(days / 7);
-        this.termService.getAll()
-          .subscribe(allTerms => {
-            let x = 0;
-            for (const term1 of allTerms) {
-              if (term1.state === true) {
-                x++;
-              }
-            }
-            if (x <= 1) {
-              this.termService.getCurrentTerm()
-                .subscribe((currentTerm) => {
-                  this.currentTerm = currentTerm;
-                  if (currentTerm.id === term.id) {
-                    const timestamp = Date.parse(new Date().toString()) / 1000;
-                    seconds = timestamp - +term.startTime;
-                    days = Math.floor(seconds / (60 * 60 * 24));
-                    this.overtimeWeekNumber = Math.floor(days / 7);
-                  }
-                });
-            } else {
-              this.commonService.info(() => this.router.navigateByUrl('schedule'), '获取到多个激活学期,请检查学期管理');
+        this.termService.getCurrentTerm()
+          .subscribe((currentTerm) => {
+            this.currentTerm = currentTerm;
+            if (currentTerm.id === term.id) {
+              const timestamp = Date.parse(new Date().toString()) / 1000;
+              seconds = timestamp - +term.startTime;
+              days = Math.floor(seconds / (60 * 60 * 24));
+              this.overtimeWeekNumber = Math.floor(days / 7);
             }
           });
         this.makeWeeks();

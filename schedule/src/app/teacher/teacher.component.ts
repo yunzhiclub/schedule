@@ -51,22 +51,9 @@ export class TeacherComponent implements OnInit {
           this.setData(data);
         });
     });
-    this.termService.getAll()
-      .subscribe(allTerms => {
-        let x = 0;
-        for (const term of allTerms) {
-          if (term.state === true) {
-            x++;
-          }
-        }
-        if (x <= 1) {
-          this.termService.getCurrentTerm()
-            .subscribe(term => {
-              this.termId = term.id;
-            });
-        } else {
-          this.commonService.info(() => {}, '获取到多个激活学期,请检查学期管理');
-        }
+    this.termService.getCurrentTerm()
+      .subscribe(term => {
+        this.termId = term.id;
       });
   }
 
