@@ -102,7 +102,8 @@
           <ul class="list-group list-group-horizontal">
             <ng-container *ngFor="let w of weeks" class="list-group-item">
               <button [disabled]="isWeekDisabled(w)" (click)="onWeekChange(w)"
-                      [ngClass]="{'bg-primary': w === week || selectedWeeks.includes(w)}"
+                      [ngClass]="{'bg-contained': isBeContained(w),
+                      'bg-primary': w === week || selectedWeeks.includes(w)}"
                       class="mr-1 border-white yzRound" style="font-size: 0.8em">第{{ w! + 1 }}周</button>
             </ng-container>
           </ul><br>
