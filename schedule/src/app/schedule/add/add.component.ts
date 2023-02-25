@@ -839,4 +839,8 @@ export class AddComponent implements OnInit {
   getWeeks(weeksForShow: number[]): string {
     return this.commonService.getWeeksForTimetable(weeksForShow);
   }
+
+  isBeContained(w: number): boolean {
+    return this.syncRecorder[this.day!][this.bigLesson!] && (w !== this.week) && this.notEmptyWeeks.includes(w);
+  }
 }
